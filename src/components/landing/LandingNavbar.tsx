@@ -25,7 +25,7 @@ const LandingNavbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
       <div className="container flex items-center justify-between h-16">
         <button onClick={() => scrollTo("hero")} className="font-heading text-lg font-bold text-foreground">
-          HR & Poslovanje <span className="text-primary">Udruga</span>
+          People & Culture <span className="text-primary">HUB</span>
         </button>
 
         <div className="hidden lg:flex items-center gap-5">
