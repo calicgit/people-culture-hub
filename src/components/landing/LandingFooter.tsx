@@ -9,7 +9,7 @@ const LandingFooter = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h3 className="font-heading text-lg font-bold text-primary-foreground">
-              HR & Poslovanje <span className="text-primary">Udruga</span>
+              People & Culture <span className="text-primary">HUB</span>
             </h3>
             <p className="text-primary-foreground/40 text-sm font-body mt-1">
               {t(
