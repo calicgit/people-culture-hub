@@ -91,7 +91,7 @@ const CouncilLogin = () => {
         </div>
 
         <p className="text-center text-xs text-muted-foreground mt-6 font-body">
-          Portal je dostupan samo za članove savjetodavnog i znanstvenog vijeća.
+          Portal je dostupan samo za članove Upravnog, Savjetodavnog i Znanstvenog vijeća.
           <br />
           Za pristup kontaktirajte administratora udruge.
         </p>
