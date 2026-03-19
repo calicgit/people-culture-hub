@@ -28,7 +28,7 @@ const LandingNavbar = () => {
           People & Culture <span className="text-primary">HUB</span>
         </button>
 
-        <div className="hidden lg:flex items-center gap-5">
+        <div className="hidden md:flex items-center gap-3">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -50,13 +50,13 @@ const LandingNavbar = () => {
           </button>
         </div>
 
-        <button className="lg:hidden text-foreground" onClick={() => setOpen(!open)}>
+        <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {open && (
-        <div className="lg:hidden bg-card border-b border-border px-6 pb-4 space-y-3">
+        <div className="md:hidden bg-card border-b border-border px-6 pb-4 space-y-3">
           {navItems.map((item) => (
             <button
               key={item.id}
