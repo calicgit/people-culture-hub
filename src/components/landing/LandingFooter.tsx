@@ -10,7 +10,7 @@ const LandingFooter = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h3 className="font-heading text-lg font-bold text-primary-foreground flex items-center gap-2">
-              <img src={logo} alt="People & Culture HUB" className="h-12 w-auto brightness-0 invert" />
+              <img src={logo} alt="People & Culture HUB" className="h-36 w-auto brightness-0 invert" />
             </h3>
             <p className="text-primary-foreground/40 text-sm font-body mt-1">
               {t(
