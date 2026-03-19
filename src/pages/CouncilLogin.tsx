@@ -50,10 +50,7 @@ const CouncilLogin = () => {
             <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <Lock className="w-7 h-7 text-primary" />
             </div>
-            <h1 className="font-heading text-2xl font-bold text-foreground">Savjetodavno vijeće</h1>
-            <p className="text-muted-foreground text-sm font-body mt-1">
-              Prijavite se za pristup portalu vijeća
-            </p>
+            <h1 className="font-heading text-2xl font-bold text-foreground">Prijava</h1>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
