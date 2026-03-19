@@ -50,7 +50,7 @@ const LandingNavbar = () => {
           </button>
         </div>
 
-        <button className="lg:hidden text-foreground" onClick={() => setOpen(!open)}>
+        <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
