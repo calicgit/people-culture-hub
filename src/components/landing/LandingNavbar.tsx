@@ -28,7 +28,7 @@ const LandingNavbar = () => {
           People & Culture <span className="text-primary">HUB</span>
         </button>
 
-        <div className="hidden lg:flex items-center gap-5">
+        <div className="hidden md:flex items-center gap-3">
           {navItems.map((item) => (
             <button
               key={item.id}
