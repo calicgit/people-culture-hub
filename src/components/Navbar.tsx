@@ -1,23 +1,35 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const navLinks = [
+  { label: "Home", to: "/" },
+  { label: "Sections", to: "/sections" },
+  { label: "Meetup Invite", to: "/meetup-invite" },
+  { label: "Legal", to: "/legal" },
+];
+
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const links = ["About", "Programs", "Impact", "Contact"];
+  const location = useLocation();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-md border-b border-border">
       <div className="container flex items-center justify-between h-16">
-        <a href="#" className="font-heading text-xl font-bold text-foreground">
+        <Link to="/" className="font-heading text-xl font-bold text-foreground">
           People & Culture <span className="text-primary">HUB</span>
-        </a>
+        </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              {l}
-            </a>
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className={`text-sm font-medium transition-colors ${location.pathname === l.to ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {l.label}
+            </Link>
           ))}
           <Button size="sm">Get Involved</Button>
         </div>
@@ -28,11 +40,11 @@ const Navbar = () => {
       </div>
 
       {open && (
-        <div className="md:hidden bg-background border-b border-border px-6 pb-4 space-y-3">
-          {links.map((l) => (
-            <a key={l} href={`#${l.toLowerCase()}`} onClick={() => setOpen(false)} className="block text-sm font-medium text-muted-foreground hover:text-foreground">
-              {l}
-            </a>
+        <div className="md:hidden bg-card border-b border-border px-6 pb-4 space-y-3">
+          {navLinks.map((l) => (
+            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="block text-sm font-medium text-muted-foreground hover:text-foreground">
+              {l.label}
+            </Link>
           ))}
           <Button size="sm" className="w-full">Get Involved</Button>
         </div>

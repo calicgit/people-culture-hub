@@ -1,52 +1,34 @@
 import { motion } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import heroImg from "@/assets/hero-community.jpg";
+import heroImg from "@/assets/hero-hr.jpg";
 
 const HeroSection = () => (
-  <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+  <section className="relative min-h-[90vh] flex items-center pt-16 overflow-hidden">
     <div className="absolute inset-0">
-      <img src={heroImg} alt="Diverse community holding hands" className="w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-charcoal/60" />
+      <img src={heroImg} alt="HR professionals collaborating" className="w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/80 via-navy/70 to-navy-deep/40" />
     </div>
-
     <div className="container relative z-10 py-20">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-2xl"
-      >
-        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary-foreground text-sm font-medium mb-6">
-          Bridging People & Cultures
+      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="max-w-xl">
+        <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
+          Human Resources NGO
         </span>
-        <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-tight mb-6">
-          Empowering Communities Through{" "}
-          <span className="text-primary">Culture</span>
+        <h1 className="font-heading text-4xl md:text-6xl font-bold text-primary-foreground leading-tight mb-5">
+          People First, <span className="text-primary">Always</span>
         </h1>
-        <p className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-lg font-body">
-          We connect people across cultures, foster understanding, and build stronger communities through dialogue, education, and shared experiences.
+        <p className="text-lg text-primary-foreground/75 mb-8 font-body leading-relaxed">
+          We champion fair workplace practices, empower HR professionals, and advocate for employee rights across organizations worldwide.
         </p>
         <div className="flex flex-wrap gap-4">
-          <Button size="lg" className="text-base px-8">
-            Our Programs
-          </Button>
-          <Button size="lg" variant="outline" className="text-base px-8 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-            Donate Now
+          <Button size="lg" asChild><Link to="/sections">Our Sections <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+          <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" asChild>
+            <Link to="/meetup-invite">Organize a Meetup</Link>
           </Button>
         </div>
       </motion.div>
     </div>
-
-    <motion.a
-      href="#about"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 1.2 }}
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-primary-foreground/60 hover:text-primary-foreground transition-colors animate-bounce"
-    >
-      <ArrowDown size={28} />
-    </motion.a>
   </section>
 );
 
