@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      meetup_applications: {
+        Row: {
+          city_region: string
+          created_at: string
+          email: string
+          full_name: string
+          hr_role: string
+          id: string
+          motivation: string
+          organization: string | null
+          preferred_format: string | null
+          status: string
+        }
+        Insert: {
+          city_region: string
+          created_at?: string
+          email: string
+          full_name: string
+          hr_role: string
+          id?: string
+          motivation: string
+          organization?: string | null
+          preferred_format?: string | null
+          status?: string
+        }
+        Update: {
+          city_region?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          hr_role?: string
+          id?: string
+          motivation?: string
+          organization?: string | null
+          preferred_format?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
