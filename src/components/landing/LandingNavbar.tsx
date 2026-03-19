@@ -56,7 +56,7 @@ const LandingNavbar = () => {
       </div>
 
       {open && (
-        <div className="lg:hidden bg-card border-b border-border px-6 pb-4 space-y-3">
+        <div className="md:hidden bg-card border-b border-border px-6 pb-4 space-y-3">
           {navItems.map((item) => (
             <button
               key={item.id}
