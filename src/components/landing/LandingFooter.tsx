@@ -19,7 +19,7 @@ const LandingFooter = () => {
             </p>
           </div>
           <p className="text-primary-foreground/30 text-xs font-body">
-            © {new Date().getFullYear()} HR & Poslovanje Udruga. {t("Sva prava pridržana.", "All rights reserved.")}
+            © {new Date().getFullYear()} People & Culture HUB. {t("Sva prava pridržana.", "All rights reserved.")}
           </p>
         </div>
       </div>
