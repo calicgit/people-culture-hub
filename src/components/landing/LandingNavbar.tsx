@@ -3,6 +3,7 @@ import { Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.svg";
 
 const LandingNavbar = () => {
   const [open, setOpen] = useState(false);
@@ -24,8 +25,8 @@ const LandingNavbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-b border-border">
       <div className="container flex items-center justify-between h-16">
-        <button onClick={() => scrollTo("hero")} className="font-heading text-lg font-bold text-foreground">
-          People & Culture <span className="text-primary">HUB</span>
+        <button onClick={() => scrollTo("hero")} className="flex items-center gap-2">
+          <img src={logo} alt="People & Culture HUB" className="h-10 w-auto" />
         </button>
 
         <div className="hidden md:flex items-center gap-3">
