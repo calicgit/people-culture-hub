@@ -64,7 +64,7 @@ const CouncilLogin = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="vijeće@email.hr"
+                  placeholder="email@email.hr"
                   className="pl-10"
                 />
               </div>
