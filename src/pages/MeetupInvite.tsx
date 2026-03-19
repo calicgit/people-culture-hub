@@ -1,18 +1,50 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, MapPin, Users, CheckCircle2 } from "lucide-react";
+import { CalendarDays, MapPin, Users, CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import meetupImg from "@/assets/meetup-hero.jpg";
 
 const MeetupInvite = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      full_name: (formData.get("full_name") as string).trim(),
+      email: (formData.get("email") as string).trim(),
+      organization: (formData.get("organization") as string)?.trim() || null,
+      city_region: (formData.get("city_region") as string).trim(),
+      hr_role: (formData.get("hr_role") as string).trim(),
+      motivation: (formData.get("motivation") as string).trim(),
+      preferred_format: (formData.get("preferred_format") as string)?.trim() || null,
+    };
+
+    const { error } = await supabase.from("meetup_applications").insert(payload);
+
+    setLoading(false);
+
+    if (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSubmitted(true);
   };
 
@@ -81,36 +113,39 @@ const MeetupInvite = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name *</label>
-                      <Input required placeholder="Jane Doe" />
+                      <Input required name="full_name" placeholder="Jane Doe" />
                     </div>
                     <div>
                       <label className="text-sm font-medium text-foreground mb-1.5 block">Email *</label>
-                      <Input required type="email" placeholder="jane@company.com" />
+                      <Input required name="email" type="email" placeholder="jane@company.com" />
                     </div>
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-foreground mb-1.5 block">Organization</label>
-                      <Input placeholder="Your company or NGO" />
+                      <Input name="organization" placeholder="Your company or NGO" />
                     </div>
                     <div>
                       <label className="text-sm font-medium text-foreground mb-1.5 block">City / Region *</label>
-                      <Input required placeholder="e.g. Berlin, Germany" />
+                      <Input required name="city_region" placeholder="e.g. Berlin, Germany" />
                     </div>
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Your HR Role / Background *</label>
-                    <Input required placeholder="e.g. HR Director, People Ops Lead" />
+                    <Input required name="hr_role" placeholder="e.g. HR Director, People Ops Lead" />
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Why do you want to organize a meetup? *</label>
-                    <Textarea required rows={4} placeholder="Tell us about your motivation and what topics you'd like to cover..." />
+                    <Textarea required name="motivation" rows={4} placeholder="Tell us about your motivation and what topics you'd like to cover..." />
                   </div>
                   <div>
                     <label className="text-sm font-medium text-foreground mb-1.5 block">Preferred Format</label>
-                    <Input placeholder="e.g. Panel discussion, Workshop, Networking mixer" />
+                    <Input name="preferred_format" placeholder="e.g. Panel discussion, Workshop, Networking mixer" />
                   </div>
-                  <Button type="submit" size="lg" className="w-full">Submit Application</Button>
+                  <Button type="submit" size="lg" className="w-full" disabled={loading}>
+                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {loading ? "Submitting..." : "Submit Application"}
+                  </Button>
                 </form>
               )}
             </motion.div>
