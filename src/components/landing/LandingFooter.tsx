@@ -1,5 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import logo from "@/assets/logo.svg";
+import logoWhite from "@/assets/logo-white.svg";
 
 const LandingFooter = () => {
   const { t } = useLanguage();
