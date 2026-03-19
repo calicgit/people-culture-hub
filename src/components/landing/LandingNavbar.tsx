@@ -67,7 +67,7 @@ const LandingNavbar = () => {
             </button>
           ))}
           <Button size="sm" className="w-full" variant="outline" asChild>
-            <Link to="/council-login">{t("Vijeće Login", "Council Login")}</Link>
+            <Link to="/council-login">Login</Link>
           </Button>
           <button
             onClick={() => { setLang(lang === "hr" ? "en" : "hr"); setOpen(false); }}
