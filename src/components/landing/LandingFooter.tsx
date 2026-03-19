@@ -12,7 +12,6 @@ const LandingFooter = () => {
             <h3 className="font-heading text-lg font-bold text-primary-foreground flex items-center gap-2">
               <img src={logo} alt="People & Culture HUB" className="h-8 w-auto brightness-0 invert" />
             </h3>
-            </h3>
             <p className="text-primary-foreground/40 text-sm font-body mt-1">
               {t(
                 "Unapređujemo upravljanje ljudskim potencijalima u Hrvatskoj.",
