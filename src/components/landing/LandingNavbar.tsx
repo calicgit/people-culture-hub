@@ -3,6 +3,7 @@ import { Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.svg";
 
 const LandingNavbar = () => {
   const [open, setOpen] = useState(false);
