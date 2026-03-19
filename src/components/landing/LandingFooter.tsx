@@ -9,7 +9,7 @@ const LandingFooter = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h3 className="font-heading text-lg font-bold text-primary-foreground">
-              HR & Poslovanje <span className="text-primary">Udruga</span>
+              People & Culture <span className="text-primary">HUB</span>
             </h3>
             <p className="text-primary-foreground/40 text-sm font-body mt-1">
               {t(
@@ -19,7 +19,7 @@ const LandingFooter = () => {
             </p>
           </div>
           <p className="text-primary-foreground/30 text-xs font-body">
-            © {new Date().getFullYear()} HR & Poslovanje Udruga. {t("Sva prava pridržana.", "All rights reserved.")}
+            © {new Date().getFullYear()} People & Culture HUB. {t("Sva prava pridržana.", "All rights reserved.")}
           </p>
         </div>
       </div>
