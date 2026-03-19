@@ -5,7 +5,7 @@ const LandingFooter = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-navy-deep py-12">
+    <footer className="bg-navy-deep py-6">
       <div className="container">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
