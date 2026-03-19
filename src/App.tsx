@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Sections from "./pages/Sections";
 import Legal from "./pages/Legal";
 import MeetupInvite from "./pages/MeetupInvite";
+import Resources from "./pages/Resources";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/sections" element={<Sections />} />
+          <Route path="/resources" element={<Resources />} />
           <Route path="/legal" element={<Legal />} />
           <Route path="/meetup-invite" element={<MeetupInvite />} />
           <Route path="*" element={<NotFound />} />
