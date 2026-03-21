@@ -14,6 +14,99 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_events: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          ends_at: string
+          id: string
+          location: string | null
+          starts_at: string
+          title: string
+          updated_at: string
+          visibility_body:
+            | Database["public"]["Enums"]["association_body"]
+            | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          ends_at: string
+          id?: string
+          location?: string | null
+          starts_at: string
+          title: string
+          updated_at?: string
+          visibility_body?:
+            | Database["public"]["Enums"]["association_body"]
+            | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          ends_at?: string
+          id?: string
+          location?: string | null
+          starts_at?: string
+          title?: string
+          updated_at?: string
+          visibility_body?:
+            | Database["public"]["Enums"]["association_body"]
+            | null
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_name: string
+          file_path: string
+          file_size_bytes: number | null
+          id: string
+          mime_type: string | null
+          title: string
+          updated_at: string
+          uploaded_by: string
+          visibility_body:
+            | Database["public"]["Enums"]["association_body"]
+            | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_name: string
+          file_path: string
+          file_size_bytes?: number | null
+          id?: string
+          mime_type?: string | null
+          title: string
+          updated_at?: string
+          uploaded_by: string
+          visibility_body?:
+            | Database["public"]["Enums"]["association_body"]
+            | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_name?: string
+          file_path?: string
+          file_size_bytes?: number | null
+          id?: string
+          mime_type?: string | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string
+          visibility_body?:
+            | Database["public"]["Enums"]["association_body"]
+            | null
+        }
+        Relationships: []
+      }
       meetup_applications: {
         Row: {
           city_region: string
