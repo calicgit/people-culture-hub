@@ -10,6 +10,16 @@ import { useToast } from "@/hooks/use-toast";
 
 type SupportedAuthType = "recovery" | "invite";
 
+const getPasswordErrorMessage = (message: string) => {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("weak") || normalized.includes("easy to guess") || normalized.includes("known to be weak")) {
+    return "Lozinka je preslaba ili prelagana za pogoditi. Koristi barem 12 znakova, kombinaciju velikih i malih slova, broj i poseban znak te izbjegni ime, email i česte lozinke poput 123456 ili Password123.";
+  }
+
+  return message;
+};
+
 const ResetPassword = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -146,7 +156,7 @@ const ResetPassword = () => {
     if (error) {
       toast({
         title: "Promjena lozinke nije uspjela",
-        description: error.message,
+        description: getPasswordErrorMessage(error.message),
         variant: "destructive",
       });
       return;
@@ -199,6 +209,9 @@ const ResetPassword = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Najmanje 8 znakova"
                 />
+                <p className="text-xs text-muted-foreground">
+                  Preporuka: barem 12 znakova, veliko i malo slovo, broj i poseban znak.
+                </p>
               </div>
 
               <div className="space-y-1.5">
@@ -211,6 +224,10 @@ const ResetPassword = () => {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Ponovi novu lozinku"
                 />
+              </div>
+
+              <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+                Nemoj koristiti ime, prezime, email adresu ili česte lozinke poput <span className="font-medium text-foreground">123456</span>, <span className="font-medium text-foreground">Password123</span> ili slične jednostavne kombinacije.
               </div>
 
               <Button type="submit" className="w-full" disabled={saving}>
