@@ -44,7 +44,7 @@ const LandingNavbar = () => {
           <img
             src={scrolled ? logoDark : logoLight}
             alt="People & Culture HUB"
-            className="h-20 w-auto translate-y-4 transition-all duration-300"
+            className={`h-20 w-auto transition-all duration-300 ${scrolled ? "translate-y-0" : "translate-y-4"}`}
           />
         </button>
 
