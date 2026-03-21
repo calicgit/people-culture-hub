@@ -282,6 +282,12 @@ const PortalDashboard = () => {
     });
   }, [calendarEvents, selectedDate]);
 
+  const upcomingEvents = useMemo(() => {
+    const now = new Date();
+
+    return calendarEvents.filter((event) => new Date(event.ends_at) >= now);
+  }, [calendarEvents]);
+
   const memberSummary = useMemo(() => {
     const bodySet = new Set(memberships.map((membership) => membership.body));
     return bodyOptions.filter((option) => bodySet.has(option.value)).map((option) => option.label);
@@ -1102,7 +1108,7 @@ const PortalDashboard = () => {
               <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Kalendar sastanaka</CardTitle>
+                    <CardTitle>Kalendar događaja</CardTitle>
                     <CardDescription>Zajednički raspored sastanaka, sjednica i radionica.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1192,6 +1198,41 @@ const PortalDashboard = () => {
                   </CardContent>
                 </Card>
               </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Nadolazeći događaji</CardTitle>
+                  <CardDescription>Popis svih unesenih budućih događaja s datumom i vremenom.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {upcomingEvents.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+                      Trenutno nema nadolazećih događaja.
+                    </div>
+                  ) : (
+                    upcomingEvents.map((item) => (
+                      <div key={`upcoming-${item.id}`} className="flex flex-col gap-3 rounded-xl border border-border p-4 md:flex-row md:items-start md:justify-between">
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="font-semibold text-foreground">{item.title}</h3>
+                            <Badge variant="outline">
+                              {bodyOptions.find((option) => option.value === item.visibility_body)?.label ?? "Svi članovi"}
+                            </Badge>
+                          </div>
+                          {item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}
+                          {item.location && <p className="text-sm text-muted-foreground">Lokacija: {item.location}</p>}
+                        </div>
+                        <div className="shrink-0 text-sm text-muted-foreground md:text-right">
+                          <p>{format(new Date(item.starts_at), "dd.MM.yyyy.")}</p>
+                          <p>
+                            {format(new Date(item.starts_at), "HH:mm")} — {format(new Date(item.ends_at), "HH:mm")}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="members" className="space-y-6">
