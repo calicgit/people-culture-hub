@@ -1105,100 +1105,102 @@ const PortalDashboard = () => {
             </TabsContent>
 
             <TabsContent value="calendar" className="space-y-6">
-              <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Kalendar događaja</CardTitle>
-                    <CardDescription>Zajednički raspored sastanaka, sjednica i radionica.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Kalendar događaja</CardTitle>
+                  <CardDescription>Zajednički raspored sastanaka, sjednica i radionica.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr] xl:items-start">
                     <div className="rounded-xl border border-border">
                       <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} className="w-full" />
                     </div>
-                    <form onSubmit={handleEventSubmit} className="grid gap-4 rounded-xl border border-border bg-accent/40 p-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="event-title">Naslov događaja</Label>
-                        <Input id="event-title" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} required />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="event-description">Opis</Label>
-                        <Textarea id="event-description" value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} />
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="grid gap-2">
-                          <Label htmlFor="event-start">Početak</Label>
-                          <Input id="event-start" type="datetime-local" value={eventStartsAt} onChange={(e) => setEventStartsAt(e.target.value)} required />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="event-end">Završetak</Label>
-                          <Input id="event-end" type="datetime-local" value={eventEndsAt} onChange={(e) => setEventEndsAt(e.target.value)} required />
-                        </div>
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="grid gap-2">
-                          <Label htmlFor="event-location">Lokacija</Label>
-                          <Input id="event-location" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} placeholder="Online / ured / dvorana" />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label>Vidljivost</Label>
-                          <Select value={eventVisibility} onValueChange={setEventVisibility}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Odaberi vidljivost" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value={allMembersValue}>Svi prijavljeni članovi</SelectItem>
-                              {bodyOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <Button type="submit" disabled={savingEvent}>
-                        {savingEvent ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                        {savingEvent ? "Spremam događaj..." : "Dodaj događaj"}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Nadolazeći događaji</CardTitle>
-                    <CardDescription>Popis svih unesenih budućih događaja s datumom i vremenom.</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {upcomingEvents.length === 0 ? (
-                      <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-                        Trenutno nema nadolazećih događaja.
+                    <div className="rounded-xl border border-border p-4">
+                      <div className="mb-4">
+                        <h3 className="font-semibold text-foreground">Nadolazeći događaji</h3>
+                        <p className="text-sm text-muted-foreground">Popis svih unesenih budućih događaja s datumom i vremenom.</p>
                       </div>
-                    ) : (
-                      upcomingEvents.map((item) => (
-                        <div key={`upcoming-${item.id}`} className="flex flex-col gap-3 rounded-xl border border-border p-4 md:flex-row md:items-start md:justify-between">
-                          <div className="space-y-2">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <h3 className="font-semibold text-foreground">{item.title}</h3>
-                              <Badge variant="outline">
-                                {bodyOptions.find((option) => option.value === item.visibility_body)?.label ?? "Svi članovi"}
-                              </Badge>
+
+                      <div className="space-y-3">
+                        {upcomingEvents.length === 0 ? (
+                          <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+                            Trenutno nema nadolazećih događaja.
+                          </div>
+                        ) : (
+                          upcomingEvents.map((item) => (
+                            <div key={`upcoming-${item.id}`} className="flex flex-col gap-3 rounded-xl border border-border p-4 md:flex-row md:items-start md:justify-between">
+                              <div className="space-y-2">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h3 className="font-semibold text-foreground">{item.title}</h3>
+                                  <Badge variant="outline">
+                                    {bodyOptions.find((option) => option.value === item.visibility_body)?.label ?? "Svi članovi"}
+                                  </Badge>
+                                </div>
+                                {item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}
+                                {item.location && <p className="text-sm text-muted-foreground">Lokacija: {item.location}</p>}
+                              </div>
+                              <div className="shrink-0 text-sm text-muted-foreground md:text-right">
+                                <p>{format(new Date(item.starts_at), "dd.MM.yyyy.")}</p>
+                                <p>
+                                  {format(new Date(item.starts_at), "HH:mm")} — {format(new Date(item.ends_at), "HH:mm")}
+                                </p>
+                              </div>
                             </div>
-                            {item.description && <p className="text-sm text-muted-foreground">{item.description}</p>}
-                            {item.location && <p className="text-sm text-muted-foreground">Lokacija: {item.location}</p>}
-                          </div>
-                          <div className="shrink-0 text-sm text-muted-foreground md:text-right">
-                            <p>{format(new Date(item.starts_at), "dd.MM.yyyy.")}</p>
-                            <p>
-                              {format(new Date(item.starts_at), "HH:mm")} — {format(new Date(item.ends_at), "HH:mm")}
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleEventSubmit} className="grid gap-4 rounded-xl border border-border bg-accent/40 p-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="event-title">Naslov događaja</Label>
+                      <Input id="event-title" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} required />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="event-description">Opis</Label>
+                      <Textarea id="event-description" value={eventDescription} onChange={(e) => setEventDescription(e.target.value)} />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="grid gap-2">
+                        <Label htmlFor="event-start">Početak</Label>
+                        <Input id="event-start" type="datetime-local" value={eventStartsAt} onChange={(e) => setEventStartsAt(e.target.value)} required />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="event-end">Završetak</Label>
+                        <Input id="event-end" type="datetime-local" value={eventEndsAt} onChange={(e) => setEventEndsAt(e.target.value)} required />
+                      </div>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="grid gap-2">
+                        <Label htmlFor="event-location">Lokacija</Label>
+                        <Input id="event-location" value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} placeholder="Online / ured / dvorana" />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label>Vidljivost</Label>
+                        <Select value={eventVisibility} onValueChange={setEventVisibility}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Odaberi vidljivost" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value={allMembersValue}>Svi prijavljeni članovi</SelectItem>
+                            {bodyOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Button type="submit" disabled={savingEvent}>
+                      {savingEvent ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                      {savingEvent ? "Spremam događaj..." : "Dodaj događaj"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
 
               <Card>
                 <CardHeader>
