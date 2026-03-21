@@ -7,7 +7,7 @@ const corsHeaders = {
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-const publishableKey = Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
+const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "";
 
 const allowedRoles = new Set(["master_admin", "member"]);
 const allowedBodies = new Set([
@@ -29,7 +29,11 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Missing authorization header." }, { status: 401, headers: corsHeaders });
     }
 
-    const userClient = createClient(supabaseUrl, publishableKey, {
+    if (!supabaseUrl || !serviceRoleKey || !anonKey) {
+      return Response.json({ error: "Missing server configuration." }, { status: 500, headers: corsHeaders });
+    }
+
+    const userClient = createClient(supabaseUrl, anonKey, {
       auth: { autoRefreshToken: false, persistSession: false },
       global: { headers: { Authorization: authorization } },
     });
