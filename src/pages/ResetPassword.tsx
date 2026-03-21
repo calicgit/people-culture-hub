@@ -14,15 +14,52 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
-  const [isRecoveryLink, setIsRecoveryLink] = useState(false);
-  const [isInviteLink, setIsInviteLink] = useState(false);
+  const [hasValidResetLink, setHasValidResetLink] = useState(false);
+  const [isCheckingLink, setIsCheckingLink] = useState(true);
 
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-    const authType = hashParams.get("type");
-    const hasAccessToken = Boolean(hashParams.get("access_token"));
-    setIsRecoveryLink(authType === "recovery" && hasAccessToken);
-    setIsInviteLink(authType === "invite" && hasAccessToken);
+    let isMounted = true;
+
+    const resolveResetLink = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const searchParams = new URLSearchParams(window.location.search);
+      const authType = hashParams.get("type") ?? searchParams.get("type");
+      const hasAccessToken = Boolean(hashParams.get("access_token") ?? searchParams.get("access_token"));
+      const authCode = searchParams.get("code");
+
+      if ((authType === "recovery" || authType === "invite") && hasAccessToken) {
+        if (isMounted) {
+          setHasValidResetLink(true);
+          setIsCheckingLink(false);
+        }
+        return;
+      }
+
+      if (authCode) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
+
+        if (!error && data.session) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+
+          if (isMounted) {
+            setHasValidResetLink(true);
+            setIsCheckingLink(false);
+          }
+          return;
+        }
+      }
+
+      if (isMounted) {
+        setHasValidResetLink(false);
+        setIsCheckingLink(false);
+      }
+    };
+
+    void resolveResetLink();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const passwordsMatch = useMemo(() => password === confirmPassword, [confirmPassword, password]);
@@ -88,7 +125,11 @@ const ResetPassword = () => {
             <h1 className="font-heading text-2xl font-bold text-foreground">Postavi novu lozinku</h1>
           </div>
 
-          {!isRecoveryLink && !isInviteLink ? (
+          {isCheckingLink ? (
+            <div className="rounded-lg border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+              Provjeravam poveznicu za postavljanje lozinke...
+            </div>
+          ) : !hasValidResetLink ? (
             <div className="rounded-lg border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
               Poveznica za postavljanje lozinke nije valjana ili je istekla. Zatraži novu poveznicu na stranici prijave.
             </div>
