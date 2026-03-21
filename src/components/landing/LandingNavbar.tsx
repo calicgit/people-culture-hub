@@ -39,7 +39,7 @@ const LandingNavbar = () => {
         scrolled ? "bg-card/95 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="container flex items-center justify-between h-16">
+      <div className={`container flex items-center justify-between transition-all duration-300 ${scrolled ? "h-24" : "h-16"}`}>
         <button onClick={() => scrollTo("hero")} className="flex items-center gap-2">
           <img
             src={scrolled ? logoDark : logoLight}
