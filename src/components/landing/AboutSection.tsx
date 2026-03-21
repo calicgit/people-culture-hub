@@ -25,7 +25,7 @@ const AboutSection = () => {
               {t("Tko smo", "About Us")}
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2 mb-6">
-              {t("Udruga za ljude i organizacijsku kulturu", "Association for People and Organizational Culture")}
+              {t("Udruga za ljude i organizacijsku kulturu.", "Association for People and Organizational Culture.")}
             </h2>
             <div className="space-y-4 text-muted-foreground font-body leading-relaxed">
               <p>
