@@ -64,17 +64,17 @@ Deno.serve(async (req) => {
 
     const body = await req.json();
     const email = String(body.email ?? "").trim().toLowerCase();
-    const password = String(body.password ?? "");
     const fullName = String(body.fullName ?? "").trim();
     const title = body.title ? String(body.title).trim() : null;
     const membershipStatus = String(body.membershipStatus ?? "active").trim() || "active";
     const isActive = body.isActive !== false;
     const role = String(body.role ?? "member").trim();
+    const redirectTo = body.redirectTo ? String(body.redirectTo).trim() : "";
     const bodies = Array.isArray(body.bodies)
       ? Array.from(new Set(body.bodies.map((item: unknown) => String(item))))
       : [];
 
-    if (email.length < 5 || !email.includes("@") || password.length < 8 || fullName.length < 2) {
+    if (email.length < 5 || !email.includes("@") || fullName.length < 2 || !redirectTo.startsWith("http")) {
       return Response.json({ error: "Invalid payload." }, { status: 400, headers: corsHeaders });
     }
 
@@ -86,17 +86,15 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Invalid body membership." }, { status: 400, headers: corsHeaders });
     }
 
-    const { data: createdUserData, error: createUserError } = await adminClient.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-      user_metadata: {
+    const { data: createdUserData, error: createUserError } = await adminClient.auth.admin.inviteUserByEmail(email, {
+      redirectTo,
+      data: {
         full_name: fullName,
       },
     });
 
     if (createUserError || !createdUserData.user) {
-      return Response.json({ error: createUserError?.message ?? "User creation failed." }, { status: 400, headers: corsHeaders });
+      return Response.json({ error: createUserError?.message ?? "User invitation failed." }, { status: 400, headers: corsHeaders });
     }
 
     const newUserId = createdUserData.user.id;
@@ -142,7 +140,7 @@ Deno.serve(async (req) => {
     return Response.json(
       {
         userId: newUserId,
-        message: "Korisnik je kreiran i može se prijaviti s privremenom lozinkom.",
+        message: "Pozivnica je poslana emailom i korisnik može sam postaviti lozinku.",
       },
       { status: 200, headers: corsHeaders },
     );

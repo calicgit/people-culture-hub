@@ -177,7 +177,6 @@ const PortalDashboard = () => {
   const [adminEmail, setAdminEmail] = useState("");
   const [adminFullName, setAdminFullName] = useState("");
   const [adminTitle, setAdminTitle] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
   const [adminRole, setAdminRole] = useState<Enums<"app_role">>("member");
   const [adminMembershipStatus, setAdminMembershipStatus] = useState("active");
   const [adminBodies, setAdminBodies] = useState<Enums<"association_body">[]>([]);
@@ -657,13 +656,13 @@ const PortalDashboard = () => {
       const { data, error } = await supabase.functions.invoke("admin-create-user", {
         body: {
           email: adminEmail.trim(),
-          password: adminPassword,
           fullName: adminFullName.trim(),
           title: adminTitle.trim() || null,
           membershipStatus: adminMembershipStatus,
           isActive: adminActive,
           role: adminRole,
           bodies: adminBodies,
+          redirectTo: `${window.location.origin}/reset-password`,
         },
       });
 
@@ -672,7 +671,6 @@ const PortalDashboard = () => {
       setAdminEmail("");
       setAdminFullName("");
       setAdminTitle("");
-      setAdminPassword("");
       setAdminRole("member");
       setAdminMembershipStatus("active");
       setAdminBodies([]);
@@ -681,7 +679,7 @@ const PortalDashboard = () => {
 
       toast({
         title: "Korisnik je kreiran",
-        description: data?.message ?? "Račun je spreman s privremenom lozinkom.",
+        description: data?.message ?? "Korisnik će emailom dobiti link za postavljanje lozinke.",
       });
     } catch (error) {
       const description = error instanceof Error ? error.message : "Pokušaj ponovno.";
@@ -1243,15 +1241,9 @@ const PortalDashboard = () => {
                           </div>
                         </div>
 
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="grid gap-2">
-                            <Label htmlFor="admin-title">Funkcija</Label>
-                            <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="admin-password">Privremena lozinka</Label>
-                            <Input id="admin-password" type="password" value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)} minLength={8} required />
-                          </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="admin-title">Funkcija</Label>
+                          <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
@@ -1317,16 +1309,16 @@ const PortalDashboard = () => {
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm text-muted-foreground">
                       <div className="rounded-xl border border-border p-4">
-                        <p className="font-medium text-foreground mb-1">1. Kreiraš korisnika</p>
-                        <p>Unosiš email, privremenu lozinku, vijeće i status članstva.</p>
+                          <p className="font-medium text-foreground mb-1">1. Kreiraš korisnika</p>
+                          <p>Unosiš email, funkciju, vijeće i status članstva.</p>
                       </div>
                       <div className="rounded-xl border border-border p-4">
                         <p className="font-medium text-foreground mb-1">2. Sustav dodjeljuje pristup</p>
                         <p>Profil, uloga i Users & Access zapisi kreiraju se u jednom koraku.</p>
                       </div>
                       <div className="rounded-xl border border-border p-4">
-                        <p className="font-medium text-foreground mb-1">3. Korisnik ulazi u portal</p>
-                        <p>Prijava se vrši emailom i privremenom lozinkom, a pristup dokumentima ovisi o vijeću.</p>
+                          <p className="font-medium text-foreground mb-1">3. Korisnik ulazi u portal</p>
+                          <p>Korisnik prima email pozivnicu, sam postavlja lozinku i zatim se prijavljuje u portal.</p>
                       </div>
                     </CardContent>
                   </Card>
