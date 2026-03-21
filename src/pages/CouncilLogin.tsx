@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Lock, Mail, ArrowLeft } from "lucide-react";
+import { Lock, Mail, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,11 +8,18 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Checkbox } from "@/components/ui/checkbox";
+import { getRememberLoginDefault, persistLoginPreference } from "@/lib/auth-persistence";
 
 const CouncilLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberLogin, setRememberLogin] = useState(getRememberLoginDefault);
+  const [recoveryEmail, setRecoveryEmail] = useState("");
+  const [showRecovery, setShowRecovery] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [recoveryLoading, setRecoveryLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { session, loading: authLoading } = useAuth();
@@ -33,9 +40,48 @@ const CouncilLogin = () => {
         variant: "destructive",
       });
     } else {
+      persistLoginPreference(rememberLogin);
       toast({ title: "Uspješna prijava!", description: "Dobrodošli u interni portal udruge." });
       navigate("/portal", { replace: true });
     }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const targetEmail = recoveryEmail.trim() || email.trim();
+
+    if (!targetEmail) {
+      toast({
+        title: "Upiši email adresu",
+        description: "Potrebna je email adresa za slanje poveznice za obnovu lozinke.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setRecoveryLoading(true);
+
+    const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    setRecoveryLoading(false);
+
+    if (error) {
+      toast({
+        title: "Slanje nije uspjelo",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Poveznica je poslana",
+      description: "Provjeri email i otvori poveznicu za postavljanje nove lozinke.",
+    });
+    setShowRecovery(false);
   };
 
   return (
@@ -83,15 +129,69 @@ const CouncilLogin = () => {
                 <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="pl-10"
+                  className="pl-10 pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((current) => !current)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
+                  aria-label={showPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
               </div>
             </div>
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <label htmlFor="remember-login" className="flex items-center gap-2 text-muted-foreground cursor-pointer">
+                <Checkbox
+                  id="remember-login"
+                  checked={rememberLogin}
+                  onCheckedChange={(checked) => setRememberLogin(checked === true)}
+                />
+                <span>Zapamti prijavu</span>
+              </label>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setRecoveryEmail(email);
+                  setShowRecovery((current) => !current);
+                }}
+                className="font-medium text-primary transition-opacity hover:opacity-80"
+              >
+                Zaboravljena lozinka?
+              </button>
+            </div>
+
+            {showRecovery && (
+              <div className="rounded-lg border border-border bg-muted/40 p-4 space-y-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-foreground">Obnova lozinke</p>
+                  <p className="text-xs text-muted-foreground">Poslat ćemo ti poveznicu za postavljanje nove lozinke.</p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="recovery-email">Email adresa</Label>
+                  <Input
+                    id="recovery-email"
+                    type="email"
+                    value={recoveryEmail}
+                    onChange={(e) => setRecoveryEmail(e.target.value)}
+                    placeholder="prijava@email.hr"
+                  />
+                </div>
+
+                <Button type="button" variant="outline" className="w-full" onClick={handlePasswordReset} disabled={recoveryLoading}>
+                  {recoveryLoading ? "Slanje..." : "Pošalji poveznicu za obnovu"}
+                </Button>
+              </div>
+            )}
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Prijavljivanje..." : "Prijavi se"}
             </Button>

@@ -9,6 +9,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import CouncilLogin from "./pages/CouncilLogin";
 import PortalDashboard from "./pages/PortalDashboard";
+import ResetPassword from "./pages/ResetPassword";
 import Sections from "./pages/Sections";
 import Legal from "./pages/Legal";
 import MeetupInvite from "./pages/MeetupInvite";
@@ -28,6 +29,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/council-login" element={<CouncilLogin />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/portal" element={<PortalDashboard />} />
               </Route>
