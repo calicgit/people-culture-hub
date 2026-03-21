@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+type SupportedAuthType = "recovery" | "invite";
+
 const ResetPassword = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -20,39 +22,78 @@ const ResetPassword = () => {
   useEffect(() => {
     let isMounted = true;
 
+    const setValidState = () => {
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      if (isMounted) {
+        setHasValidResetLink(true);
+        setIsCheckingLink(false);
+      }
+    };
+
+    const setInvalidState = () => {
+      if (isMounted) {
+        setHasValidResetLink(false);
+        setIsCheckingLink(false);
+      }
+    };
+
     const resolveResetLink = async () => {
       const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
       const searchParams = new URLSearchParams(window.location.search);
-      const authType = hashParams.get("type") ?? searchParams.get("type");
-      const hasAccessToken = Boolean(hashParams.get("access_token") ?? searchParams.get("access_token"));
-      const authCode = searchParams.get("code");
 
-      if ((authType === "recovery" || authType === "invite") && hasAccessToken) {
-        if (isMounted) {
-          setHasValidResetLink(true);
-          setIsCheckingLink(false);
+      const authTypeValue = hashParams.get("type") ?? searchParams.get("type");
+      const authType: SupportedAuthType | null =
+        authTypeValue === "invite" || authTypeValue === "recovery" ? authTypeValue : null;
+
+      const accessToken = hashParams.get("access_token") ?? searchParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token") ?? searchParams.get("refresh_token");
+      const authCode = searchParams.get("code");
+      const tokenHash = searchParams.get("token_hash");
+
+      if (accessToken && refreshToken) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        if (!error && data.session) {
+          setValidState();
+          return;
         }
-        return;
+      }
+
+      if (tokenHash && authType) {
+        const { data, error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: authType,
+        });
+
+        if (!error && data.session) {
+          setValidState();
+          return;
+        }
       }
 
       if (authCode) {
         const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
 
         if (!error && data.session) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-
-          if (isMounted) {
-            setHasValidResetLink(true);
-            setIsCheckingLink(false);
-          }
+          setValidState();
           return;
         }
       }
 
-      if (isMounted) {
-        setHasValidResetLink(false);
-        setIsCheckingLink(false);
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        setValidState();
+        return;
       }
+
+      setInvalidState();
     };
 
     void resolveResetLink();
@@ -80,6 +121,19 @@ const ResetPassword = () => {
       toast({
         title: "Lozinke se ne podudaraju",
         description: "Upiši istu novu lozinku u oba polja.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      toast({
+        title: "Sesija je istekla",
+        description: "Otvori ponovno poveznicu iz emaila i pokušaj opet.",
         variant: "destructive",
       });
       return;
