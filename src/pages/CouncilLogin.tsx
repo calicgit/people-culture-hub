@@ -4,15 +4,22 @@ import { Lock, Mail, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CouncilLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { session, loading: authLoading } = useAuth();
+
+  if (!authLoading && session) {
+    return <Navigate to="/portal" replace />;
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +33,8 @@ const CouncilLogin = () => {
         variant: "destructive",
       });
     } else {
-      toast({ title: "Uspješna prijava!", description: "Dobrodošli u portal savjetodavnog vijeća." });
+      toast({ title: "Uspješna prijava!", description: "Dobrodošli u interni portal udruge." });
+      navigate("/portal", { replace: true });
     }
   };
 
