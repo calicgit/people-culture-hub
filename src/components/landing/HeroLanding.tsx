@@ -20,8 +20,8 @@ const HeroLanding = () => {
           transition={{ duration: 0.8 }}
           className="max-w-2xl"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
-            {t("Udruga za ljudske potencijale i poslovanje", "HR & Business Association")}
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
+              {t("Udruga za ljude i organizacijsku kulturu", "Association for People and Organizational Culture")}
           </span>
           <h1 className="font-heading text-4xl md:text-6xl font-bold text-primary-foreground leading-tight mb-6">
             {t("Povezujemo ljude,", "Connecting people,")}
@@ -44,7 +44,7 @@ const HeroLanding = () => {
             <Button
               size="lg"
               variant="outline"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+              className="border-primary bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
               onClick={() => document.getElementById("o-nama")?.scrollIntoView({ behavior: "smooth" })}
             >
               {t("Saznaj više", "Learn More")}
