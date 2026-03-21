@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
+import { z } from "zod";
 import {
   CalendarDays,
   Download,
+  Edit3,
   FileText,
   History,
   Loader2,
@@ -33,6 +35,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,8 +100,13 @@ type DocumentCommentRecord = {
 type DirectoryRole = Tables<"user_roles">;
 type DirectoryProfile = Tables<"profiles">;
 type DirectoryMembership = Tables<"user_body_memberships">;
+type DirectoryRow = DirectoryProfile & {
+  bodies: Enums<"association_body">[];
+  roles: Enums<"app_role">[];
+};
 
 const allMembersValue = "all-members";
+const associationBodyValues = ["association_member", "upravno_vijece", "savjetodavno_vijece", "znanstveno_vijece"] as const;
 
 const bodyOptions: { value: Enums<"association_body">; label: string }[] = [
   { value: "association_member", label: "Član Udruge" },
@@ -113,10 +127,21 @@ const formatFileSize = (size: number | null) => {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 };
 
+const editUserSchema = z.object({
+  userId: z.string().uuid(),
+  fullName: z.string().trim().min(2, "Ime i prezime moraju imati barem 2 znaka.").max(120, "Ime i prezime mogu imati najviše 120 znakova."),
+  email: z.string().trim().email("Unesi valjani email.").max(255, "Email može imati najviše 255 znakova."),
+  title: z.string().trim().max(120, "Funkcija može imati najviše 120 znakova."),
+  membershipStatus: z.string().trim().min(2, "Status članstva je obavezan.").max(40, "Status članstva može imati najviše 40 znakova."),
+  role: z.enum(["master_admin", "member"]),
+  bodies: z.array(z.enum(associationBodyValues)),
+  isActive: z.boolean(),
+});
+
 const PortalDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, profile, memberships, isMasterAdmin, signOut } = useAuth();
+  const { user, profile, memberships, isMasterAdmin, refreshAccessData, signOut } = useAuth();
 
   const [portalLoading, setPortalLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -158,6 +183,18 @@ const PortalDashboard = () => {
   const [adminBodies, setAdminBodies] = useState<Enums<"association_body">[]>([]);
   const [adminActive, setAdminActive] = useState(true);
   const [creatingUser, setCreatingUser] = useState(false);
+  const [editingMember, setEditingMember] = useState<DirectoryRow | null>(null);
+  const [editUserForm, setEditUserForm] = useState<z.infer<typeof editUserSchema>>({
+    userId: "00000000-0000-0000-0000-000000000000",
+    fullName: "",
+    email: "",
+    title: "",
+    membershipStatus: "active",
+    role: "member",
+    bodies: [],
+    isActive: true,
+  });
+  const [savingUserChanges, setSavingUserChanges] = useState(false);
 
   const loadPortalData = async () => {
     if (!user) return;
@@ -222,7 +259,7 @@ const PortalDashboard = () => {
       ...item,
       bodies: membershipMap.get(item.user_id) ?? [],
       roles: roleMap.get(item.user_id) ?? [],
-    }));
+    })) as DirectoryRow[];
   }, [directoryMemberships, directoryProfiles, directoryRoles]);
 
   const selectedDayEvents = useMemo(() => {
@@ -586,6 +623,31 @@ const PortalDashboard = () => {
     );
   };
 
+  const openEditUserDialog = (member: DirectoryRow) => {
+    setEditingMember(member);
+    setEditUserForm({
+      userId: member.user_id,
+      fullName: member.full_name,
+      email: member.email,
+      title: member.title ?? "",
+      membershipStatus: member.membership_status,
+      role: member.roles[0] ?? "member",
+      bodies: member.bodies,
+      isActive: member.is_active,
+    });
+  };
+
+  const closeEditUserDialog = () => {
+    setEditingMember(null);
+  };
+
+  const toggleEditBody = (body: Enums<"association_body">, checked: boolean) => {
+    setEditUserForm((current) => ({
+      ...current,
+      bodies: checked ? Array.from(new Set([...current.bodies, body])) : current.bodies.filter((item) => item !== body),
+    }));
+  };
+
   const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -626,6 +688,53 @@ const PortalDashboard = () => {
       toast({ title: "Kreiranje korisnika nije uspjelo", description, variant: "destructive" });
     } finally {
       setCreatingUser(false);
+    }
+  };
+
+  const handleSaveUserChanges = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const parsed = editUserSchema.safeParse(editUserForm);
+
+    if (!parsed.success) {
+      toast({
+        title: "Provjeri podatke korisnika",
+        description: parsed.error.issues[0]?.message ?? "Uneseni podaci nisu valjani.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSavingUserChanges(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-update-user", {
+        body: {
+          userId: parsed.data.userId,
+          fullName: parsed.data.fullName,
+          email: parsed.data.email,
+          title: parsed.data.title.trim() || null,
+          membershipStatus: parsed.data.membershipStatus,
+          role: parsed.data.role,
+          bodies: parsed.data.bodies,
+          isActive: parsed.data.isActive,
+        },
+      });
+
+      if (error) throw error;
+
+      if (parsed.data.userId === user?.id) {
+        await refreshAccessData();
+      }
+
+      await loadPortalData();
+      closeEditUserDialog();
+      toast({ title: "Korisnik je ažuriran", description: data?.message ?? "Promjene su spremljene." });
+    } catch (error) {
+      const description = error instanceof Error ? error.message : "Pokušaj ponovno.";
+      toast({ title: "Spremanje izmjena nije uspjelo", description, variant: "destructive" });
+    } finally {
+      setSavingUserChanges(false);
     }
   };
 
@@ -1061,6 +1170,7 @@ const PortalDashboard = () => {
                         <TableHead>Status</TableHead>
                         <TableHead>Vijeća / članstvo</TableHead>
                         {isMasterAdmin && <TableHead>Uloga</TableHead>}
+                        {isMasterAdmin && <TableHead className="text-right">Akcije</TableHead>}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -1094,6 +1204,14 @@ const PortalDashboard = () => {
                                   <span className="text-muted-foreground">—</span>
                                 )}
                               </div>
+                            </TableCell>
+                          )}
+                          {isMasterAdmin && (
+                            <TableCell className="text-right">
+                              <Button variant="outline" size="sm" onClick={() => openEditUserDialog(member)}>
+                                <Edit3 className="h-4 w-4" />
+                                Uredi
+                              </Button>
                             </TableCell>
                           )}
                         </TableRow>
@@ -1217,6 +1335,118 @@ const PortalDashboard = () => {
             )}
           </Tabs>
         )}
+
+        <Dialog open={Boolean(editingMember)} onOpenChange={(open) => !open && closeEditUserDialog()}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Uredi korisnika</DialogTitle>
+              <DialogDescription>Master Admin može ažurirati profil, ulogu, status i pripadnost vijećima.</DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleSaveUserChanges} className="grid gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-full-name">Ime i prezime</Label>
+                  <Input
+                    id="edit-full-name"
+                    value={editUserForm.fullName}
+                    onChange={(e) => setEditUserForm((current) => ({ ...current, fullName: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-email">Email</Label>
+                  <Input
+                    id="edit-email"
+                    type="email"
+                    value={editUserForm.email}
+                    onChange={(e) => setEditUserForm((current) => ({ ...current, email: e.target.value }))}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-title">Funkcija</Label>
+                  <Input
+                    id="edit-title"
+                    value={editUserForm.title}
+                    onChange={(e) => setEditUserForm((current) => ({ ...current, title: e.target.value }))}
+                    placeholder="npr. član vijeća / predsjednik"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Status članstva</Label>
+                  <Select
+                    value={editUserForm.membershipStatus}
+                    onValueChange={(value) => setEditUserForm((current) => ({ ...current, membershipStatus: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">active</SelectItem>
+                      <SelectItem value="inactive">inactive</SelectItem>
+                      <SelectItem value="pending">pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label>Uloga</Label>
+                  <Select
+                    value={editUserForm.role}
+                    onValueChange={(value) => setEditUserForm((current) => ({ ...current, role: value as Enums<"app_role"> }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="member">Member</SelectItem>
+                      <SelectItem value="master_admin">Master Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <label className="flex items-center gap-3 rounded-xl border border-border bg-accent/30 px-4 py-3 text-sm text-foreground md:mt-7">
+                  <Checkbox
+                    checked={editUserForm.isActive}
+                    onCheckedChange={(checked) => setEditUserForm((current) => ({ ...current, isActive: checked === true }))}
+                  />
+                  Profil je aktivan
+                </label>
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Dodjela vijeća i članstva</Label>
+                <div className="grid gap-3 rounded-xl border border-border bg-accent/30 p-4 md:grid-cols-2">
+                  {bodyOptions.map((option) => (
+                    <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
+                      <Checkbox
+                        checked={editUserForm.bodies.includes(option.value)}
+                        onCheckedChange={(checked) => toggleEditBody(option.value, checked === true)}
+                      />
+                      {option.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col-reverse gap-3 pt-2 md:flex-row md:justify-end">
+                <Button type="button" variant="outline" onClick={closeEditUserDialog}>
+                  Odustani
+                </Button>
+                <Button type="submit" disabled={savingUserChanges}>
+                  {savingUserChanges ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
+                  {savingUserChanges ? "Spremam izmjene..." : "Spremi izmjene"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
