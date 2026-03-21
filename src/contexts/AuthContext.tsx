@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums, Tables } from "@/integrations/supabase/types";
+import { clearLoginPersistence, shouldDropPersistedSession } from "@/lib/auth-persistence";
 
 type Profile = Tables<"profiles"> | null;
 type UserRole = Tables<"user_roles">;
@@ -54,6 +55,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let active = true;
 
+    if (shouldDropPersistedSession()) {
+      void supabase.auth.signOut();
+      clearLoginPersistence();
+    }
+
     const syncSession = async (nextSession: Session | null) => {
       if (!active) return;
 
@@ -98,6 +104,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    clearLoginPersistence();
     clearAuthState();
   };
 
