@@ -3,7 +3,8 @@ import { Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo-horizons-black.svg";
+import logoDark from "@/assets/logo-horizons-black.svg";
+import logoLight from "@/assets/logo-horizons-white.svg";
 
 const LandingNavbar = () => {
   const [open, setOpen] = useState(false);
@@ -41,9 +42,9 @@ const LandingNavbar = () => {
       <div className="container flex items-center justify-between h-16">
         <button onClick={() => scrollTo("hero")} className="flex items-center gap-2">
           <img
-            src={logo}
+            src={scrolled ? logoDark : logoLight}
             alt="People & Culture HUB"
-            className={`w-auto transition-all duration-300 ${scrolled ? "h-20" : "h-20 brightness-0 invert"}`}
+            className="h-20 w-auto transition-all duration-300"
           />
         </button>
 
