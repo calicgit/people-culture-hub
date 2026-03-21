@@ -4,9 +4,12 @@ import {
   CalendarDays,
   Download,
   FileText,
+  History,
   Loader2,
   LogOut,
+  MessageSquareText,
   Plus,
+  SendHorizontal,
   Shield,
   Trash2,
   Upload,
@@ -62,6 +65,29 @@ type CalendarEventRecord = {
   updated_at: string;
 };
 
+type DocumentVersionRecord = {
+  id: string;
+  document_id: string;
+  version_number: number;
+  title: string;
+  description: string | null;
+  file_path: string;
+  file_name: string;
+  file_size_bytes: number | null;
+  mime_type: string | null;
+  created_by: string;
+  created_at: string;
+};
+
+type DocumentCommentRecord = {
+  id: string;
+  document_id: string;
+  author_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+};
+
 type DirectoryRole = Tables<"user_roles">;
 type DirectoryProfile = Tables<"profiles">;
 type DirectoryMembership = Tables<"user_body_memberships">;
@@ -96,6 +122,8 @@ const PortalDashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
+  const [documentVersions, setDocumentVersions] = useState<DocumentVersionRecord[]>([]);
+  const [documentComments, setDocumentComments] = useState<DocumentCommentRecord[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEventRecord[]>([]);
   const [directoryProfiles, setDirectoryProfiles] = useState<DirectoryProfile[]>([]);
   const [directoryMemberships, setDirectoryMemberships] = useState<DirectoryMembership[]>([]);
@@ -106,6 +134,12 @@ const PortalDashboard = () => {
   const [documentVisibility, setDocumentVisibility] = useState<string>(allMembersValue);
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [uploadingDocument, setUploadingDocument] = useState(false);
+  const [expandedDocumentId, setExpandedDocumentId] = useState<string | null>(null);
+  const [versionNotes, setVersionNotes] = useState<Record<string, string>>({});
+  const [versionFiles, setVersionFiles] = useState<Record<string, File | null>>({});
+  const [uploadingVersionFor, setUploadingVersionFor] = useState<string | null>(null);
+  const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
+  const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
 
   const [eventTitle, setEventTitle] = useState("");
   const [eventDescription, setEventDescription] = useState("");
@@ -131,8 +165,10 @@ const PortalDashboard = () => {
     setPortalLoading(true);
 
     try {
-      const [documentsResult, eventsResult, profilesResult, membershipsResult, rolesResult] = await Promise.all([
+      const [documentsResult, versionsResult, commentsResult, eventsResult, profilesResult, membershipsResult, rolesResult] = await Promise.all([
         supabase.from("documents" as never).select("*").order("created_at", { ascending: false }),
+        supabase.from("document_versions" as never).select("*").order("version_number", { ascending: false }),
+        supabase.from("document_comments" as never).select("*").order("created_at", { ascending: true }),
         supabase.from("calendar_events" as never).select("*").order("starts_at", { ascending: true }),
         supabase.from("profiles").select("*").order("full_name", { ascending: true }),
         supabase.from("user_body_memberships").select("*").order("created_at", { ascending: true }),
@@ -142,12 +178,16 @@ const PortalDashboard = () => {
       ]);
 
       if (documentsResult.error) throw documentsResult.error;
+      if (versionsResult.error) throw versionsResult.error;
+      if (commentsResult.error) throw commentsResult.error;
       if (eventsResult.error) throw eventsResult.error;
       if (profilesResult.error) throw profilesResult.error;
       if (membershipsResult.error) throw membershipsResult.error;
       if (rolesResult.error) throw rolesResult.error;
 
       setDocuments((documentsResult.data ?? []) as unknown as DocumentRecord[]);
+      setDocumentVersions((versionsResult.data ?? []) as unknown as DocumentVersionRecord[]);
+      setDocumentComments((commentsResult.data ?? []) as unknown as DocumentCommentRecord[]);
       setCalendarEvents((eventsResult.data ?? []) as unknown as CalendarEventRecord[]);
       setDirectoryProfiles(profilesResult.data ?? []);
       setDirectoryMemberships(membershipsResult.data ?? []);
@@ -199,6 +239,65 @@ const PortalDashboard = () => {
     return bodyOptions.filter((option) => bodySet.has(option.value)).map((option) => option.label);
   }, [memberships]);
 
+  const profileNameByUserId = useMemo(
+    () => new Map(directoryProfiles.map((item) => [item.user_id, item.full_name])),
+    [directoryProfiles],
+  );
+
+  const versionsByDocumentId = useMemo(() => {
+    const map = new Map<string, DocumentVersionRecord[]>();
+
+    documentVersions.forEach((version) => {
+      const current = map.get(version.document_id) ?? [];
+      map.set(version.document_id, [...current, version]);
+    });
+
+    return map;
+  }, [documentVersions]);
+
+  const commentsByDocumentId = useMemo(() => {
+    const map = new Map<string, DocumentCommentRecord[]>();
+
+    documentComments.forEach((comment) => {
+      const current = map.get(comment.document_id) ?? [];
+      map.set(comment.document_id, [...current, comment]);
+    });
+
+    return map;
+  }, [documentComments]);
+
+  const getDocumentVersions = (document: DocumentRecord) => {
+    const persistedVersions = versionsByDocumentId.get(document.id) ?? [];
+
+    if (persistedVersions.some((version) => version.version_number === 1)) {
+      return persistedVersions;
+    }
+
+    return [
+      ...persistedVersions,
+      {
+        id: `fallback-${document.id}`,
+        document_id: document.id,
+        version_number: 1,
+        title: document.title,
+        description: document.description,
+        file_path: document.file_path,
+        file_name: document.file_name,
+        file_size_bytes: document.file_size_bytes,
+        mime_type: document.mime_type,
+        created_by: document.uploaded_by,
+        created_at: document.created_at,
+      },
+    ].sort((a, b) => b.version_number - a.version_number);
+  };
+
+  const getDocumentComments = (documentId: string) => commentsByDocumentId.get(documentId) ?? [];
+
+  const getDisplayName = (userId: string) => {
+    if (userId === user?.id) return "Ti";
+    return profileNameByUserId.get(userId) ?? "Član portala";
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate("/council-login", { replace: true });
@@ -226,20 +325,49 @@ const PortalDashboard = () => {
 
       if (uploadResult.error) throw uploadResult.error;
 
-      const insertResult = await supabase.from("documents" as never).insert({
+      const insertResult = await supabase
+        .from("documents" as never)
+        .insert({
+          title: documentTitle.trim(),
+          description: documentDescription.trim() || null,
+          file_path: filePath,
+          file_name: documentFile.name,
+          file_size_bytes: documentFile.size,
+          mime_type: documentFile.type || null,
+          uploaded_by: user.id,
+          visibility_body: visibilityBody,
+        } as never)
+        .select("id")
+        .single();
+
+      if (insertResult.error) {
+        await supabase.storage.from("dms-documents").remove([filePath]);
+        throw insertResult.error;
+      }
+
+      const createdDocument = insertResult.data as { id: string } | null;
+
+      if (!createdDocument?.id) {
+        await supabase.storage.from("dms-documents").remove([filePath]);
+        throw new Error("Dokument nije moguće inicijalizirati.");
+      }
+
+      const initialVersionResult = await supabase.from("document_versions" as never).insert({
+        document_id: createdDocument.id,
+        version_number: 1,
         title: documentTitle.trim(),
         description: documentDescription.trim() || null,
         file_path: filePath,
         file_name: documentFile.name,
         file_size_bytes: documentFile.size,
         mime_type: documentFile.type || null,
-        uploaded_by: user.id,
-        visibility_body: visibilityBody,
+        created_by: user.id,
       } as never);
 
-      if (insertResult.error) {
+      if (initialVersionResult.error) {
+        await supabase.from("documents" as never).delete().eq("id", createdDocument.id);
         await supabase.storage.from("dms-documents").remove([filePath]);
-        throw insertResult.error;
+        throw initialVersionResult.error;
       }
 
       setDocumentTitle("");
@@ -269,6 +397,17 @@ const PortalDashboard = () => {
     window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
+  const handleVersionDownload = async (filePath: string) => {
+    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
+
+    if (error || !data?.signedUrl) {
+      toast({ title: "Preuzimanje verzije nije uspjelo", description: error?.message ?? "Pokušaj ponovno.", variant: "destructive" });
+      return;
+    }
+
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
+
   const handleDeleteDocument = async (documentId: string, filePath: string) => {
     const { error } = await supabase.from("documents" as never).delete().eq("id", documentId);
 
@@ -280,6 +419,128 @@ const PortalDashboard = () => {
     await supabase.storage.from("dms-documents").remove([filePath]);
     await loadPortalData();
     toast({ title: "Dokument je obrisan" });
+  };
+
+  const handleVersionUpload = async (document: DocumentRecord) => {
+    if (!user) return;
+
+    const versionFile = versionFiles[document.id];
+    const versionNote = versionNotes[document.id]?.trim() || null;
+
+    if (!versionFile) {
+      toast({ title: "Odaberi novu datoteku", description: "Za novu verziju potreban je novi file.", variant: "destructive" });
+      return;
+    }
+
+    setUploadingVersionFor(document.id);
+
+    const existingVersions = versionsByDocumentId.get(document.id) ?? [];
+    const safeName = versionFile.name.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9._-]/g, "");
+    const nextVersionNumber = existingVersions.length === 0 ? 2 : Math.max(...existingVersions.map((item) => item.version_number)) + 1;
+    const newFilePath = `${user.id}/versions/${document.id}/${Date.now()}-${safeName}`;
+
+    try {
+      if (existingVersions.length === 0) {
+        const baselineResult = await supabase.from("document_versions" as never).insert({
+          document_id: document.id,
+          version_number: 1,
+          title: document.title,
+          description: document.description,
+          file_path: document.file_path,
+          file_name: document.file_name,
+          file_size_bytes: document.file_size_bytes,
+          mime_type: document.mime_type,
+          created_by: document.uploaded_by,
+        } as never);
+
+        if (baselineResult.error) throw baselineResult.error;
+      }
+
+      const uploadResult = await supabase.storage.from("dms-documents").upload(newFilePath, versionFile, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+      if (uploadResult.error) throw uploadResult.error;
+
+      const versionInsertResult = await supabase.from("document_versions" as never).insert({
+        document_id: document.id,
+        version_number: nextVersionNumber,
+        title: document.title,
+        description: versionNote ?? document.description,
+        file_path: newFilePath,
+        file_name: versionFile.name,
+        file_size_bytes: versionFile.size,
+        mime_type: versionFile.type || null,
+        created_by: user.id,
+      } as never);
+
+      if (versionInsertResult.error) {
+        await supabase.storage.from("dms-documents").remove([newFilePath]);
+        throw versionInsertResult.error;
+      }
+
+      const documentUpdateResult = await supabase
+        .from("documents" as never)
+        .update({
+          description: versionNote ?? document.description,
+          file_path: newFilePath,
+          file_name: versionFile.name,
+          file_size_bytes: versionFile.size,
+          mime_type: versionFile.type || null,
+          updated_at: new Date().toISOString(),
+        } as never)
+        .eq("id", document.id);
+
+      if (documentUpdateResult.error) {
+        await supabase.from("document_versions" as never).delete().eq("document_id", document.id).eq("version_number", nextVersionNumber);
+        await supabase.storage.from("dms-documents").remove([newFilePath]);
+        throw documentUpdateResult.error;
+      }
+
+      setVersionFiles((current) => ({ ...current, [document.id]: null }));
+      setVersionNotes((current) => ({ ...current, [document.id]: "" }));
+      await loadPortalData();
+
+      toast({ title: "Nova verzija je spremljena", description: `Dokument je ažuriran na v${nextVersionNumber}.` });
+    } catch (error) {
+      const description = error instanceof Error ? error.message : "Pokušaj ponovno.";
+      toast({ title: "Spremanje verzije nije uspjelo", description, variant: "destructive" });
+    } finally {
+      setUploadingVersionFor(null);
+    }
+  };
+
+  const handleCommentSubmit = async (documentId: string) => {
+    if (!user) return;
+
+    const body = commentDrafts[documentId]?.trim();
+
+    if (!body) {
+      toast({ title: "Unesi komentar", description: "Komentar ne može biti prazan.", variant: "destructive" });
+      return;
+    }
+
+    setSubmittingCommentFor(documentId);
+
+    try {
+      const { error } = await supabase.from("document_comments" as never).insert({
+        document_id: documentId,
+        author_id: user.id,
+        body,
+      } as never);
+
+      if (error) throw error;
+
+      setCommentDrafts((current) => ({ ...current, [documentId]: "" }));
+      await loadPortalData();
+      toast({ title: "Komentar je dodan" });
+    } catch (error) {
+      const description = error instanceof Error ? error.message : "Pokušaj ponovno.";
+      toast({ title: "Komentar nije spremljen", description, variant: "destructive" });
+    } finally {
+      setSubmittingCommentFor(documentId);
+    }
   };
 
   const handleEventSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -515,36 +776,174 @@ const PortalDashboard = () => {
                     ) : (
                       documents.map((document) => (
                         <div key={document.id} className="rounded-xl border border-border p-4">
-                          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                            <div className="space-y-2">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="font-semibold text-foreground">{document.title}</h3>
-                                <Badge variant="outline">
-                                  {bodyOptions.find((option) => option.value === document.visibility_body)?.label ?? "Svi članovi"}
-                                </Badge>
-                              </div>
-                              <p className="text-sm text-muted-foreground">{document.description || "Bez dodatnog opisa."}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {document.file_name} · {formatFileSize(document.file_size_bytes)} · {format(new Date(document.created_at), "dd.MM.yyyy. HH:mm")}
-                              </p>
-                            </div>
+                          {(() => {
+                            const versionHistory = getDocumentVersions(document);
+                            const commentThread = getDocumentComments(document.id);
+                            const isExpanded = expandedDocumentId === document.id;
 
-                            <div className="flex items-center gap-2">
-                              <Button variant="outline" size="sm" onClick={() => handleDownload(document)}>
-                                <Download className="h-4 w-4" />
-                                Preuzmi
-                              </Button>
-                              {(isMasterAdmin || document.uploaded_by === user?.id) && (
+                            return (
+                          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                              <div className="space-y-2">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h3 className="font-semibold text-foreground">{document.title}</h3>
+                                  <Badge variant="outline">
+                                    {bodyOptions.find((option) => option.value === document.visibility_body)?.label ?? "Svi članovi"}
+                                  </Badge>
+                                  <Badge variant="secondary">v{versionHistory[0]?.version_number ?? 1}</Badge>
+                                  <Badge variant="outline">{commentThread.length} komentara</Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{document.description || "Bez dodatnog opisa."}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {document.file_name} · {formatFileSize(document.file_size_bytes)} · {format(new Date(document.updated_at), "dd.MM.yyyy. HH:mm")}
+                                </p>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Button variant="outline" size="sm" onClick={() => handleDownload(document)}>
+                                  <Download className="h-4 w-4" />
+                                  Preuzmi
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => void handleDeleteDocument(document.id, document.file_path)}
+                                  onClick={() => setExpandedDocumentId(isExpanded ? null : document.id)}
                                 >
-                                  <Trash2 className="h-4 w-4" />
+                                  <History className="h-4 w-4" />
+                                  {isExpanded ? "Sakrij detalje" : "Verzije i komentari"}
                                 </Button>
-                              )}
+                                {(isMasterAdmin || document.uploaded_by === user?.id) && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => void handleDeleteDocument(document.id, document.file_path)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
                             </div>
+
+                            {isExpanded && (
+                              <div className="mt-4 grid gap-4 border-t border-border pt-4 lg:grid-cols-[1.1fr_0.9fr]">
+                                <div className="space-y-4">
+                                  <div className="rounded-xl border border-border bg-accent/30 p-4">
+                                    <div className="mb-3 flex items-center gap-2">
+                                      <History className="h-4 w-4 text-primary" />
+                                      <h4 className="font-medium text-foreground">Povijest verzija</h4>
+                                    </div>
+                                    <div className="space-y-3">
+                                      {versionHistory.map((version, index) => (
+                                        <div key={version.id} className="flex flex-col gap-3 rounded-xl border border-border bg-background/80 p-3 md:flex-row md:items-center md:justify-between">
+                                          <div className="space-y-1">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                              <Badge variant={index === 0 ? "secondary" : "outline"}>v{version.version_number}</Badge>
+                                              {index === 0 && <Badge>Najnija verzija</Badge>}
+                                            </div>
+                                            <p className="text-sm text-foreground">{version.file_name}</p>
+                                            <p className="text-xs text-muted-foreground">
+                                              {formatFileSize(version.file_size_bytes)} · {getDisplayName(version.created_by)} · {format(new Date(version.created_at), "dd.MM.yyyy. HH:mm")}
+                                            </p>
+                                            {version.description && <p className="text-xs text-muted-foreground">{version.description}</p>}
+                                          </div>
+                                          <Button variant="outline" size="sm" onClick={() => handleVersionDownload(version.file_path)}>
+                                            <Download className="h-4 w-4" />
+                                            Preuzmi v{version.version_number}
+                                          </Button>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {(isMasterAdmin || document.uploaded_by === user?.id) && (
+                                    <div className="rounded-xl border border-border bg-accent/30 p-4">
+                                      <div className="mb-3 flex items-center gap-2">
+                                        <Upload className="h-4 w-4 text-primary" />
+                                        <h4 className="font-medium text-foreground">Dodaj novu verziju</h4>
+                                      </div>
+                                      <div className="grid gap-3">
+                                        <Input
+                                          type="file"
+                                          onChange={(e) =>
+                                            setVersionFiles((current) => ({
+                                              ...current,
+                                              [document.id]: e.target.files?.[0] ?? null,
+                                            }))
+                                          }
+                                        />
+                                        <Textarea
+                                          value={versionNotes[document.id] ?? ""}
+                                          onChange={(e) =>
+                                            setVersionNotes((current) => ({
+                                              ...current,
+                                              [document.id]: e.target.value,
+                                            }))
+                                          }
+                                          placeholder="Što je promijenjeno u ovoj verziji?"
+                                        />
+                                        <Button
+                                          type="button"
+                                          onClick={() => void handleVersionUpload(document)}
+                                          disabled={uploadingVersionFor === document.id}
+                                        >
+                                          {uploadingVersionFor === document.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                                          {uploadingVersionFor === document.id ? "Spremam verziju..." : "Spremi novu verziju"}
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="rounded-xl border border-border bg-accent/30 p-4">
+                                  <div className="mb-3 flex items-center gap-2">
+                                    <MessageSquareText className="h-4 w-4 text-primary" />
+                                    <h4 className="font-medium text-foreground">Komentari i kolaboracija</h4>
+                                  </div>
+
+                                  <div className="space-y-3">
+                                    {commentThread.length === 0 ? (
+                                      <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">
+                                        Još nema komentara za ovaj dokument.
+                                      </div>
+                                    ) : (
+                                      commentThread.map((comment) => (
+                                        <div key={comment.id} className="rounded-xl border border-border bg-background/80 p-3">
+                                          <div className="mb-1 flex flex-wrap items-center gap-2">
+                                            <p className="text-sm font-medium text-foreground">{getDisplayName(comment.author_id)}</p>
+                                            <span className="text-xs text-muted-foreground">{format(new Date(comment.created_at), "dd.MM.yyyy. HH:mm")}</span>
+                                          </div>
+                                          <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment.body}</p>
+                                        </div>
+                                      ))
+                                    )}
+                                  </div>
+
+                                  <div className="mt-4 grid gap-3">
+                                    <Textarea
+                                      value={commentDrafts[document.id] ?? ""}
+                                      onChange={(e) =>
+                                        setCommentDrafts((current) => ({
+                                          ...current,
+                                          [document.id]: e.target.value,
+                                        }))
+                                      }
+                                      placeholder="Dodaj komentar, povratnu informaciju ili napomenu..."
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="secondary"
+                                      onClick={() => void handleCommentSubmit(document.id)}
+                                      disabled={submittingCommentFor === document.id}
+                                    >
+                                      {submittingCommentFor === document.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendHorizontal className="h-4 w-4" />}
+                                      {submittingCommentFor === document.id ? "Šaljem komentar..." : "Dodaj komentar"}
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
+                            );
+                          })()}
                         </div>
                       ))
                     )}
