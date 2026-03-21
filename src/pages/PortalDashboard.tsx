@@ -774,15 +774,14 @@ const PortalDashboard = () => {
                         Još nema dokumenata u portalu.
                       </div>
                     ) : (
-                      documents.map((document) => (
-                        <div key={document.id} className="rounded-xl border border-border p-4">
-                          {(() => {
-                            const versionHistory = getDocumentVersions(document);
-                            const commentThread = getDocumentComments(document.id);
-                            const isExpanded = expandedDocumentId === document.id;
+                      documents.map((document) => {
+                        const versionHistory = getDocumentVersions(document);
+                        const commentThread = getDocumentComments(document.id);
+                        const isExpanded = expandedDocumentId === document.id;
 
-                            return (
-                          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                        return (
+                          <div key={document.id} className="rounded-xl border border-border p-4">
+                            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                               <div className="space-y-2">
                                 <div className="flex flex-wrap items-center gap-2">
                                   <h3 className="font-semibold text-foreground">{document.title}</h3>
@@ -837,7 +836,7 @@ const PortalDashboard = () => {
                                           <div className="space-y-1">
                                             <div className="flex flex-wrap items-center gap-2">
                                               <Badge variant={index === 0 ? "secondary" : "outline"}>v{version.version_number}</Badge>
-                                              {index === 0 && <Badge>Najnija verzija</Badge>}
+                                              {index === 0 && <Badge>Najnovija verzija</Badge>}
                                             </div>
                                             <p className="text-sm text-foreground">{version.file_name}</p>
                                             <p className="text-xs text-muted-foreground">
@@ -911,7 +910,7 @@ const PortalDashboard = () => {
                                             <p className="text-sm font-medium text-foreground">{getDisplayName(comment.author_id)}</p>
                                             <span className="text-xs text-muted-foreground">{format(new Date(comment.created_at), "dd.MM.yyyy. HH:mm")}</span>
                                           </div>
-                                          <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment.body}</p>
+                                          <p className="whitespace-pre-wrap text-sm text-muted-foreground">{comment.body}</p>
                                         </div>
                                       ))
                                     )}
@@ -942,10 +941,8 @@ const PortalDashboard = () => {
                               </div>
                             )}
                           </div>
-                            );
-                          })()}
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </CardContent>
                 </Card>
