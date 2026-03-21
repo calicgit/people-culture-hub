@@ -36,6 +36,16 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -194,6 +204,8 @@ const PortalDashboard = () => {
     isActive: true,
   });
   const [savingUserChanges, setSavingUserChanges] = useState(false);
+  const [deletingMember, setDeletingMember] = useState<DirectoryRow | null>(null);
+  const [deletingUser, setDeletingUser] = useState(false);
 
   const loadPortalData = async () => {
     if (!user) return;
@@ -640,6 +652,11 @@ const PortalDashboard = () => {
     setEditingMember(null);
   };
 
+  const closeDeleteDialog = () => {
+    if (deletingUser) return;
+    setDeletingMember(null);
+  };
+
   const toggleEditBody = (body: Enums<"association_body">, checked: boolean) => {
     setEditUserForm((current) => ({
       ...current,
@@ -733,6 +750,31 @@ const PortalDashboard = () => {
       toast({ title: "Spremanje izmjena nije uspjelo", description, variant: "destructive" });
     } finally {
       setSavingUserChanges(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!deletingMember) return;
+
+    setDeletingUser(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-delete-user", {
+        body: {
+          userId: deletingMember.user_id,
+        },
+      });
+
+      if (error) throw error;
+
+      await loadPortalData();
+      setDeletingMember(null);
+      toast({ title: "Korisnik je obrisan", description: data?.message ?? "Račun i pristupi su uklonjeni." });
+    } catch (error) {
+      const description = error instanceof Error ? error.message : "Pokušaj ponovno.";
+      toast({ title: "Brisanje korisnika nije uspjelo", description, variant: "destructive" });
+    } finally {
+      setDeletingUser(false);
     }
   };
 
@@ -1206,10 +1248,21 @@ const PortalDashboard = () => {
                           )}
                           {isMasterAdmin && (
                             <TableCell className="text-right">
-                              <Button variant="outline" size="sm" onClick={() => openEditUserDialog(member)}>
-                                <Edit3 className="h-4 w-4" />
-                                Uredi
-                              </Button>
+                              <div className="flex justify-end gap-2">
+                                <Button variant="outline" size="sm" onClick={() => openEditUserDialog(member)}>
+                                  <Edit3 className="h-4 w-4" />
+                                  Uredi
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => setDeletingMember(member)}
+                                  disabled={member.user_id === user?.id}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                  Obriši
+                                </Button>
+                              </div>
                             </TableCell>
                           )}
                         </TableRow>
@@ -1439,6 +1492,32 @@ const PortalDashboard = () => {
             </form>
           </DialogContent>
         </Dialog>
+
+        <AlertDialog open={Boolean(deletingMember)} onOpenChange={(open) => !open && closeDeleteDialog()}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Obrisati korisnika?</AlertDialogTitle>
+              <AlertDialogDescription>
+                {deletingMember
+                  ? `Korisnik ${deletingMember.full_name} bit će trajno uklonjen iz portala zajedno s pristupnim zapisima.`
+                  : "Ova akcija trajno uklanja korisnika iz portala."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deletingUser}>Odustani</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={(event) => {
+                  event.preventDefault();
+                  void handleDeleteUser();
+                }}
+                disabled={deletingUser}
+              >
+                {deletingUser ? "Brišem korisnika..." : "Obriši korisnika"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </main>
     </div>
   );
