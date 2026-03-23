@@ -58,6 +58,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab from "@/components/portal/SectionsTab";
+import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
 
 type DocumentRecord = {
   id: string;
@@ -1270,6 +1271,10 @@ const PortalDashboard = () => {
                       <Users className="mr-2 h-4 w-4" />
                       Korisnici portala
                     </TabsTrigger>
+                    <TabsTrigger value="admin-members">
+                      <Users className="mr-2 h-4 w-4" />
+                      Članovi Udruge
+                    </TabsTrigger>
                     <TabsTrigger value="admin-create">
                       <Plus className="mr-2 h-4 w-4" />
                       Kreiranje korisnika
@@ -1349,6 +1354,10 @@ const PortalDashboard = () => {
                         </Table>
                       </CardContent>
                     </Card>
+                  </TabsContent>
+
+                  <TabsContent value="admin-members" className="space-y-6">
+                    <AssociationMembersTab userId={user!.id} isMasterAdmin={isMasterAdmin} />
                   </TabsContent>
 
                   <TabsContent value="admin-create" className="space-y-6">

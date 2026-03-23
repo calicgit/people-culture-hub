@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      association_members: {
+        Row: {
+          activation_date: string
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          created_by: string
+          date_of_birth: string | null
+          deactivation_date: string | null
+          email: string | null
+          first_name: string
+          gender: string | null
+          id: string
+          last_name: string
+          membership_type: Database["public"]["Enums"]["membership_type"]
+          oib: string | null
+          phone: string | null
+          postal_code: string | null
+          updated_at: string
+        }
+        Insert: {
+          activation_date?: string
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          created_by: string
+          date_of_birth?: string | null
+          deactivation_date?: string | null
+          email?: string | null
+          first_name: string
+          gender?: string | null
+          id?: string
+          last_name: string
+          membership_type?: Database["public"]["Enums"]["membership_type"]
+          oib?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activation_date?: string
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string
+          date_of_birth?: string | null
+          deactivation_date?: string | null
+          email?: string | null
+          first_name?: string
+          gender?: string | null
+          id?: string
+          last_name?: string
+          membership_type?: Database["public"]["Enums"]["membership_type"]
+          oib?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       calendar_events: {
         Row: {
           created_at: string
@@ -332,6 +395,7 @@ export type Database = {
         | "upravno_vijece"
         | "savjetodavno_vijece"
         | "znanstveno_vijece"
+      membership_type: "redovni" | "pocasni"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -466,6 +530,7 @@ export const Constants = {
         "savjetodavno_vijece",
         "znanstveno_vijece",
       ],
+      membership_type: ["redovni", "pocasni"],
     },
   },
 } as const
