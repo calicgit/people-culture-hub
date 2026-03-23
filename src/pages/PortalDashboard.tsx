@@ -917,11 +917,11 @@ const PortalDashboard = () => {
                     <TabsTrigger value="bulletin-board-work" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       Rad Upravnog odbora
                     </TabsTrigger>
-                    <TabsTrigger value="bulletin-voting" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      Glasanje
-                    </TabsTrigger>
                     <TabsTrigger value="bulletin-advisory" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       Rad Savjetodavnog vijeća
+                    </TabsTrigger>
+                    <TabsTrigger value="bulletin-voting" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Glasanje
                     </TabsTrigger>
                   </TabsList>
                 </CollapsibleContent>
@@ -935,6 +935,10 @@ const PortalDashboard = () => {
                 <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <CalendarDays className="h-4 w-4 shrink-0" />
                   Kalendar
+                </TabsTrigger>
+                <TabsTrigger value="chat" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <MessageCircle className="h-4 w-4 shrink-0" />
+                  Interni chat
                 </TabsTrigger>
               </TabsList>
 
