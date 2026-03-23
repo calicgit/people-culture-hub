@@ -853,13 +853,29 @@ const PortalDashboard = () => {
             Učitavam dokumente, kalendar i članove...
           </div>
         ) : (
-          <Tabs defaultValue="documents" className="space-y-6">
-            <TabsList className="h-auto flex-wrap justify-start gap-2 bg-transparent p-0">
-              <TabsTrigger value="documents">Dokumenti</TabsTrigger>
-              <TabsTrigger value="calendar">Kalendar</TabsTrigger>
-              <TabsTrigger value="members">Users & Access</TabsTrigger>
-              {isMasterAdmin && <TabsTrigger value="admin">Master Admin</TabsTrigger>}
+          <Tabs defaultValue="documents" orientation="vertical" className="flex gap-6">
+            <TabsList className="flex h-auto w-56 shrink-0 flex-col items-stretch gap-1 rounded-xl border border-border bg-card p-2">
+              <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <FileText className="h-4 w-4" />
+                Dokumenti
+              </TabsTrigger>
+              <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <CalendarDays className="h-4 w-4" />
+                Kalendar
+              </TabsTrigger>
+              <TabsTrigger value="members" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <Users className="h-4 w-4" />
+                Users & Access
+              </TabsTrigger>
+              {isMasterAdmin && (
+                <TabsTrigger value="admin" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Shield className="h-4 w-4" />
+                  Master Admin
+                </TabsTrigger>
+              )}
             </TabsList>
+
+            <div className="min-w-0 flex-1 space-y-6">
 
             <TabsContent value="documents" className="space-y-6">
               <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -1421,6 +1437,7 @@ const PortalDashboard = () => {
                 </div>
               </TabsContent>
             )}
+            </div>
           </Tabs>
         )}
 
