@@ -842,14 +842,14 @@ const PortalDashboard = () => {
           </div>
         ) : (
           <Tabs defaultValue="documents" orientation="vertical" className="flex gap-6">
-            <div className="flex h-auto w-56 shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
+            <div className="flex h-auto w-72 shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
               <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0">
                 <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <FileText className="h-4 w-4" />
+                  <FileText className="h-4 w-4 shrink-0" />
                   Zajednički dokumenti
                 </TabsTrigger>
                 <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <CalendarDays className="h-4 w-4" />
+                  <CalendarDays className="h-4 w-4 shrink-0" />
                   Kalendar
                 </TabsTrigger>
               </TabsList>
@@ -858,10 +858,10 @@ const PortalDashboard = () => {
               <Collapsible open={sectionsOpen} onOpenChange={setSectionsOpen}>
                 <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
                   <span className="flex items-center gap-2">
-                    <FolderOpen className="h-4 w-4" />
+                    <FolderOpen className="h-4 w-4 shrink-0" />
                     Sekcije
                   </span>
-                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${sectionsOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${sectionsOpen ? "rotate-180" : ""}`} />
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
@@ -869,12 +869,31 @@ const PortalDashboard = () => {
                       <TabsTrigger
                         key={section.id}
                         value={`section-${section.id}`}
-                        className="justify-start gap-2 pl-6 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                        className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                       >
                         {section.label}
                       </TabsTrigger>
                     ))}
+                    {customSections.map((cs) => (
+                      <TabsTrigger
+                        key={cs.id}
+                        value={`section-custom-${cs.id}`}
+                        className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      >
+                        {cs.label}
+                      </TabsTrigger>
+                    ))}
                   </TabsList>
+                  {isMasterAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAddSection(true)}
+                      className="mt-1 flex w-full items-center gap-2 rounded-md px-3 py-2 pl-6 text-xs font-medium text-primary hover:bg-muted/50 transition-colors"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      Dodaj sekciju
+                    </button>
+                  )}
                 </CollapsibleContent>
               </Collapsible>
 
@@ -883,19 +902,19 @@ const PortalDashboard = () => {
                 <Collapsible open={adminOpen} onOpenChange={setAdminOpen}>
                   <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
                     <span className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
+                      <Shield className="h-4 w-4 shrink-0" />
                       Administracija
                     </span>
-                    <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${adminOpen ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${adminOpen ? "rotate-180" : ""}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
                       <TabsTrigger value="admin-users" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                        <Users className="h-4 w-4" />
+                        <Users className="h-4 w-4 shrink-0" />
                         Korisnici portala
                       </TabsTrigger>
                       <TabsTrigger value="admin-members" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                        <Users className="h-4 w-4" />
+                        <Users className="h-4 w-4 shrink-0" />
                         Članovi Udruge
                       </TabsTrigger>
                     </TabsList>
