@@ -135,7 +135,14 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   };
 
-  const handleToggleSection = async (sectionId: string) => {
+  useEffect(() => {
+    if (activeSection) {
+      setExpandedSection(activeSection);
+      void loadSectionDocuments(activeSection);
+    }
+  }, [activeSection]);
+
+
     if (expandedSection === sectionId) {
       setExpandedSection(null);
       return;
