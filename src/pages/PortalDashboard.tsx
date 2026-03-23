@@ -1688,7 +1688,7 @@ const PortalDashboard = () => {
 };
 
 export default PortalDashboard;
-                            <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
+
                           </div>
                           <div className="grid gap-2">
                             <Label htmlFor="admin-email">Email</Label>
