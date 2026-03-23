@@ -142,7 +142,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   }, [activeSection]);
 
-
+  const handleToggleSection = async (sectionId: string) => {
     if (expandedSection === sectionId) {
       setExpandedSection(null);
       return;
