@@ -260,100 +260,193 @@ export default function AssociationMembersTab({ userId, isMasterAdmin }: Props) 
         </Card>
       )}
 
-      <Card>
-        <CardHeader className="flex flex-row items-start justify-between">
-          <div className="space-y-1">
+      <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <Card>
+          <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Users className="h-5 w-5" />
               Članovi Udruge
             </CardTitle>
             <CardDescription>Popis svih članova udruge s podacima o članstvu.</CardDescription>
-          </div>
-          {isMasterAdmin && (
-            <Button onClick={openAddForm}>
-              <UserPlus className="h-4 w-4" />
-              Dodaj člana
-            </Button>
-          )}
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center py-12 text-muted-foreground">
-              <Loader2 className="mr-3 h-5 w-5 animate-spin text-primary" />
-              Učitavam članove...
-            </div>
-          ) : members.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
-              Još nema unesenih članova udruge.
-            </div>
-          ) : (
-            <div className="overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Ime</TableHead>
-                    <TableHead>Prezime</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Mobitel</TableHead>
-                    <TableHead>Grad</TableHead>
-                    <TableHead>Vrsta</TableHead>
-                    <TableHead>Aktivacija</TableHead>
-                    <TableHead>Istek</TableHead>
-                    {isMasterAdmin && <TableHead className="text-right">Akcije</TableHead>}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {members.map((member) => {
-                    const expiryDate = addYears(new Date(member.activation_date), 1);
-                    const daysLeft = differenceInDays(expiryDate, new Date());
-                    const isExpired = !member.deactivation_date && daysLeft <= 0;
-                    const isExpiringSoon = !member.deactivation_date && daysLeft > 0 && daysLeft <= 60;
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex items-center justify-center py-12 text-muted-foreground">
+                <Loader2 className="mr-3 h-5 w-5 animate-spin text-primary" />
+                Učitavam članove...
+              </div>
+            ) : members.length === 0 ? (
+              <div className="rounded-xl border border-dashed border-border p-6 text-sm text-muted-foreground">
+                Još nema unesenih članova udruge.
+              </div>
+            ) : (
+              <div className="overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Ime</TableHead>
+                      <TableHead>Prezime</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Mobitel</TableHead>
+                      <TableHead>Grad</TableHead>
+                      <TableHead>Vrsta</TableHead>
+                      <TableHead>Aktivacija</TableHead>
+                      <TableHead>Istek</TableHead>
+                      {isMasterAdmin && <TableHead className="text-right">Akcije</TableHead>}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {members.map((member) => {
+                      const expiryDate = addYears(new Date(member.activation_date), 1);
+                      const daysLeft = differenceInDays(expiryDate, new Date());
+                      const isExpired = !member.deactivation_date && daysLeft <= 0;
+                      const isExpiringSoon = !member.deactivation_date && daysLeft > 0 && daysLeft <= 60;
 
-                    return (
-                      <TableRow key={member.id}>
-                        <TableCell className="font-medium text-foreground">{member.first_name}</TableCell>
-                        <TableCell className="font-medium text-foreground">{member.last_name}</TableCell>
-                        <TableCell>{member.email ?? "—"}</TableCell>
-                        <TableCell>{member.phone ?? "—"}</TableCell>
-                        <TableCell>{member.city ?? "—"}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {member.membership_type === "redovni" ? "Redovni" : "Počasni"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{format(new Date(member.activation_date), "dd.MM.yyyy.")}</TableCell>
-                        <TableCell>
-                          {member.deactivation_date ? (
-                            <Badge variant="secondary">{format(new Date(member.deactivation_date), "dd.MM.yyyy.")}</Badge>
-                          ) : isExpired ? (
-                            <Badge variant="destructive">Isteklo</Badge>
-                          ) : isExpiringSoon ? (
-                            <Badge variant="secondary">{format(expiryDate, "dd.MM.yyyy.")} ({daysLeft}d)</Badge>
-                          ) : (
-                            <span className="text-muted-foreground">{format(expiryDate, "dd.MM.yyyy.")}</span>
-                          )}
-                        </TableCell>
-                        {isMasterAdmin && (
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button variant="outline" size="sm" onClick={() => openEditForm(member)}>
-                                <Edit3 className="h-4 w-4" />
-                              </Button>
-                              <Button variant="destructive" size="sm" onClick={() => setDeletingMember(member)}>
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                      return (
+                        <TableRow key={member.id}>
+                          <TableCell className="font-medium text-foreground">{member.first_name}</TableCell>
+                          <TableCell className="font-medium text-foreground">{member.last_name}</TableCell>
+                          <TableCell>{member.email ?? "—"}</TableCell>
+                          <TableCell>{member.phone ?? "—"}</TableCell>
+                          <TableCell>{member.city ?? "—"}</TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {member.membership_type === "redovni" ? "Redovni" : "Počasni"}
+                            </Badge>
                           </TableCell>
-                        )}
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                          <TableCell>{format(new Date(member.activation_date), "dd.MM.yyyy.")}</TableCell>
+                          <TableCell>
+                            {member.deactivation_date ? (
+                              <Badge variant="secondary">{format(new Date(member.deactivation_date), "dd.MM.yyyy.")}</Badge>
+                            ) : isExpired ? (
+                              <Badge variant="destructive">Isteklo</Badge>
+                            ) : isExpiringSoon ? (
+                              <Badge variant="secondary">{format(expiryDate, "dd.MM.yyyy.")} ({daysLeft}d)</Badge>
+                            ) : (
+                              <span className="text-muted-foreground">{format(expiryDate, "dd.MM.yyyy.")}</span>
+                            )}
+                          </TableCell>
+                          {isMasterAdmin && (
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button variant="outline" size="sm" onClick={() => openEditForm(member)}>
+                                  <Edit3 className="h-4 w-4" />
+                                </Button>
+                                <Button variant="destructive" size="sm" onClick={() => setDeletingMember(member)}>
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Add member form on the right */}
+        {isMasterAdmin && (
+          <Card className="self-start sticky top-24">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5" />
+                Dodaj člana
+              </CardTitle>
+              <CardDescription>Unesite podatke o novom članu udruge.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={(e) => { e.preventDefault(); setEditingMember(null); void handleSubmit(e); }} className="grid gap-3">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Ime *</Label>
+                    <Input value={form.first_name} onChange={(e) => updateField("first_name", e.target.value)} required />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Prezime *</Label>
+                    <Input value={form.last_name} onChange={(e) => updateField("last_name", e.target.value)} required />
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Datum rođenja</Label>
+                    <Input type="date" value={form.date_of_birth} onChange={(e) => updateField("date_of_birth", e.target.value)} />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Spol</Label>
+                    <Select value={form.gender} onValueChange={(v) => updateField("gender", v)}>
+                      <SelectTrigger><SelectValue placeholder="Odaberi" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="M">Muško</SelectItem>
+                        <SelectItem value="F">Žensko</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Država</Label>
+                    <Input value={form.country} onChange={(e) => updateField("country", e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-1">
+                    <Label className="text-xs">OIB</Label>
+                    <Input value={form.oib} onChange={(e) => updateField("oib", e.target.value)} maxLength={11} />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Mobitel</Label>
+                    <Input value={form.phone} onChange={(e) => updateField("phone", e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid gap-1">
+                  <Label className="text-xs">E-mail</Label>
+                  <Input type="email" value={form.email} onChange={(e) => updateField("email", e.target.value)} />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Adresa</Label>
+                    <Input value={form.address} onChange={(e) => updateField("address", e.target.value)} />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Grad</Label>
+                    <Input value={form.city} onChange={(e) => updateField("city", e.target.value)} />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Poštanski broj</Label>
+                    <Input value={form.postal_code} onChange={(e) => updateField("postal_code", e.target.value)} />
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Vrsta članstva *</Label>
+                    <Select value={form.membership_type} onValueChange={(v) => updateField("membership_type", v)}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="redovni">Redovni</SelectItem>
+                        <SelectItem value="pocasni">Počasni</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Datum aktivacije *</Label>
+                    <Input type="date" value={form.activation_date} onChange={(e) => updateField("activation_date", e.target.value)} required />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label className="text-xs">Datum deaktivacije</Label>
+                    <Input type="date" value={form.deactivation_date} onChange={(e) => updateField("deactivation_date", e.target.value)} />
+                  </div>
+                </div>
+                <Button type="submit" disabled={saving} className="mt-2">
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                  {saving ? "Spremam..." : "Dodaj člana"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       {/* Add/Edit dialog */}
       <Dialog open={showForm} onOpenChange={(open) => !open && setShowForm(false)}>
