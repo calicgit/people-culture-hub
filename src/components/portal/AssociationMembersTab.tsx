@@ -241,7 +241,7 @@ export default function AssociationMembersTab({ userId, isMasterAdmin }: Props) 
           <CardContent>
             <div className="space-y-2">
               {expiringMembers.map((m) => (
-                <div key={`expiry-${m.id}`} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-orange-200 bg-background p-3 dark:border-orange-800">
+                <div key={`expiry-${m.id}`} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-destructive/20 bg-background p-3">
                   <div>
                     <p className="font-medium text-foreground">{m.first_name} {m.last_name}</p>
                     <p className="text-sm text-muted-foreground">
