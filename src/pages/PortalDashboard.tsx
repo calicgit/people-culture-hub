@@ -1300,13 +1300,16 @@ const PortalDashboard = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="sections" className="space-y-6">
-              <SectionsTab
-                userId={user!.id}
-                profileNameByUserId={profileNameByUserId}
-                onDataRefresh={loadPortalData}
-              />
-            </TabsContent>
+            {SECTIONS.map((section) => (
+              <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
+                <SectionsTab
+                  userId={user!.id}
+                  profileNameByUserId={profileNameByUserId}
+                  onDataRefresh={loadPortalData}
+                  activeSection={section.id}
+                />
+              </TabsContent>
+            ))}
 
             {isMasterAdmin && (
               <>
