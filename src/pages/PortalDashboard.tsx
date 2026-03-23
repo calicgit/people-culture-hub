@@ -6,6 +6,7 @@ import {
   Download,
   Edit3,
   FileText,
+  FolderOpen,
   History,
   Loader2,
   LogOut,
