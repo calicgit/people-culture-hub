@@ -230,7 +230,7 @@ export default function AssociationMembersTab({ userId, isMasterAdmin }: Props) 
     <div className="space-y-6">
       {/* Membership expiry notifications */}
       {expiringMembers.length > 0 && (
-        <Card className="border-orange-300 bg-orange-50 dark:border-orange-800 dark:bg-orange-950/30">
+        <Card className="border-destructive/40 bg-destructive/5">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-orange-700 dark:text-orange-400">
               <AlertTriangle className="h-5 w-5" />
