@@ -213,6 +213,52 @@ const PortalDashboard = () => {
   const [savingUserChanges, setSavingUserChanges] = useState(false);
   const [deletingMember, setDeletingMember] = useState<DirectoryRow | null>(null);
   const [deletingUser, setDeletingUser] = useState(false);
+  const [showCreateUserDialog, setShowCreateUserDialog] = useState(false);
+
+  // Custom sections
+  type CustomSection = { id: string; label: string; created_by: string; created_at: string };
+  const [customSections, setCustomSections] = useState<CustomSection[]>([]);
+  const [showAddSection, setShowAddSection] = useState(false);
+  const [newSectionLabel, setNewSectionLabel] = useState("");
+  const [savingSection, setSavingSection] = useState(false);
+
+  const loadCustomSections = async () => {
+    const { data } = await supabase
+      .from("custom_sections" as never)
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (data) setCustomSections(data as unknown as CustomSection[]);
+  };
+
+  const handleAddSection = async () => {
+    if (!newSectionLabel.trim() || !user) return;
+    setSavingSection(true);
+    try {
+      const { error } = await supabase.from("custom_sections" as never).insert({
+        label: newSectionLabel.trim(),
+        created_by: user.id,
+      } as never);
+      if (error) throw error;
+      setNewSectionLabel("");
+      setShowAddSection(false);
+      await loadCustomSections();
+      toast({ title: "Sekcija je dodana" });
+    } catch (error) {
+      toast({ title: "Dodavanje sekcije nije uspjelo", description: error instanceof Error ? error.message : "", variant: "destructive" });
+    } finally {
+      setSavingSection(false);
+    }
+  };
+
+  const handleDeleteSection = async (sectionId: string) => {
+    const { error } = await supabase.from("custom_sections" as never).delete().eq("id", sectionId);
+    if (error) {
+      toast({ title: "Brisanje sekcije nije uspjelo", variant: "destructive" });
+    } else {
+      await loadCustomSections();
+      toast({ title: "Sekcija je obrisana" });
+    }
+  };
 
   const loadPortalData = async () => {
     if (!user) return;
