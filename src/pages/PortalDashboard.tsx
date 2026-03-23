@@ -6,6 +6,7 @@ import {
   Download,
   Edit3,
   FileText,
+  FolderOpen,
   History,
   Loader2,
   LogOut,
@@ -56,6 +57,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums, Tables } from "@/integrations/supabase/types";
+import SectionsTab from "@/components/portal/SectionsTab";
 
 type DocumentRecord = {
   id: string;
@@ -848,6 +850,10 @@ const PortalDashboard = () => {
                 <Users className="h-4 w-4" />
                 Users & Access
               </TabsTrigger>
+              <TabsTrigger value="sections" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <FolderOpen className="h-4 w-4" />
+                Sekcije
+              </TabsTrigger>
               {isMasterAdmin && (
                 <TabsTrigger value="admin" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <Shield className="h-4 w-4" />
@@ -1329,6 +1335,14 @@ const PortalDashboard = () => {
                   </Table>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="sections" className="space-y-6">
+              <SectionsTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                onDataRefresh={loadPortalData}
+              />
             </TabsContent>
 
             {isMasterAdmin && (
