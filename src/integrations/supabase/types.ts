@@ -122,6 +122,27 @@ export type Database = {
         }
         Relationships: []
       }
+      custom_sections: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          label: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          label: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
       document_comments: {
         Row: {
           author_id: string

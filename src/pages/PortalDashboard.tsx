@@ -213,6 +213,52 @@ const PortalDashboard = () => {
   const [savingUserChanges, setSavingUserChanges] = useState(false);
   const [deletingMember, setDeletingMember] = useState<DirectoryRow | null>(null);
   const [deletingUser, setDeletingUser] = useState(false);
+  const [showCreateUserDialog, setShowCreateUserDialog] = useState(false);
+
+  // Custom sections
+  type CustomSection = { id: string; label: string; created_by: string; created_at: string };
+  const [customSections, setCustomSections] = useState<CustomSection[]>([]);
+  const [showAddSection, setShowAddSection] = useState(false);
+  const [newSectionLabel, setNewSectionLabel] = useState("");
+  const [savingSection, setSavingSection] = useState(false);
+
+  const loadCustomSections = async () => {
+    const { data } = await supabase
+      .from("custom_sections" as never)
+      .select("*")
+      .order("created_at", { ascending: true });
+    if (data) setCustomSections(data as unknown as CustomSection[]);
+  };
+
+  const handleAddSection = async () => {
+    if (!newSectionLabel.trim() || !user) return;
+    setSavingSection(true);
+    try {
+      const { error } = await supabase.from("custom_sections" as never).insert({
+        label: newSectionLabel.trim(),
+        created_by: user.id,
+      } as never);
+      if (error) throw error;
+      setNewSectionLabel("");
+      setShowAddSection(false);
+      await loadCustomSections();
+      toast({ title: "Sekcija je dodana" });
+    } catch (error) {
+      toast({ title: "Dodavanje sekcije nije uspjelo", description: error instanceof Error ? error.message : "", variant: "destructive" });
+    } finally {
+      setSavingSection(false);
+    }
+  };
+
+  const handleDeleteSection = async (sectionId: string) => {
+    const { error } = await supabase.from("custom_sections" as never).delete().eq("id", sectionId);
+    if (error) {
+      toast({ title: "Brisanje sekcije nije uspjelo", variant: "destructive" });
+    } else {
+      await loadCustomSections();
+      toast({ title: "Sekcija je obrisana" });
+    }
+  };
 
   const loadPortalData = async () => {
     if (!user) return;
@@ -257,6 +303,7 @@ const PortalDashboard = () => {
 
   useEffect(() => {
     void loadPortalData();
+    void loadCustomSections();
   }, [user?.id, isMasterAdmin]);
 
   const directoryRows = useMemo(() => {
@@ -842,14 +889,14 @@ const PortalDashboard = () => {
           </div>
         ) : (
           <Tabs defaultValue="documents" orientation="vertical" className="flex gap-6">
-            <div className="flex h-auto w-56 shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
+            <div className="flex h-auto w-72 shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
               <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0">
                 <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <FileText className="h-4 w-4" />
+                  <FileText className="h-4 w-4 shrink-0" />
                   Zajednički dokumenti
                 </TabsTrigger>
                 <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <CalendarDays className="h-4 w-4" />
+                  <CalendarDays className="h-4 w-4 shrink-0" />
                   Kalendar
                 </TabsTrigger>
               </TabsList>
@@ -858,10 +905,10 @@ const PortalDashboard = () => {
               <Collapsible open={sectionsOpen} onOpenChange={setSectionsOpen}>
                 <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
                   <span className="flex items-center gap-2">
-                    <FolderOpen className="h-4 w-4" />
+                    <FolderOpen className="h-4 w-4 shrink-0" />
                     Sekcije
                   </span>
-                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${sectionsOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${sectionsOpen ? "rotate-180" : ""}`} />
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
@@ -869,12 +916,31 @@ const PortalDashboard = () => {
                       <TabsTrigger
                         key={section.id}
                         value={`section-${section.id}`}
-                        className="justify-start gap-2 pl-6 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                        className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
                       >
                         {section.label}
                       </TabsTrigger>
                     ))}
+                    {customSections.map((cs) => (
+                      <TabsTrigger
+                        key={cs.id}
+                        value={`section-custom-${cs.id}`}
+                        className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      >
+                        {cs.label}
+                      </TabsTrigger>
+                    ))}
                   </TabsList>
+                  {isMasterAdmin && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAddSection(true)}
+                      className="mt-1 flex w-full items-center gap-2 rounded-md px-3 py-2 pl-6 text-xs font-medium text-primary hover:bg-muted/50 transition-colors"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      Dodaj sekciju
+                    </button>
+                  )}
                 </CollapsibleContent>
               </Collapsible>
 
@@ -883,19 +949,19 @@ const PortalDashboard = () => {
                 <Collapsible open={adminOpen} onOpenChange={setAdminOpen}>
                   <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
                     <span className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
+                      <Shield className="h-4 w-4 shrink-0" />
                       Administracija
                     </span>
-                    <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${adminOpen ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${adminOpen ? "rotate-180" : ""}`} />
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
                       <TabsTrigger value="admin-users" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                        <Users className="h-4 w-4" />
+                        <Users className="h-4 w-4 shrink-0" />
                         Korisnici portala
                       </TabsTrigger>
                       <TabsTrigger value="admin-members" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                        <Users className="h-4 w-4" />
+                        <Users className="h-4 w-4 shrink-0" />
                         Članovi Udruge
                       </TabsTrigger>
                     </TabsList>
@@ -1311,17 +1377,35 @@ const PortalDashboard = () => {
               </TabsContent>
             ))}
 
+            {customSections.map((cs) => (
+              <TabsContent key={cs.id} value={`section-custom-${cs.id}`} className="space-y-6">
+                <SectionsTab
+                  userId={user!.id}
+                  profileNameByUserId={profileNameByUserId}
+                  onDataRefresh={loadPortalData}
+                  activeSection={cs.id}
+                />
+              </TabsContent>
+            ))}
+
             {isMasterAdmin && (
               <>
               <TabsContent value="admin-users" className="space-y-6">
-                <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Korisnici portala</CardTitle>
-                      <CardDescription>Pregled članova udruge, vijeća i pristupnih razina.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle>Korisnici portala</CardTitle>
+                        <CardDescription>Pregled članova udruge, vijeća i pristupnih razina.</CardDescription>
+                      </div>
+                      <Button onClick={() => setShowCreateUserDialog(true)}>
+                        <Plus className="h-4 w-4" />
+                        Kreiranje korisnika
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
                         <TableHeader>
                           <TableRow>
                             <TableHead>Ime i prezime</TableHead>
@@ -1388,85 +1472,6 @@ const PortalDashboard = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="self-start sticky top-24">
-                    <CardHeader>
-                      <CardTitle>Kreiranje korisnika</CardTitle>
-                      <CardDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <form onSubmit={handleCreateUser} className="grid gap-4">
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="grid gap-2">
-                            <Label htmlFor="admin-full-name">Ime i prezime</Label>
-                            <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="admin-email">Email</Label>
-                            <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
-                          </div>
-                        </div>
-
-                        <div className="grid gap-2">
-                          <Label htmlFor="admin-title">Funkcija</Label>
-                          <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
-                        </div>
-
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="grid gap-2">
-                            <Label>Uloga</Label>
-                            <Select value={adminRole} onValueChange={(value) => setAdminRole(value as Enums<"app_role">)}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="member">Member</SelectItem>
-                                <SelectItem value="master_admin">Master Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="grid gap-2">
-                            <Label>Status članstva</Label>
-                            <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="active">active</SelectItem>
-                                <SelectItem value="inactive">inactive</SelectItem>
-                                <SelectItem value="pending">pending</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-
-                        <div className="grid gap-2">
-                          <Label>Dodjela vijeća i članstva</Label>
-                          <div className="grid gap-3 rounded-xl border border-border bg-accent/40 p-4 md:grid-cols-2">
-                            {bodyOptions.map((option) => (
-                              <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
-                                <Checkbox
-                                  checked={adminBodies.includes(option.value)}
-                                  onCheckedChange={(checked) => toggleAdminBody(option.value, checked === true)}
-                                />
-                                {option.label}
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-
-                        <label className="flex items-center gap-3 text-sm text-foreground">
-                          <Checkbox checked={adminActive} onCheckedChange={(checked) => setAdminActive(checked === true)} />
-                          Profil je odmah aktivan
-                        </label>
-
-                        <Button type="submit" disabled={creatingUser}>
-                          {creatingUser ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
-                          {creatingUser ? "Kreiram korisnika..." : "Kreiraj korisnika"}
-                        </Button>
-                      </form>
-                    </CardContent>
-                  </Card>
-                </div>
               </TabsContent>
 
               <TabsContent value="admin-members" className="space-y-6">
@@ -1478,55 +1483,44 @@ const PortalDashboard = () => {
           </Tabs>
         )}
 
-        <Dialog open={Boolean(editingMember)} onOpenChange={(open) => !open && closeEditUserDialog()}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Uredi korisnika</DialogTitle>
-              <DialogDescription>Master Admin može ažurirati profil, ulogu, status i pripadnost vijećima.</DialogDescription>
-            </DialogHeader>
 
-            <form onSubmit={handleSaveUserChanges} className="grid gap-4">
+        {/* Create User Dialog */}
+        <Dialog open={showCreateUserDialog} onOpenChange={setShowCreateUserDialog}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Kreiranje korisnika</DialogTitle>
+              <DialogDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleCreateUser} className="grid gap-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-full-name">Ime i prezime</Label>
-                  <Input
-                    id="edit-full-name"
-                    value={editUserForm.fullName}
-                    onChange={(e) => setEditUserForm((current) => ({ ...current, fullName: e.target.value }))}
-                    required
-                  />
+                  <Label htmlFor="admin-full-name">Ime i prezime</Label>
+                  <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-email">Email</Label>
-                  <Input
-                    id="edit-email"
-                    type="email"
-                    value={editUserForm.email}
-                    onChange={(e) => setEditUserForm((current) => ({ ...current, email: e.target.value }))}
-                    required
-                  />
+                  <Label htmlFor="admin-email">Email</Label>
+                  <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
                 </div>
               </div>
-
+              <div className="grid gap-2">
+                <Label htmlFor="admin-title">Funkcija</Label>
+                <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
+              </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-title">Funkcija</Label>
-                  <Input
-                    id="edit-title"
-                    value={editUserForm.title}
-                    onChange={(e) => setEditUserForm((current) => ({ ...current, title: e.target.value }))}
-                    placeholder="npr. član vijeća / predsjednik"
-                  />
+                  <Label>Uloga</Label>
+                  <Select value={adminRole} onValueChange={(value) => setAdminRole(value as Enums<"app_role">)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="member">Member</SelectItem>
+                      <SelectItem value="master_admin">Master Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="grid gap-2">
                   <Label>Status članstva</Label>
-                  <Select
-                    value={editUserForm.membershipStatus}
-                    onValueChange={(value) => setEditUserForm((current) => ({ ...current, membershipStatus: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
+                  <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="active">active</SelectItem>
                       <SelectItem value="inactive">inactive</SelectItem>
@@ -1535,52 +1529,99 @@ const PortalDashboard = () => {
                   </Select>
                 </div>
               </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="grid gap-2">
-                  <Label>Uloga</Label>
-                  <Select
-                    value={editUserForm.role}
-                    onValueChange={(value) => setEditUserForm((current) => ({ ...current, role: value as Enums<"app_role"> }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="member">Member</SelectItem>
-                      <SelectItem value="master_admin">Master Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <label className="flex items-center gap-3 rounded-xl border border-border bg-accent/30 px-4 py-3 text-sm text-foreground md:mt-7">
-                  <Checkbox
-                    checked={editUserForm.isActive}
-                    onCheckedChange={(checked) => setEditUserForm((current) => ({ ...current, isActive: checked === true }))}
-                  />
-                  Profil je aktivan
-                </label>
-              </div>
-
               <div className="grid gap-2">
                 <Label>Dodjela vijeća i članstva</Label>
-                <div className="grid gap-3 rounded-xl border border-border bg-accent/30 p-4 md:grid-cols-2">
+                <div className="grid gap-3 rounded-xl border border-border bg-accent/40 p-4 md:grid-cols-2">
                   {bodyOptions.map((option) => (
                     <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
                       <Checkbox
-                        checked={editUserForm.bodies.includes(option.value)}
-                        onCheckedChange={(checked) => toggleEditBody(option.value, checked === true)}
+                        checked={adminBodies.includes(option.value)}
+                        onCheckedChange={(checked) => toggleAdminBody(option.value, checked === true)}
                       />
                       {option.label}
                     </label>
                   ))}
                 </div>
               </div>
-
+              <label className="flex items-center gap-3 text-sm text-foreground">
+                <Checkbox checked={adminActive} onCheckedChange={(checked) => setAdminActive(checked === true)} />
+                Profil je odmah aktivan
+              </label>
               <div className="flex flex-col-reverse gap-3 pt-2 md:flex-row md:justify-end">
-                <Button type="button" variant="outline" onClick={closeEditUserDialog}>
-                  Odustani
+                <Button type="button" variant="outline" onClick={() => setShowCreateUserDialog(false)}>Odustani</Button>
+                <Button type="submit" disabled={creatingUser}>
+                  {creatingUser ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
+                  {creatingUser ? "Kreiram korisnika..." : "Kreiraj korisnika"}
                 </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit User Dialog */}
+        <Dialog open={Boolean(editingMember)} onOpenChange={(open) => !open && closeEditUserDialog()}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Uredi korisnika</DialogTitle>
+              <DialogDescription>Master Admin može ažurirati profil, ulogu, status i pripadnost vijećima.</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleSaveUserChanges} className="grid gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-full-name">Ime i prezime</Label>
+                  <Input id="edit-full-name" value={editUserForm.fullName} onChange={(e) => setEditUserForm((c) => ({ ...c, fullName: e.target.value }))} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-email">Email</Label>
+                  <Input id="edit-email" type="email" value={editUserForm.email} onChange={(e) => setEditUserForm((c) => ({ ...c, email: e.target.value }))} required />
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-title">Funkcija</Label>
+                  <Input id="edit-title" value={editUserForm.title} onChange={(e) => setEditUserForm((c) => ({ ...c, title: e.target.value }))} placeholder="npr. član vijeća / predsjednik" />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Status članstva</Label>
+                  <Select value={editUserForm.membershipStatus} onValueChange={(v) => setEditUserForm((c) => ({ ...c, membershipStatus: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">active</SelectItem>
+                      <SelectItem value="inactive">inactive</SelectItem>
+                      <SelectItem value="pending">pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label>Uloga</Label>
+                  <Select value={editUserForm.role} onValueChange={(v) => setEditUserForm((c) => ({ ...c, role: v as Enums<"app_role"> }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="member">Member</SelectItem>
+                      <SelectItem value="master_admin">Master Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <label className="flex items-center gap-3 rounded-xl border border-border bg-accent/30 px-4 py-3 text-sm text-foreground md:mt-7">
+                  <Checkbox checked={editUserForm.isActive} onCheckedChange={(checked) => setEditUserForm((c) => ({ ...c, isActive: checked === true }))} />
+                  Profil je aktivan
+                </label>
+              </div>
+              <div className="grid gap-2">
+                <Label>Dodjela vijeća i članstva</Label>
+                <div className="grid gap-3 rounded-xl border border-border bg-accent/30 p-4 md:grid-cols-2">
+                  {bodyOptions.map((option) => (
+                    <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
+                      <Checkbox checked={editUserForm.bodies.includes(option.value)} onCheckedChange={(checked) => toggleEditBody(option.value, checked === true)} />
+                      {option.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col-reverse gap-3 pt-2 md:flex-row md:justify-end">
+                <Button type="button" variant="outline" onClick={closeEditUserDialog}>Odustani</Button>
                 <Button type="submit" disabled={savingUserChanges}>
                   {savingUserChanges ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
                   {savingUserChanges ? "Spremam izmjene..." : "Spremi izmjene"}
@@ -1590,6 +1631,7 @@ const PortalDashboard = () => {
           </DialogContent>
         </Dialog>
 
+        {/* Delete User Dialog */}
         <AlertDialog open={Boolean(deletingMember)} onOpenChange={(open) => !open && closeDeleteDialog()}>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -1604,10 +1646,7 @@ const PortalDashboard = () => {
               <AlertDialogCancel disabled={deletingUser}>Odustani</AlertDialogCancel>
               <AlertDialogAction
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                onClick={(event) => {
-                  event.preventDefault();
-                  void handleDeleteUser();
-                }}
+                onClick={(event) => { event.preventDefault(); void handleDeleteUser(); }}
                 disabled={deletingUser}
               >
                 {deletingUser ? "Brišem korisnika..." : "Obriši korisnika"}
@@ -1615,6 +1654,34 @@ const PortalDashboard = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Add Section Dialog */}
+        <Dialog open={showAddSection} onOpenChange={setShowAddSection}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Dodaj novu sekciju</DialogTitle>
+              <DialogDescription>Unesite naziv nove sekcije za kolaboraciju.</DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label>Naziv sekcije</Label>
+                <Input
+                  value={newSectionLabel}
+                  onChange={(e) => setNewSectionLabel(e.target.value)}
+                  placeholder="npr. Marketing sekcija"
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleAddSection(); } }}
+                />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowAddSection(false)}>Odustani</Button>
+                <Button onClick={() => void handleAddSection()} disabled={savingSection || !newSectionLabel.trim()}>
+                  {savingSection ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                  {savingSection ? "Dodajem..." : "Dodaj"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
