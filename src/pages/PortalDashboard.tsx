@@ -788,7 +788,7 @@ const PortalDashboard = () => {
 
   const overviewCards = [
     {
-      title: "Dokumenti",
+      title: "Zajednički dokumenti",
       value: documents.length,
       description: "aktivnih dokumenata u portalu",
       icon: FileText,
@@ -840,7 +840,7 @@ const PortalDashboard = () => {
             <TabsList className="flex h-auto w-56 shrink-0 flex-col items-stretch gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
               <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <FileText className="h-4 w-4" />
-                Dokumenti
+                Zajednički dokumenti
               </TabsTrigger>
               <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <CalendarDays className="h-4 w-4" />
@@ -886,7 +886,7 @@ const PortalDashboard = () => {
               <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Dokumenti i razmjena datoteka</CardTitle>
+                    <CardTitle>Zajednički dokumenti i razmjena datoteka</CardTitle>
                     <CardDescription>Upload, pregled i kontrola pristupa po vijećima.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
