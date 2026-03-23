@@ -1688,8 +1688,6 @@ const PortalDashboard = () => {
 };
 
 export default PortalDashboard;
-
-                          </div>
                           <div className="grid gap-2">
                             <Label htmlFor="admin-email">Email</Label>
                             <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
