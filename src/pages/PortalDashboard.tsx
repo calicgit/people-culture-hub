@@ -852,10 +852,22 @@ const PortalDashboard = () => {
                 Sekcije
               </TabsTrigger>
               {isMasterAdmin && (
-                <TabsTrigger value="admin" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                  <Shield className="h-4 w-4" />
-                  Administracija
-                </TabsTrigger>
+                <>
+                  <div className="my-2 border-t border-border" />
+                  <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Administracija</p>
+                  <TabsTrigger value="admin-users" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Users className="h-4 w-4" />
+                    Korisnici portala
+                  </TabsTrigger>
+                  <TabsTrigger value="admin-members" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Users className="h-4 w-4" />
+                    Članovi Udruge
+                  </TabsTrigger>
+                  <TabsTrigger value="admin-create" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Plus className="h-4 w-4" />
+                    Kreiranje korisnika
+                  </TabsTrigger>
+                </>
               )}
             </TabsList>
 
