@@ -1377,17 +1377,35 @@ const PortalDashboard = () => {
               </TabsContent>
             ))}
 
+            {customSections.map((cs) => (
+              <TabsContent key={cs.id} value={`section-custom-${cs.id}`} className="space-y-6">
+                <SectionsTab
+                  userId={user!.id}
+                  profileNameByUserId={profileNameByUserId}
+                  onDataRefresh={loadPortalData}
+                  activeSection={cs.id}
+                />
+              </TabsContent>
+            ))}
+
             {isMasterAdmin && (
               <>
               <TabsContent value="admin-users" className="space-y-6">
-                <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Korisnici portala</CardTitle>
-                      <CardDescription>Pregled članova udruge, vijeća i pristupnih razina.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle>Korisnici portala</CardTitle>
+                        <CardDescription>Pregled članova udruge, vijeća i pristupnih razina.</CardDescription>
+                      </div>
+                      <Button onClick={() => setShowCreateUserDialog(true)}>
+                        <Plus className="h-4 w-4" />
+                        Kreiranje korisnika
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
                         <TableHeader>
                           <TableRow>
                             <TableHead>Ime i prezime</TableHead>
