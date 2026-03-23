@@ -97,7 +97,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   }, [activeSection]);
 
-
+  const getDisplayName = (uid: string) => {
     if (uid === userId) return "Ti";
     return profileNameByUserId.get(uid) ?? "Član portala";
   };
