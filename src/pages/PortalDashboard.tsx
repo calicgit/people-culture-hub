@@ -1437,6 +1437,7 @@ const PortalDashboard = () => {
                 </div>
               </TabsContent>
             )}
+            </div>
           </Tabs>
         )}
 
