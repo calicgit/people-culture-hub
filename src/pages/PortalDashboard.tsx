@@ -1386,114 +1386,90 @@ const PortalDashboard = () => {
                     </Table>
                   </CardContent>
                 </Card>
+
+                {/* Kreiranje korisnika - merged into Korisnici portala */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Kreiranje korisnika</CardTitle>
+                    <CardDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleCreateUser} className="grid gap-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-2">
+                          <Label htmlFor="admin-full-name">Ime i prezime</Label>
+                          <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="admin-email">Email</Label>
+                          <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
+                        </div>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label htmlFor="admin-title">Funkcija</Label>
+                        <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-2">
+                          <Label>Uloga</Label>
+                          <Select value={adminRole} onValueChange={(value) => setAdminRole(value as Enums<"app_role">)}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="member">Member</SelectItem>
+                              <SelectItem value="master_admin">Master Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="grid gap-2">
+                          <Label>Status članstva</Label>
+                          <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active">active</SelectItem>
+                              <SelectItem value="inactive">inactive</SelectItem>
+                              <SelectItem value="pending">pending</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label>Dodjela vijeća i članstva</Label>
+                        <div className="grid gap-3 rounded-xl border border-border bg-accent/40 p-4 md:grid-cols-2">
+                          {bodyOptions.map((option) => (
+                            <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
+                              <Checkbox
+                                checked={adminBodies.includes(option.value)}
+                                onCheckedChange={(checked) => toggleAdminBody(option.value, checked === true)}
+                              />
+                              {option.label}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      <label className="flex items-center gap-3 text-sm text-foreground">
+                        <Checkbox checked={adminActive} onCheckedChange={(checked) => setAdminActive(checked === true)} />
+                        Profil je odmah aktivan
+                      </label>
+
+                      <Button type="submit" disabled={creatingUser}>
+                        {creatingUser ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
+                        {creatingUser ? "Kreiram korisnika..." : "Kreiraj korisnika"}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="admin-members" className="space-y-6">
                 <AssociationMembersTab userId={user!.id} isMasterAdmin={isMasterAdmin} />
-              </TabsContent>
-
-              <TabsContent value="admin-create" className="space-y-6">
-                <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Kreiranje korisnika</CardTitle>
-                      <CardDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <form onSubmit={handleCreateUser} className="grid gap-4">
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="grid gap-2">
-                            <Label htmlFor="admin-full-name">Ime i prezime</Label>
-                            <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="admin-email">Email</Label>
-                            <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
-                          </div>
-                        </div>
-
-                        <div className="grid gap-2">
-                          <Label htmlFor="admin-title">Funkcija</Label>
-                          <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
-                        </div>
-
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="grid gap-2">
-                            <Label>Uloga</Label>
-                            <Select value={adminRole} onValueChange={(value) => setAdminRole(value as Enums<"app_role">)}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="member">Member</SelectItem>
-                                <SelectItem value="master_admin">Master Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div className="grid gap-2">
-                            <Label>Status članstva</Label>
-                            <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="active">active</SelectItem>
-                                <SelectItem value="inactive">inactive</SelectItem>
-                                <SelectItem value="pending">pending</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        </div>
-
-                        <div className="grid gap-2">
-                          <Label>Dodjela vijeća i članstva</Label>
-                          <div className="grid gap-3 rounded-xl border border-border bg-accent/40 p-4 md:grid-cols-2">
-                            {bodyOptions.map((option) => (
-                              <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
-                                <Checkbox
-                                  checked={adminBodies.includes(option.value)}
-                                  onCheckedChange={(checked) => toggleAdminBody(option.value, checked === true)}
-                                />
-                                {option.label}
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-
-                        <label className="flex items-center gap-3 text-sm text-foreground">
-                          <Checkbox checked={adminActive} onCheckedChange={(checked) => setAdminActive(checked === true)} />
-                          Profil je odmah aktivan
-                        </label>
-
-                        <Button type="submit" disabled={creatingUser}>
-                          {creatingUser ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
-                          {creatingUser ? "Kreiram korisnika..." : "Kreiraj korisnika"}
-                        </Button>
-                      </form>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Kako ovo radi</CardTitle>
-                      <CardDescription>Brzi pregled administracijskog procesa.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4 text-sm text-muted-foreground">
-                      <div className="rounded-xl border border-border p-4">
-                          <p className="font-medium text-foreground mb-1">1. Kreiraš korisnika</p>
-                          <p>Unosiš email, funkciju, vijeće i status članstva.</p>
-                      </div>
-                      <div className="rounded-xl border border-border p-4">
-                        <p className="font-medium text-foreground mb-1">2. Sustav dodjeljuje pristup</p>
-                        <p>Profil, uloga i pristupni zapisi kreiraju se u jednom koraku.</p>
-                      </div>
-                      <div className="rounded-xl border border-border p-4">
-                          <p className="font-medium text-foreground mb-1">3. Korisnik ulazi u portal</p>
-                          <p>Korisnik prima email pozivnicu, sam postavlja lozinku i zatim se prijavljuje u portal.</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
               </TabsContent>
               </>
             )}
