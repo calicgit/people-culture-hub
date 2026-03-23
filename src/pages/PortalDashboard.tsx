@@ -1271,6 +1271,10 @@ const PortalDashboard = () => {
                       <Users className="mr-2 h-4 w-4" />
                       Korisnici portala
                     </TabsTrigger>
+                    <TabsTrigger value="admin-members">
+                      <Users className="mr-2 h-4 w-4" />
+                      Članovi Udruge
+                    </TabsTrigger>
                     <TabsTrigger value="admin-create">
                       <Plus className="mr-2 h-4 w-4" />
                       Kreiranje korisnika
