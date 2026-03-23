@@ -90,7 +90,14 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
 
-  const getDisplayName = (uid: string) => {
+  useEffect(() => {
+    if (activeSection) {
+      setExpandedSection(activeSection);
+      void loadSectionDocuments(activeSection);
+    }
+  }, [activeSection]);
+
+
     if (uid === userId) return "Ti";
     return profileNameByUserId.get(uid) ?? "Član portala";
   };
