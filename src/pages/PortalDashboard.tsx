@@ -11,6 +11,7 @@ import {
   History,
   Loader2,
   LogOut,
+  Megaphone,
   MessageSquareText,
   Plus,
   SendHorizontal,
@@ -160,6 +161,7 @@ const PortalDashboard = () => {
 
   const [portalLoading, setPortalLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [bulletinOpen, setBulletinOpen] = useState(false);
   const [sectionsOpen, setSectionsOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
 
@@ -890,6 +892,36 @@ const PortalDashboard = () => {
         ) : (
           <Tabs defaultValue="documents" orientation="vertical" className="flex gap-6">
             <div className="flex h-auto w-72 shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
+              {/* Oglasna ploča - collapsible */}
+              <Collapsible open={bulletinOpen} onOpenChange={setBulletinOpen}>
+                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
+                  <span className="flex items-center gap-2">
+                    <Megaphone className="h-4 w-4 shrink-0" />
+                    Oglasna ploča
+                  </span>
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${bulletinOpen ? "rotate-180" : ""}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
+                    <TabsTrigger value="bulletin-decisions" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Objava odluka
+                    </TabsTrigger>
+                    <TabsTrigger value="bulletin-minutes" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Zapisnici
+                    </TabsTrigger>
+                    <TabsTrigger value="bulletin-board-work" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Rad Upravnog odbora
+                    </TabsTrigger>
+                    <TabsTrigger value="bulletin-voting" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Glasanje
+                    </TabsTrigger>
+                    <TabsTrigger value="bulletin-advisory" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Rad Savjetodavnog vijeća
+                    </TabsTrigger>
+                  </TabsList>
+                </CollapsibleContent>
+              </Collapsible>
+
               <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0">
                 <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <FileText className="h-4 w-4 shrink-0" />
@@ -1365,6 +1397,24 @@ const PortalDashboard = () => {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            {/* Oglasna ploča sub-tabs */}
+            {[
+              { value: "bulletin-decisions", label: "Objava odluka", sectionId: "bulletin-decisions" },
+              { value: "bulletin-minutes", label: "Zapisnici", sectionId: "bulletin-minutes" },
+              { value: "bulletin-board-work", label: "Rad Upravnog odbora", sectionId: "bulletin-board-work" },
+              { value: "bulletin-voting", label: "Glasanje", sectionId: "bulletin-voting" },
+              { value: "bulletin-advisory", label: "Rad Savjetodavnog vijeća", sectionId: "bulletin-advisory" },
+            ].map((item) => (
+              <TabsContent key={item.value} value={item.value} className="space-y-6">
+                <SectionsTab
+                  userId={user!.id}
+                  profileNameByUserId={profileNameByUserId}
+                  onDataRefresh={loadPortalData}
+                  activeSection={item.sectionId}
+                />
+              </TabsContent>
+            ))}
 
             {SECTIONS.map((section) => (
               <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
