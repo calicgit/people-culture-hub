@@ -827,26 +827,7 @@ const PortalDashboard = () => {
         </div>
       </header>
 
-      <main className="container py-8 space-y-8">
-        <section className="grid gap-4 md:grid-cols-3">
-          {overviewCards.map((card) => (
-            <Card key={card.title}>
-              <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                <div className="space-y-1">
-                  <CardDescription>{card.title}</CardDescription>
-                  <CardTitle className="text-3xl">{card.value}</CardTitle>
-                </div>
-                <div className="rounded-full border border-border bg-accent p-3 text-accent-foreground">
-                  <card.icon className="h-5 w-5" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{card.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </section>
-
+      <main className="container py-8">
         {portalLoading ? (
           <div className="flex items-center justify-center rounded-2xl border border-border bg-card py-16 text-muted-foreground">
             <Loader2 className="mr-3 h-5 w-5 animate-spin text-primary" />
@@ -854,7 +835,7 @@ const PortalDashboard = () => {
           </div>
         ) : (
           <Tabs defaultValue="documents" orientation="vertical" className="flex gap-6">
-            <TabsList className="flex h-auto w-56 shrink-0 flex-col items-stretch gap-1 rounded-xl border border-border bg-card p-2">
+            <TabsList className="flex h-auto w-56 shrink-0 flex-col items-stretch gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
               <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                 <FileText className="h-4 w-4" />
                 Dokumenti
@@ -876,6 +857,24 @@ const PortalDashboard = () => {
             </TabsList>
 
             <div className="min-w-0 flex-1 space-y-6">
+              <section className="grid gap-4 md:grid-cols-3">
+                {overviewCards.map((card) => (
+                  <Card key={card.title}>
+                    <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                      <div className="space-y-1">
+                        <CardDescription>{card.title}</CardDescription>
+                        <CardTitle className="text-3xl">{card.value}</CardTitle>
+                      </div>
+                      <div className="rounded-full border border-border bg-accent p-3 text-accent-foreground">
+                        <card.icon className="h-5 w-5" />
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">{card.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </section>
 
             <TabsContent value="documents" className="space-y-6">
               <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
