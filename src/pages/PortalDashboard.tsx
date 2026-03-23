@@ -57,6 +57,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Enums, Tables } from "@/integrations/supabase/types";
+import SectionsTab from "@/components/portal/SectionsTab";
 
 type DocumentRecord = {
   id: string;
