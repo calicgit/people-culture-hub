@@ -814,7 +814,7 @@ const PortalDashboard = () => {
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary">DMS portal</Badge>
-              {isMasterAdmin && <Badge>Master Admin</Badge>}
+              {isMasterAdmin && <Badge>Administracija</Badge>}
             </div>
             <h1 className="text-2xl font-bold text-foreground">Interni portal udruge</h1>
             <p className="text-sm text-muted-foreground">
