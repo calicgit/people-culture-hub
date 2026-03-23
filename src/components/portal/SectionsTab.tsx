@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
 import {
   ChevronDown,
@@ -59,10 +59,11 @@ type SectionComment = {
   created_at: string;
 };
 
-interface SectionsTabProps {
+export interface SectionsTabProps {
   userId: string;
   profileNameByUserId: Map<string, string>;
   onDataRefresh: () => Promise<void>;
+  activeSection?: SectionId;
 }
 
 const formatFileSize = (size: number | null) => {
@@ -72,9 +73,9 @@ const formatFileSize = (size: number | null) => {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh }: SectionsTabProps) => {
+const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection }: SectionsTabProps) => {
   const { toast } = useToast();
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>(activeSection ?? null);
   const [sectionDocuments, setSectionDocuments] = useState<SectionDocument[]>([]);
   const [sectionComments, setSectionComments] = useState<SectionComment[]>([]);
   const [loadingSection, setLoadingSection] = useState<string | null>(null);
@@ -88,6 +89,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh }: SectionsTab
   // Comment drafts
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
+
 
   const getDisplayName = (uid: string) => {
     if (uid === userId) return "Ti";
@@ -132,6 +134,13 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh }: SectionsTab
       setLoadingSection(null);
     }
   };
+
+  useEffect(() => {
+    if (activeSection) {
+      setExpandedSection(activeSection);
+      void loadSectionDocuments(activeSection);
+    }
+  }, [activeSection]);
 
   const handleToggleSection = async (sectionId: string) => {
     if (expandedSection === sectionId) {
