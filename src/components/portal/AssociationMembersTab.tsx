@@ -232,7 +232,7 @@ export default function AssociationMembersTab({ userId, isMasterAdmin }: Props) 
       {expiringMembers.length > 0 && (
         <Card className="border-destructive/40 bg-destructive/5">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-orange-700 dark:text-orange-400">
+            <CardTitle className="flex items-center gap-2 text-destructive">
               <AlertTriangle className="h-5 w-5" />
               Obavijesti o isteku članstva
             </CardTitle>
