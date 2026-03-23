@@ -1337,6 +1337,14 @@ const PortalDashboard = () => {
               </Card>
             </TabsContent>
 
+            <TabsContent value="sections" className="space-y-6">
+              <SectionsTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                onDataRefresh={loadPortalData}
+              />
+            </TabsContent>
+
             {isMasterAdmin && (
               <TabsContent value="admin" className="space-y-6">
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
