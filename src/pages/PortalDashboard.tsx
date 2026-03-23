@@ -842,38 +842,67 @@ const PortalDashboard = () => {
           </div>
         ) : (
           <Tabs defaultValue="documents" orientation="vertical" className="flex gap-6">
-            <TabsList className="flex h-auto w-56 shrink-0 flex-col items-stretch gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
-              <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <FileText className="h-4 w-4" />
-                Zajednički dokumenti
-              </TabsTrigger>
-              <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <CalendarDays className="h-4 w-4" />
-                Kalendar
-              </TabsTrigger>
-              <TabsTrigger value="sections" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                <FolderOpen className="h-4 w-4" />
-                Sekcije
-              </TabsTrigger>
+            <div className="flex h-auto w-56 shrink-0 flex-col gap-1 rounded-xl border border-border bg-card p-2 sticky top-24 self-start">
+              <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0">
+                <TabsTrigger value="documents" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <FileText className="h-4 w-4" />
+                  Zajednički dokumenti
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <CalendarDays className="h-4 w-4" />
+                  Kalendar
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Sekcije - collapsible */}
+              <Collapsible open={sectionsOpen} onOpenChange={setSectionsOpen}>
+                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
+                  <span className="flex items-center gap-2">
+                    <FolderOpen className="h-4 w-4" />
+                    Sekcije
+                  </span>
+                  <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${sectionsOpen ? "rotate-180" : ""}`} />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
+                    {SECTIONS.map((section) => (
+                      <TabsTrigger
+                        key={section.id}
+                        value={`section-${section.id}`}
+                        className="justify-start gap-2 pl-6 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                      >
+                        {section.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Administracija - collapsible */}
               {isMasterAdmin && (
-                <>
-                  <div className="my-2 border-t border-border" />
-                  <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Administracija</p>
-                  <TabsTrigger value="admin-users" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Users className="h-4 w-4" />
-                    Korisnici portala
-                  </TabsTrigger>
-                  <TabsTrigger value="admin-members" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Users className="h-4 w-4" />
-                    Članovi Udruge
-                  </TabsTrigger>
-                  <TabsTrigger value="admin-create" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                    <Plus className="h-4 w-4" />
-                    Kreiranje korisnika
-                  </TabsTrigger>
-                </>
+                <Collapsible open={adminOpen} onOpenChange={setAdminOpen}>
+                  <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors">
+                    <span className="flex items-center gap-2">
+                      <Shield className="h-4 w-4" />
+                      Administracija
+                    </span>
+                    <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${adminOpen ? "rotate-180" : ""}`} />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <TabsList className="flex h-auto flex-col items-stretch gap-1 bg-transparent p-0 pl-2">
+                      <TabsTrigger value="admin-users" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                        <Users className="h-4 w-4" />
+                        Korisnici portala
+                      </TabsTrigger>
+                      <TabsTrigger value="admin-members" className="justify-start gap-2 pl-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                        <Users className="h-4 w-4" />
+                        Članovi Udruge
+                      </TabsTrigger>
+                    </TabsList>
+                  </CollapsibleContent>
+                </Collapsible>
               )}
-            </TabsList>
+            </div>
 
             <div className="min-w-0 flex-1 space-y-6">
               <section className="grid gap-4 md:grid-cols-3">
