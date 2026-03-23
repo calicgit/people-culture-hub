@@ -448,12 +448,12 @@ export default function AssociationMembersTab({ userId, isMasterAdmin }: Props) 
         )}
       </div>
 
-      {/* Add/Edit dialog */}
-      <Dialog open={showForm} onOpenChange={(open) => !open && setShowForm(false)}>
+      {/* Edit dialog */}
+      <Dialog open={showForm && !!editingMember} onOpenChange={(open) => !open && setShowForm(false)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingMember ? "Uredi člana" : "Dodaj novog člana"}</DialogTitle>
-            <DialogDescription>Unesite podatke o članu udruge.</DialogDescription>
+            <DialogTitle>Uredi člana</DialogTitle>
+            <DialogDescription>Ažurirajte podatke o članu udruge.</DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="grid gap-4">
