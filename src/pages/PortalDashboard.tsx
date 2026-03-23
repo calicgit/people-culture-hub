@@ -800,7 +800,7 @@ const PortalDashboard = () => {
       icon: CalendarDays,
     },
     {
-      title: "Users & Access",
+      title: "Korisnici portala",
       value: directoryProfiles.length,
       description: "aktivnih članova i profila",
       icon: Users,
