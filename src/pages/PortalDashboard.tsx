@@ -850,6 +850,10 @@ const PortalDashboard = () => {
                 <Users className="h-4 w-4" />
                 Users & Access
               </TabsTrigger>
+              <TabsTrigger value="sections" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                <FolderOpen className="h-4 w-4" />
+                Sekcije
+              </TabsTrigger>
               {isMasterAdmin && (
                 <TabsTrigger value="admin" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <Shield className="h-4 w-4" />
