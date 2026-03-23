@@ -1443,22 +1443,22 @@ const PortalDashboard = () => {
 
             {SECTIONS.map((section) => (
               <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
-                <SectionsTab
+                <SingleSectionDocs
+                  sectionId={section.id}
+                  sectionLabel={section.label}
                   userId={user!.id}
                   profileNameByUserId={profileNameByUserId}
-                  onDataRefresh={loadPortalData}
-                  activeSection={section.id}
                 />
               </TabsContent>
             ))}
 
             {customSections.map((cs) => (
               <TabsContent key={cs.id} value={`section-custom-${cs.id}`} className="space-y-6">
-                <SectionsTab
+                <SingleSectionDocs
+                  sectionId={cs.id}
+                  sectionLabel={cs.label}
                   userId={user!.id}
                   profileNameByUserId={profileNameByUserId}
-                  onDataRefresh={loadPortalData}
-                  activeSection={cs.id}
                 />
               </TabsContent>
             ))}
