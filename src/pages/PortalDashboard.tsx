@@ -1406,12 +1406,11 @@ const PortalDashboard = () => {
               </Card>
             </TabsContent>
 
-            {/* Oglasna ploča sub-tabs */}
+            {/* Oglasna ploča sub-tabs (document sections) */}
             {[
               { value: "bulletin-decisions", label: "Objava odluka", sectionId: "bulletin-decisions" },
               { value: "bulletin-minutes", label: "Zapisnici", sectionId: "bulletin-minutes" },
               { value: "bulletin-board-work", label: "Rad Upravnog odbora", sectionId: "bulletin-board-work" },
-              { value: "bulletin-voting", label: "Glasanje", sectionId: "bulletin-voting" },
               { value: "bulletin-advisory", label: "Rad Savjetodavnog vijeća", sectionId: "bulletin-advisory" },
             ].map((item) => (
               <TabsContent key={item.value} value={item.value} className="space-y-6">
@@ -1423,6 +1422,24 @@ const PortalDashboard = () => {
                 />
               </TabsContent>
             ))}
+
+            {/* Glasanje - voting system */}
+            <TabsContent value="bulletin-voting" className="space-y-6">
+              <VotingTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                isMasterAdmin={isMasterAdmin}
+              />
+            </TabsContent>
+
+            {/* Interni chat */}
+            <TabsContent value="chat" className="space-y-6">
+              <ChatTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                isMasterAdmin={isMasterAdmin}
+              />
+            </TabsContent>
 
             {SECTIONS.map((section) => (
               <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
