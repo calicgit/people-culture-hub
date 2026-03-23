@@ -1449,14 +1449,6 @@ const PortalDashboard = () => {
                   </Card>
                 </div>
               </TabsContent>
-
-            <TabsContent value="sections" className="space-y-6">
-              <SectionsTab
-                userId={user!.id}
-                profileNameByUserId={profileNameByUserId}
-                onDataRefresh={loadPortalData}
-              />
-            </TabsContent>
             )}
             </div>
           </Tabs>
