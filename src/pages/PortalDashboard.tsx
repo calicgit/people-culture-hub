@@ -1398,6 +1398,24 @@ const PortalDashboard = () => {
               </Card>
             </TabsContent>
 
+            {/* Oglasna ploča sub-tabs */}
+            {[
+              { value: "bulletin-decisions", label: "Objava odluka", sectionId: "bulletin-decisions" },
+              { value: "bulletin-minutes", label: "Zapisnici", sectionId: "bulletin-minutes" },
+              { value: "bulletin-board-work", label: "Rad Upravnog odbora", sectionId: "bulletin-board-work" },
+              { value: "bulletin-voting", label: "Glasanje", sectionId: "bulletin-voting" },
+              { value: "bulletin-advisory", label: "Rad Savjetodavnog vijeća", sectionId: "bulletin-advisory" },
+            ].map((item) => (
+              <TabsContent key={item.value} value={item.value} className="space-y-6">
+                <SectionsTab
+                  userId={user!.id}
+                  profileNameByUserId={profileNameByUserId}
+                  onDataRefresh={loadPortalData}
+                  activeSection={item.sectionId}
+                />
+              </TabsContent>
+            ))}
+
             {SECTIONS.map((section) => (
               <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
                 <SectionsTab
