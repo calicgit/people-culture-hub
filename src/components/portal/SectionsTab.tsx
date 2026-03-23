@@ -73,9 +73,9 @@ const formatFileSize = (size: number | null) => {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh }: SectionsTabProps) => {
+const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection }: SectionsTabProps) => {
   const { toast } = useToast();
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>(activeSection ?? null);
   const [sectionDocuments, setSectionDocuments] = useState<SectionDocument[]>([]);
   const [sectionComments, setSectionComments] = useState<SectionComment[]>([]);
   const [loadingSection, setLoadingSection] = useState<string | null>(null);
