@@ -12,6 +12,7 @@ import {
   Loader2,
   LogOut,
   Megaphone,
+  MessageCircle,
   MessageSquareText,
   Plus,
   SendHorizontal,
@@ -63,6 +64,8 @@ import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab, { SECTIONS } from "@/components/portal/SectionsTab";
 import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
 import SingleSectionDocs from "@/components/portal/SingleSectionDocs";
+import VotingTab from "@/components/portal/VotingTab";
+import ChatTab from "@/components/portal/ChatTab";
 
 type DocumentRecord = {
   id: string;
@@ -913,11 +916,11 @@ const PortalDashboard = () => {
                     <TabsTrigger value="bulletin-board-work" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       Rad Upravnog odbora
                     </TabsTrigger>
-                    <TabsTrigger value="bulletin-voting" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
-                      Glasanje
-                    </TabsTrigger>
                     <TabsTrigger value="bulletin-advisory" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                       Rad Savjetodavnog vijeća
+                    </TabsTrigger>
+                    <TabsTrigger value="bulletin-voting" className="justify-start gap-2 pl-6 text-xs text-left whitespace-normal leading-tight py-2 min-h-[2rem] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                      Glasanje
                     </TabsTrigger>
                   </TabsList>
                 </CollapsibleContent>
@@ -931,6 +934,10 @@ const PortalDashboard = () => {
                 <TabsTrigger value="calendar" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <CalendarDays className="h-4 w-4 shrink-0" />
                   Kalendar
+                </TabsTrigger>
+                <TabsTrigger value="chat" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <MessageCircle className="h-4 w-4 shrink-0" />
+                  Interni chat
                 </TabsTrigger>
               </TabsList>
 
@@ -1399,12 +1406,11 @@ const PortalDashboard = () => {
               </Card>
             </TabsContent>
 
-            {/* Oglasna ploča sub-tabs */}
+            {/* Oglasna ploča sub-tabs (document sections) */}
             {[
               { value: "bulletin-decisions", label: "Objava odluka", sectionId: "bulletin-decisions" },
               { value: "bulletin-minutes", label: "Zapisnici", sectionId: "bulletin-minutes" },
               { value: "bulletin-board-work", label: "Rad Upravnog odbora", sectionId: "bulletin-board-work" },
-              { value: "bulletin-voting", label: "Glasanje", sectionId: "bulletin-voting" },
               { value: "bulletin-advisory", label: "Rad Savjetodavnog vijeća", sectionId: "bulletin-advisory" },
             ].map((item) => (
               <TabsContent key={item.value} value={item.value} className="space-y-6">
@@ -1416,6 +1422,24 @@ const PortalDashboard = () => {
                 />
               </TabsContent>
             ))}
+
+            {/* Glasanje - voting system */}
+            <TabsContent value="bulletin-voting" className="space-y-6">
+              <VotingTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                isMasterAdmin={isMasterAdmin}
+              />
+            </TabsContent>
+
+            {/* Interni chat */}
+            <TabsContent value="chat" className="space-y-6">
+              <ChatTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                isMasterAdmin={isMasterAdmin}
+              />
+            </TabsContent>
 
             {SECTIONS.map((section) => (
               <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
