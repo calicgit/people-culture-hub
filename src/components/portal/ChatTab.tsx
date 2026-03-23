@@ -29,7 +29,6 @@ const ChatTab = ({ userId, profileNameByUserId, isMasterAdmin }: ChatTabProps) =
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const getDisplayName = (uid: string) => {
-    if (uid === userId) return "Ti";
     return profileNameByUserId.get(uid) ?? "Član portala";
   };
 
