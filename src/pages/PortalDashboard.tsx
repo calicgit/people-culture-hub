@@ -160,6 +160,8 @@ const PortalDashboard = () => {
 
   const [portalLoading, setPortalLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [sectionsOpen, setSectionsOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
 
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [documentVersions, setDocumentVersions] = useState<DocumentVersionRecord[]>([]);
