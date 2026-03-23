@@ -303,6 +303,7 @@ const PortalDashboard = () => {
 
   useEffect(() => {
     void loadPortalData();
+    void loadCustomSections();
   }, [user?.id, isMasterAdmin]);
 
   const directoryRows = useMemo(() => {
