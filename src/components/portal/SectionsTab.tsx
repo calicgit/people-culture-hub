@@ -63,7 +63,7 @@ export interface SectionsTabProps {
   userId: string;
   profileNameByUserId: Map<string, string>;
   onDataRefresh: () => Promise<void>;
-  activeSection?: SectionId;
+  activeSection?: string;
 }
 
 const formatFileSize = (size: number | null) => {
