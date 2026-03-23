@@ -1472,9 +1472,16 @@ const PortalDashboard = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="self-start sticky top-24">
-                    <CardHeader>
-                      <CardTitle>Kreiranje korisnika</CardTitle>
+              </TabsContent>
+
+              <TabsContent value="admin-members" className="space-y-6">
+                <AssociationMembersTab userId={user!.id} isMasterAdmin={isMasterAdmin} />
+              </TabsContent>
+              </>
+            )}
+            </div>
+          </Tabs>
+        )
                       <CardDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</CardDescription>
                     </CardHeader>
                     <CardContent>
