@@ -1314,158 +1314,159 @@ const PortalDashboard = () => {
             {isMasterAdmin && (
               <>
               <TabsContent value="admin-users" className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Korisnici portala</CardTitle>
-                    <CardDescription>Pregled članova udruge, vijeća i pristupnih razina.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Ime i prezime</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Funkcija</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Vijeća / članstvo</TableHead>
-                          <TableHead>Uloga</TableHead>
-                          <TableHead className="text-right">Akcije</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {directoryRows.map((member) => (
-                          <TableRow key={member.id}>
-                            <TableCell className="font-medium text-foreground">{member.full_name}</TableCell>
-                            <TableCell>{member.email}</TableCell>
-                            <TableCell>{member.title ?? "—"}</TableCell>
-                            <TableCell>
-                              <Badge variant={member.is_active ? "secondary" : "outline"}>{member.membership_status}</Badge>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-2">
-                                {member.bodies.length > 0 ? (
-                                  member.bodies.map((body) => (
-                                    <Badge key={body} variant="outline">
-                                      {bodyOptions.find((option) => option.value === body)?.label ?? body}
-                                    </Badge>
-                                  ))
-                                ) : (
-                                  <span className="text-muted-foreground">—</span>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex flex-wrap gap-2">
-                                {member.roles.length > 0 ? (
-                                  member.roles.map((role) => <Badge key={role}>{roleLabels[role]}</Badge>)
-                                ) : (
-                                  <span className="text-muted-foreground">—</span>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
-                                <Button variant="outline" size="sm" onClick={() => openEditUserDialog(member)}>
-                                  <Edit3 className="h-4 w-4" />
-                                  Uredi
-                                </Button>
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => setDeletingMember(member)}
-                                  disabled={member.user_id === user?.id}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                  Obriši
-                                </Button>
-                              </div>
-                            </TableCell>
+                <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Korisnici portala</CardTitle>
+                      <CardDescription>Pregled članova udruge, vijeća i pristupnih razina.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Ime i prezime</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Funkcija</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Vijeća / članstvo</TableHead>
+                            <TableHead>Uloga</TableHead>
+                            <TableHead className="text-right">Akcije</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </CardContent>
-                </Card>
-
-                {/* Kreiranje korisnika - merged into Korisnici portala */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Kreiranje korisnika</CardTitle>
-                    <CardDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleCreateUser} className="grid gap-4">
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="grid gap-2">
-                          <Label htmlFor="admin-full-name">Ime i prezime</Label>
-                          <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="admin-email">Email</Label>
-                          <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-2">
-                        <Label htmlFor="admin-title">Funkcija</Label>
-                        <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
-                      </div>
-
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="grid gap-2">
-                          <Label>Uloga</Label>
-                          <Select value={adminRole} onValueChange={(value) => setAdminRole(value as Enums<"app_role">)}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="member">Member</SelectItem>
-                              <SelectItem value="master_admin">Master Admin</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="grid gap-2">
-                          <Label>Status članstva</Label>
-                          <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="active">active</SelectItem>
-                              <SelectItem value="inactive">inactive</SelectItem>
-                              <SelectItem value="pending">pending</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="grid gap-2">
-                        <Label>Dodjela vijeća i članstva</Label>
-                        <div className="grid gap-3 rounded-xl border border-border bg-accent/40 p-4 md:grid-cols-2">
-                          {bodyOptions.map((option) => (
-                            <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
-                              <Checkbox
-                                checked={adminBodies.includes(option.value)}
-                                onCheckedChange={(checked) => toggleAdminBody(option.value, checked === true)}
-                              />
-                              {option.label}
-                            </label>
+                        </TableHeader>
+                        <TableBody>
+                          {directoryRows.map((member) => (
+                            <TableRow key={member.id}>
+                              <TableCell className="font-medium text-foreground">{member.full_name}</TableCell>
+                              <TableCell>{member.email}</TableCell>
+                              <TableCell>{member.title ?? "—"}</TableCell>
+                              <TableCell>
+                                <Badge variant={member.is_active ? "secondary" : "outline"}>{member.membership_status}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-2">
+                                  {member.bodies.length > 0 ? (
+                                    member.bodies.map((body) => (
+                                      <Badge key={body} variant="outline">
+                                        {bodyOptions.find((option) => option.value === body)?.label ?? body}
+                                      </Badge>
+                                    ))
+                                  ) : (
+                                    <span className="text-muted-foreground">—</span>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex flex-wrap gap-2">
+                                  {member.roles.length > 0 ? (
+                                    member.roles.map((role) => <Badge key={role}>{roleLabels[role]}</Badge>)
+                                  ) : (
+                                    <span className="text-muted-foreground">—</span>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button variant="outline" size="sm" onClick={() => openEditUserDialog(member)}>
+                                    <Edit3 className="h-4 w-4" />
+                                    Uredi
+                                  </Button>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => setDeletingMember(member)}
+                                    disabled={member.user_id === user?.id}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                    Obriši
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
                           ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="self-start sticky top-24">
+                    <CardHeader>
+                      <CardTitle>Kreiranje korisnika</CardTitle>
+                      <CardDescription>Kreiraj profil, dodijeli vijeće i pošalji pozivnicu.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleCreateUser} className="grid gap-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="grid gap-2">
+                            <Label htmlFor="admin-full-name">Ime i prezime</Label>
+                            <Input id="admin-full-name" value={adminFullName} onChange={(e) => setAdminFullName(e.target.value)} required />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor="admin-email">Email</Label>
+                            <Input id="admin-email" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
+                          </div>
                         </div>
-                      </div>
 
-                      <label className="flex items-center gap-3 text-sm text-foreground">
-                        <Checkbox checked={adminActive} onCheckedChange={(checked) => setAdminActive(checked === true)} />
-                        Profil je odmah aktivan
-                      </label>
+                        <div className="grid gap-2">
+                          <Label htmlFor="admin-title">Funkcija</Label>
+                          <Input id="admin-title" value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="npr. član vijeća / predsjednik" />
+                        </div>
 
-                      <Button type="submit" disabled={creatingUser}>
-                        {creatingUser ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
-                        {creatingUser ? "Kreiram korisnika..." : "Kreiraj korisnika"}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="grid gap-2">
+                            <Label>Uloga</Label>
+                            <Select value={adminRole} onValueChange={(value) => setAdminRole(value as Enums<"app_role">)}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="member">Member</SelectItem>
+                                <SelectItem value="master_admin">Master Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="grid gap-2">
+                            <Label>Status članstva</Label>
+                            <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="active">active</SelectItem>
+                                <SelectItem value="inactive">inactive</SelectItem>
+                                <SelectItem value="pending">pending</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-2">
+                          <Label>Dodjela vijeća i članstva</Label>
+                          <div className="grid gap-3 rounded-xl border border-border bg-accent/40 p-4 md:grid-cols-2">
+                            {bodyOptions.map((option) => (
+                              <label key={option.value} className="flex items-center gap-3 text-sm text-foreground">
+                                <Checkbox
+                                  checked={adminBodies.includes(option.value)}
+                                  onCheckedChange={(checked) => toggleAdminBody(option.value, checked === true)}
+                                />
+                                {option.label}
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+
+                        <label className="flex items-center gap-3 text-sm text-foreground">
+                          <Checkbox checked={adminActive} onCheckedChange={(checked) => setAdminActive(checked === true)} />
+                          Profil je odmah aktivan
+                        </label>
+
+                        <Button type="submit" disabled={creatingUser}>
+                          {creatingUser ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
+                          {creatingUser ? "Kreiram korisnika..." : "Kreiraj korisnika"}
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
 
               <TabsContent value="admin-members" className="space-y-6">
