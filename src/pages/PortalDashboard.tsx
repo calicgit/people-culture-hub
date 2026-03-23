@@ -886,7 +886,7 @@ const PortalDashboard = () => {
               <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Dokumenti i razmjena datoteka</CardTitle>
+                    <CardTitle>Zajednički dokumenti i razmjena datoteka</CardTitle>
                     <CardDescription>Upload, pregled i kontrola pristupa po vijećima.</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
