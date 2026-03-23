@@ -1408,11 +1408,11 @@ const PortalDashboard = () => {
               { value: "bulletin-advisory", label: "Rad Savjetodavnog vijeća", sectionId: "bulletin-advisory" },
             ].map((item) => (
               <TabsContent key={item.value} value={item.value} className="space-y-6">
-                <SectionsTab
+                <SingleSectionDocs
+                  sectionId={item.sectionId}
+                  sectionLabel={item.label}
                   userId={user!.id}
                   profileNameByUserId={profileNameByUserId}
-                  onDataRefresh={loadPortalData}
-                  activeSection={item.sectionId}
                 />
               </TabsContent>
             ))}
