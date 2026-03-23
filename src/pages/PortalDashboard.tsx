@@ -1356,6 +1356,10 @@ const PortalDashboard = () => {
                     </Card>
                   </TabsContent>
 
+                  <TabsContent value="admin-members" className="space-y-6">
+                    <AssociationMembersTab userId={user!.id} isMasterAdmin={isMasterAdmin} />
+                  </TabsContent>
+
                   <TabsContent value="admin-create" className="space-y-6">
                     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
                       <Card>
