@@ -788,7 +788,7 @@ const PortalDashboard = () => {
 
   const overviewCards = [
     {
-      title: "Dokumenti",
+      title: "Zajednički dokumenti",
       value: documents.length,
       description: "aktivnih dokumenata u portalu",
       icon: FileText,
