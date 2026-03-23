@@ -59,10 +59,11 @@ type SectionComment = {
   created_at: string;
 };
 
-interface SectionsTabProps {
+export interface SectionsTabProps {
   userId: string;
   profileNameByUserId: Map<string, string>;
   onDataRefresh: () => Promise<void>;
+  activeSection?: SectionId;
 }
 
 const formatFileSize = (size: number | null) => {
