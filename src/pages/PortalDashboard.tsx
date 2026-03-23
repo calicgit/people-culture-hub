@@ -1481,7 +1481,8 @@ const PortalDashboard = () => {
             )}
             </div>
           </Tabs>
-        )
+        )}
+
 
         {/* Create User Dialog */}
         <Dialog open={showCreateUserDialog} onOpenChange={setShowCreateUserDialog}>
