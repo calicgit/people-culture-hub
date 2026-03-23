@@ -29,7 +29,6 @@ const ChatTab = ({ userId, profileNameByUserId, isMasterAdmin }: ChatTabProps) =
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const getDisplayName = (uid: string) => {
-    if (uid === userId) return "Ti";
     return profileNameByUserId.get(uid) ?? "Član portala";
   };
 
@@ -166,11 +165,9 @@ const ChatTab = ({ userId, profileNameByUserId, isMasterAdmin }: ChatTabProps) =
                               : "bg-muted"
                           }`}
                         >
-                          {!isOwn && (
-                            <p className="text-xs font-medium mb-0.5 opacity-80">
-                              {getDisplayName(msg.author_id)}
-                            </p>
-                          )}
+                          <p className="text-xs font-medium mb-0.5 opacity-80">
+                            {getDisplayName(msg.author_id)}
+                          </p>
                           <p className="text-sm whitespace-pre-wrap break-words">{msg.body}</p>
                           <p className={`text-[10px] mt-1 ${isOwn ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
                             {format(new Date(msg.created_at), "HH:mm")}

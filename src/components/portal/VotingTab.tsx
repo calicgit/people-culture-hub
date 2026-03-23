@@ -1,14 +1,18 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { format } from "date-fns";
 import {
   BarChart3,
   CheckCircle2,
+  Download,
+  FileText,
   Loader2,
   MessageSquareText,
+  Paperclip,
   Plus,
   SendHorizontal,
   Trash2,
   Vote,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -54,6 +59,16 @@ type PollComment = {
   created_at: string;
 };
 
+type PollDocument = {
+  id: string;
+  title: string;
+  file_name: string;
+  file_path: string;
+  mime_type: string | null;
+  file_size_bytes: number | null;
+  section: string | null;
+};
+
 interface VotingTabProps {
   userId: string;
   profileNameByUserId: Map<string, string>;
@@ -65,6 +80,7 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
   const [polls, setPolls] = useState<Poll[]>([]);
   const [votes, setVotes] = useState<PollVote[]>([]);
   const [comments, setComments] = useState<PollComment[]>([]);
+  const [pollDocs, setPollDocs] = useState<PollDocument[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [showCreate, setShowCreate] = useState(false);
@@ -72,11 +88,17 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
   const [newDescription, setNewDescription] = useState("");
   const [newOptions, setNewOptions] = useState(["", ""]);
   const [newDeadline, setNewDeadline] = useState("");
+  const [isQuickVote, setIsQuickVote] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const createFileRef = useRef<HTMLInputElement>(null);
 
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingComment, setSubmittingComment] = useState<string | null>(null);
   const [votingFor, setVotingFor] = useState<string | null>(null);
+
+  const [uploadingForPoll, setUploadingForPoll] = useState<string | null>(null);
+  const pollFileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const [showHistory, setShowHistory] = useState(false);
 
@@ -88,10 +110,11 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
   const loadData = async () => {
     setLoading(true);
     try {
-      const [pollsRes, votesRes, commentsRes] = await Promise.all([
+      const [pollsRes, votesRes, commentsRes, docsRes] = await Promise.all([
         supabase.from("polls" as never).select("*").order("created_at", { ascending: false }),
         supabase.from("poll_votes" as never).select("*"),
         supabase.from("poll_comments" as never).select("*").order("created_at", { ascending: true }),
+        supabase.from("documents").select("*").like("section", "poll-%"),
       ]);
 
       if (pollsRes.error) throw pollsRes.error;
@@ -100,6 +123,7 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
       setPolls((pollsRes.data ?? []) as unknown as Poll[]);
       setVotes((votesRes.data ?? []) as unknown as PollVote[]);
       setComments((commentsRes.data ?? []) as unknown as PollComment[]);
+      setPollDocs((docsRes.data ?? []) as unknown as PollDocument[]);
     } catch (error) {
       toast({ title: "Greška pri učitavanju glasanja", variant: "destructive" });
     } finally {
@@ -132,30 +156,85 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
     return map;
   }, [comments]);
 
+  const docsByPoll = useMemo(() => {
+    const map = new Map<string, PollDocument[]>();
+    pollDocs.forEach((d) => {
+      if (d.section) {
+        const pollId = d.section.replace("poll-", "");
+        const arr = map.get(pollId) ?? [];
+        map.set(pollId, [...arr, d]);
+      }
+    });
+    return map;
+  }, [pollDocs]);
+
+  const uploadFilesToPoll = async (pollId: string, files: File[]) => {
+    for (const file of files) {
+      const filePath = `polls/${pollId}/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("dms-documents")
+        .upload(filePath, file);
+      if (uploadError) throw uploadError;
+
+      const { error: docError } = await supabase.from("documents").insert({
+        title: file.name,
+        file_name: file.name,
+        file_path: filePath,
+        mime_type: file.type || null,
+        file_size_bytes: file.size,
+        uploaded_by: userId,
+        section: `poll-${pollId}`,
+      });
+      if (docError) throw docError;
+    }
+  };
+
   const handleCreatePoll = async () => {
-    const filteredOptions = newOptions.filter((o) => o.trim().length > 0);
-    if (!newTitle.trim() || filteredOptions.length < 2) {
-      toast({ title: "Unesite naslov i barem 2 opcije", variant: "destructive" });
-      return;
+    let filteredOptions: string[];
+
+    if (isQuickVote) {
+      filteredOptions = ["Da", "Ne"];
+      if (!newTitle.trim()) {
+        toast({ title: "Unesite naslov", variant: "destructive" });
+        return;
+      }
+    } else {
+      filteredOptions = newOptions.filter((o) => o.trim().length > 0);
+      if (!newTitle.trim() || filteredOptions.length < 2) {
+        toast({ title: "Unesite naslov i barem 2 opcije", variant: "destructive" });
+        return;
+      }
     }
 
     setCreating(true);
     try {
-      const { error } = await supabase.from("polls" as never).insert({
-        title: newTitle.trim(),
-        description: newDescription.trim() || null,
-        options: JSON.stringify(filteredOptions),
-        created_by: userId,
-        deadline: newDeadline || null,
-        status: "active",
-      } as never);
+      const { data: pollData, error } = await supabase
+        .from("polls" as never)
+        .insert({
+          title: newTitle.trim(),
+          description: newDescription.trim() || null,
+          options: JSON.stringify(filteredOptions),
+          created_by: userId,
+          deadline: newDeadline || null,
+          status: "active",
+        } as never)
+        .select("id")
+        .single();
 
       if (error) throw error;
+
+      const pollId = (pollData as unknown as { id: string }).id;
+
+      if (newFiles.length > 0) {
+        await uploadFilesToPoll(pollId, newFiles);
+      }
 
       setNewTitle("");
       setNewDescription("");
       setNewOptions(["", ""]);
       setNewDeadline("");
+      setNewFiles([]);
+      setIsQuickVote(false);
       setShowCreate(false);
       await loadData();
       toast({ title: "Glasanje je kreirano" });
@@ -238,15 +317,62 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
     }
   };
 
+  const handleUploadToPoll = async (pollId: string, files: FileList) => {
+    setUploadingForPoll(pollId);
+    try {
+      await uploadFilesToPoll(pollId, Array.from(files));
+      await loadData();
+      toast({ title: "Dokument je dodan" });
+    } catch (error) {
+      toast({ title: "Upload nije uspio", variant: "destructive" });
+    } finally {
+      setUploadingForPoll(null);
+    }
+  };
+
+  const handleDownloadDoc = async (doc: PollDocument) => {
+    const { data, error } = await supabase.storage
+      .from("dms-documents")
+      .download(doc.file_path);
+    if (error || !data) {
+      toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
+      return;
+    }
+    const url = URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = doc.file_name;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDeleteDoc = async (docId: string) => {
+    const { error } = await supabase.from("documents").delete().eq("id", docId);
+    if (error) {
+      toast({ title: "Brisanje dokumenta nije uspjelo", variant: "destructive" });
+    } else {
+      await loadData();
+    }
+  };
+
+  const formatFileSize = (bytes: number | null) => {
+    if (!bytes) return "";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1048576) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / 1048576).toFixed(1)} MB`;
+  };
+
   const renderPoll = (poll: Poll) => {
     const pollVotes = votesByPoll.get(poll.id) ?? [];
     const pollComments = commentsByPoll.get(poll.id) ?? [];
+    const docs = docsByPoll.get(poll.id) ?? [];
     const userVote = pollVotes.find((v) => v.user_id === userId);
     const totalVotes = pollVotes.length;
     const options: string[] = typeof poll.options === "string" ? JSON.parse(poll.options) : poll.options;
     const isActive = poll.status === "active";
     const isExpired = poll.deadline ? new Date(poll.deadline) < new Date() : false;
     const canVote = isActive && !isExpired && !userVote;
+    const isQuick = options.length === 2 && options[0] === "Da" && options[1] === "Ne";
 
     return (
       <Card key={poll.id} className="overflow-hidden">
@@ -255,6 +381,12 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <CardTitle className="text-base">{poll.title}</CardTitle>
+                {isQuick && (
+                  <Badge variant="outline" className="text-xs gap-1">
+                    <Zap className="h-3 w-3" />
+                    Brzo
+                  </Badge>
+                )}
                 <Badge variant={isActive && !isExpired ? "default" : "secondary"}>
                   {isActive && !isExpired ? "Aktivno" : isExpired ? "Isteklo" : "Zatvoreno"}
                 </Badge>
@@ -296,6 +428,78 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Attached documents */}
+          {docs.length > 0 && (
+            <div className="space-y-1">
+              <p className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                <Paperclip className="h-3.5 w-3.5" />
+                Priloženi dokumenti ({docs.length})
+              </p>
+              <div className="space-y-1">
+                {docs.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center justify-between rounded-md bg-muted/50 px-3 py-1.5 text-sm"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate">{doc.file_name}</span>
+                      <span className="text-xs text-muted-foreground shrink-0">
+                        {formatFileSize(doc.file_size_bytes)}
+                      </span>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownloadDoc(doc)}>
+                        <Download className="h-3.5 w-3.5" />
+                      </Button>
+                      {(isMasterAdmin || poll.created_by === userId) && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-destructive"
+                          onClick={() => handleDeleteDoc(doc.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Upload button for poll owner / admin */}
+          {isActive && (isMasterAdmin || poll.created_by === userId) && (
+            <div>
+              <input
+                type="file"
+                multiple
+                className="hidden"
+                ref={(el) => { pollFileRefs.current[poll.id] = el; }}
+                onChange={(e) => {
+                  if (e.target.files?.length) {
+                    void handleUploadToPoll(poll.id, e.target.files);
+                    e.target.value = "";
+                  }
+                }}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={uploadingForPoll === poll.id}
+                onClick={() => pollFileRefs.current[poll.id]?.click()}
+              >
+                {uploadingForPoll === poll.id ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Paperclip className="h-4 w-4" />
+                )}
+                Dodaj dokument
+              </Button>
+            </div>
+          )}
+
           {/* Options with voting / results */}
           <div className="space-y-2">
             {options.map((option, idx) => {
@@ -459,12 +663,30 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
             <DialogDescription>Kreirajte glasanje za donošenje odluke.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
+            {/* Quick vote toggle */}
+            <div className="flex items-center justify-between rounded-lg border border-border p-3">
+              <div className="space-y-0.5">
+                <Label className="flex items-center gap-1.5 text-sm font-medium">
+                  <Zap className="h-4 w-4 text-amber-500" />
+                  Brzo glasanje (Da/Ne)
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Za brzo odlučivanje, verifikaciju sadržaja ili odobrenja
+                </p>
+              </div>
+              <Switch checked={isQuickVote} onCheckedChange={setIsQuickVote} />
+            </div>
+
             <div className="grid gap-2">
               <Label>Pitanje / naslov</Label>
               <Input
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="npr. Odabir lokacije za godišnji event"
+                placeholder={
+                  isQuickVote
+                    ? "npr. Odobravate li objavu press releasea?"
+                    : "npr. Odabir lokacije za godišnji event"
+                }
               />
             </div>
             <div className="grid gap-2">
@@ -476,40 +698,44 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
                 placeholder="Dodatni kontekst za glasanje..."
               />
             </div>
-            <div className="grid gap-2">
-              <Label>Opcije za glasanje</Label>
-              {newOptions.map((opt, idx) => (
-                <div key={idx} className="flex gap-2">
-                  <Input
-                    value={opt}
-                    onChange={(e) => {
-                      const updated = [...newOptions];
-                      updated[idx] = e.target.value;
-                      setNewOptions(updated);
-                    }}
-                    placeholder={`Opcija ${idx + 1}`}
-                  />
-                  {newOptions.length > 2 && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="shrink-0"
-                      onClick={() => setNewOptions(newOptions.filter((_, i) => i !== idx))}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setNewOptions([...newOptions, ""])}
-              >
-                <Plus className="h-4 w-4" />
-                Dodaj opciju
-              </Button>
-            </div>
+
+            {!isQuickVote && (
+              <div className="grid gap-2">
+                <Label>Opcije za glasanje</Label>
+                {newOptions.map((opt, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <Input
+                      value={opt}
+                      onChange={(e) => {
+                        const updated = [...newOptions];
+                        updated[idx] = e.target.value;
+                        setNewOptions(updated);
+                      }}
+                      placeholder={`Opcija ${idx + 1}`}
+                    />
+                    {newOptions.length > 2 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0"
+                        onClick={() => setNewOptions(newOptions.filter((_, i) => i !== idx))}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setNewOptions([...newOptions, ""])}
+                >
+                  <Plus className="h-4 w-4" />
+                  Dodaj opciju
+                </Button>
+              </div>
+            )}
+
             <div className="grid gap-2">
               <Label>Rok za glasanje (opcionalno)</Label>
               <Input
@@ -518,6 +744,49 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
                 onChange={(e) => setNewDeadline(e.target.value)}
               />
             </div>
+
+            {/* File attachments */}
+            <div className="grid gap-2">
+              <Label>Priloženi dokumenti (opcionalno)</Label>
+              <input
+                type="file"
+                multiple
+                className="hidden"
+                ref={createFileRef}
+                onChange={(e) => {
+                  if (e.target.files) {
+                    setNewFiles((prev) => [...prev, ...Array.from(e.target.files!)]);
+                    e.target.value = "";
+                  }
+                }}
+              />
+              {newFiles.length > 0 && (
+                <div className="space-y-1">
+                  {newFiles.map((f, i) => (
+                    <div key={i} className="flex items-center justify-between rounded bg-muted/50 px-2 py-1 text-sm">
+                      <span className="truncate">{f.name}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setNewFiles(newFiles.filter((_, idx) => idx !== i))}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => createFileRef.current?.click()}
+              >
+                <Paperclip className="h-4 w-4" />
+                Dodaj dokument
+              </Button>
+            </div>
+
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="outline" onClick={() => setShowCreate(false)}>
                 Odustani
