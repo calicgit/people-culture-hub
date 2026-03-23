@@ -657,7 +657,7 @@ const VotingTab = ({ userId, profileNameByUserId, isMasterAdmin }: VotingTabProp
 
       {/* Create Poll Dialog */}
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Novo glasanje</DialogTitle>
             <DialogDescription>Kreirajte glasanje za donošenje odluke.</DialogDescription>
