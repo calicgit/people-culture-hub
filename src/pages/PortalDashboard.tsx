@@ -63,6 +63,8 @@ import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab, { SECTIONS } from "@/components/portal/SectionsTab";
 import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
 import SingleSectionDocs from "@/components/portal/SingleSectionDocs";
+import VotingTab from "@/components/portal/VotingTab";
+import ChatTab from "@/components/portal/ChatTab";
 
 type DocumentRecord = {
   id: string;
