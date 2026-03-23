@@ -11,6 +11,7 @@ import {
   History,
   Loader2,
   LogOut,
+  Megaphone,
   MessageSquareText,
   Plus,
   SendHorizontal,
