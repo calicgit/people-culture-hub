@@ -62,6 +62,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab, { SECTIONS } from "@/components/portal/SectionsTab";
 import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
+import SingleSectionDocs from "@/components/portal/SingleSectionDocs";
 
 type DocumentRecord = {
   id: string;
@@ -1407,11 +1408,11 @@ const PortalDashboard = () => {
               { value: "bulletin-advisory", label: "Rad Savjetodavnog vijeća", sectionId: "bulletin-advisory" },
             ].map((item) => (
               <TabsContent key={item.value} value={item.value} className="space-y-6">
-                <SectionsTab
+                <SingleSectionDocs
+                  sectionId={item.sectionId}
+                  sectionLabel={item.label}
                   userId={user!.id}
                   profileNameByUserId={profileNameByUserId}
-                  onDataRefresh={loadPortalData}
-                  activeSection={item.sectionId}
                 />
               </TabsContent>
             ))}
