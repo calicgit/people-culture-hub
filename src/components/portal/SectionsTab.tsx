@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadStorageFile } from "@/lib/storage-download";
 import type { Enums } from "@/integrations/supabase/types";
 
 export const SECTIONS = [
