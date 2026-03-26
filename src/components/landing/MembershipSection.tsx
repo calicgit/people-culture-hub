@@ -94,12 +94,14 @@ const MembershipSection = () => {
                   </li>
                 ))}
               </ul>
-              <Button
-                className="w-full"
-                variant={tier.popular ? "default" : "outline"}
-              >
-                {t("Učlani se", "Join Now")}
-              </Button>
+              <Link to="/prijava-clanstvo" className="w-full">
+                <Button
+                  className="w-full"
+                  variant={tier.popular ? "default" : "outline"}
+                >
+                  {t("Učlani se", "Join Now")}
+                </Button>
+              </Link>
             </motion.div>
           ))}
         </div>

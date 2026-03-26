@@ -86,7 +86,7 @@ const MembershipApplication = () => {
     setLoading(true);
     try {
       const isEmployer = paidBy === "employer";
-      const { error } = await supabase.from("membership_applications").insert({
+      const { error } = await (supabase as any).from("membership_applications").insert({
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         phone: phone.trim(),
@@ -103,7 +103,7 @@ const MembershipApplication = () => {
         applicant_oib: isEmployer ? applicantOib.trim() : personalOib.trim(),
         applicant_date_of_birth: isEmployer ? applicantDob : personalDob,
         invoice_email: isEmployer ? invoiceEmail.trim() : personalInvoiceEmail.trim(),
-      } as any);
+      });
 
       if (error) throw error;
 
