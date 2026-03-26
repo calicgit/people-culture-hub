@@ -106,7 +106,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             variants={fadeUp}
             custom={0}
-            className="bg-secondary text-secondary-foreground rounded-2xl p-8"
+            className="bg-accent rounded-2xl p-8 border border-primary/10"
           >
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
