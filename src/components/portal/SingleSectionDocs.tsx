@@ -338,7 +338,17 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleDownload(doc.file_path)}
+                      title="Pregledaj online"
+                      onClick={() => handlePreview(doc.file_path)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      title="Preuzmi"
+                      onClick={() => handleDownload(doc.file_path, doc.file_name)}
                     >
                       <Download className="h-4 w-4" />
                     </Button>
