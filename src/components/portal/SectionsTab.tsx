@@ -94,6 +94,11 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
 
+  // Preview state
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   const getDisplayName = (uid: string) => {
     if (uid === userId) return "Ti";
