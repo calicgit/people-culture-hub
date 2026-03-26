@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
+import { blobToDataUrl, downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Enums } from "@/integrations/supabase/types";
 
@@ -231,7 +231,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     setPreviewUrl(null);
     try {
       const blob = await fetchStorageBlob("dms-documents", filePath);
-      setPreviewUrl(URL.createObjectURL(blob));
+      setPreviewUrl(await blobToDataUrl(blob));
     } catch (error) {
       setPreviewOpen(false);
       toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
@@ -242,10 +242,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   const handleDelete = async (docId: string, filePath: string, sectionId: string) => {

@@ -39,6 +39,20 @@ export const fetchStorageBlob = async (bucket: string, filePath: string) => {
   return response.blob();
 };
 
+export const blobToDataUrl = (blob: Blob) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+        return;
+      }
+      reject(new Error("Pregled datoteke nije dostupan."));
+    };
+    reader.onerror = () => reject(new Error("Pregled datoteke nije dostupan."));
+    reader.readAsDataURL(blob);
+  });
+
 export const downloadStorageFile = async (bucket: string, filePath: string, fileName: string) => {
   const blob = await fetchStorageBlob(bucket, filePath);
   const blobUrl = URL.createObjectURL(blob);

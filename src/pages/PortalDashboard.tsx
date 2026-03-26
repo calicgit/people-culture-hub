@@ -63,7 +63,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
+import { blobToDataUrl, downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
 import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab, { SECTIONS } from "@/components/portal/SectionsTab";
 import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
@@ -533,7 +533,7 @@ const PortalDashboard = () => {
 
     try {
       const blob = await fetchStorageBlob("dms-documents", document.file_path);
-      setPreviewUrl(URL.createObjectURL(blob));
+      setPreviewUrl(await blobToDataUrl(blob));
     } catch (error) {
       setPreviewOpen(false);
       toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
@@ -544,10 +544,7 @@ const PortalDashboard = () => {
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   const handleDeleteDocument = async (documentId: string, filePath: string) => {
@@ -902,7 +899,7 @@ const PortalDashboard = () => {
               <Badge variant="secondary">DMS portal</Badge>
               {isMasterAdmin && <Badge>Administracija</Badge>}
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Interni portal udruge</h1>
+            <h1 className="text-2xl font-bold text-foreground">Interni portal</h1>
             <p className="text-sm text-muted-foreground">
               {profile?.full_name ?? user?.email} · {memberSummary.length > 0 ? memberSummary.join(", ") : "Pristup članskom portalu"}
             </p>

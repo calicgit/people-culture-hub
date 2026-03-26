@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
+import { blobToDataUrl, downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
 
 type SectionDocument = {
   id: string;
@@ -157,8 +157,8 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
 
     try {
       const blob = await fetchStorageBlob("dms-documents", filePath);
-      const blobUrl = URL.createObjectURL(blob);
-      setPreviewUrl(blobUrl);
+      const dataUrl = await blobToDataUrl(blob);
+      setPreviewUrl(dataUrl);
     } catch (error) {
       console.error("Preview error:", error);
       setPreviewOpen(false);
@@ -174,10 +174,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   const handleDownload = async (filePath: string, fileName: string) => {
