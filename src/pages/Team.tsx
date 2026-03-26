@@ -80,8 +80,8 @@ const Team = () => {
             className="text-lg text-secondary-foreground/80 max-w-2xl font-body"
           >
             {t(
-              "Upoznajte članove upravnog, savjetodavnog i znanstvenog vijeća naše udruge.",
-              "Meet the members of our association's executive, advisory and scientific boards."
+              "Upoznajte članove Upravnog, Savjetodavnog i Znanstvenog vijeća naše Udruge.",
+              "Meet the members of our association's Executive, Advisory and Scientific boards."
             )}
           </motion.p>
         </div>
