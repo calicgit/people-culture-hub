@@ -179,7 +179,7 @@ const MembershipApplication = () => {
 
       {/* Progress bar */}
       {step < 9 && (
-        <div className="w-full h-1 bg-secondary-foreground/10">
+        <div className="w-full h-1 bg-muted">
           <div
             className="h-full bg-primary transition-all duration-500"
             style={{ width: `${progress}%` }}
