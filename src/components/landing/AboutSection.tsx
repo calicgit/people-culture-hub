@@ -106,15 +106,15 @@ const AboutSection = () => {
             viewport={{ once: true }}
             variants={fadeUp}
             custom={0}
-            className="bg-secondary text-secondary-foreground rounded-2xl p-8"
+            className="bg-accent rounded-2xl p-8 border border-primary/10"
           >
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Heart className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-xl font-bold">{t("Naša misija", "Our Mission")}</h3>
+              <h3 className="font-heading text-xl font-bold text-foreground">{t("Naša misija", "Our Mission")}</h3>
             </div>
-            <p className="font-body leading-relaxed opacity-90 mb-6">
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
               {t(
                 "Gradimo zajednicu koja razvija i primjenjuje prakse rada temeljene na:",
                 "We build a community that develops and applies work practices based on:"
@@ -123,14 +123,14 @@ const AboutSection = () => {
             <div className="space-y-4">
               {missionPoints.map((p, i) => (
                 <motion.div key={p.text} variants={fadeUp} custom={i + 1} className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <p.icon className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="font-body text-sm">{p.text}</span>
+                  <span className="font-body text-sm text-foreground">{p.text}</span>
                 </motion.div>
               ))}
             </div>
-            <p className="font-body text-xs opacity-70 mt-5 italic">
+            <p className="font-body text-xs text-muted-foreground mt-5 italic">
               {t(
                 "S fokusom na psihološku sigurnost, angažiranost, leadership, uključivost i kulturu učenja.",
                 "Focusing on psychological safety, engagement, leadership, inclusion, and a culture of learning."
@@ -144,7 +144,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             variants={fadeUp}
             custom={1}
-            className="bg-card rounded-2xl p-8 border border-border"
+            className="bg-accent rounded-2xl p-8 border border-primary/10"
           >
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
