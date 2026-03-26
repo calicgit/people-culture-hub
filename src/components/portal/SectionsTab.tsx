@@ -291,7 +291,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
   }, [sectionComments]);
 
   return (
-    <div className="space-y-3">
+    <>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
