@@ -106,7 +106,7 @@ const WhatWeDoSection = () => {
             </motion.div>
           ))}
         </div>
-        <div className="flex justify-center gap-5 mb-20 -mt-15">
+        <div className="flex justify-center gap-5 mb-20 -mt-[55px]">
           {areas.slice(3).map((a, i) => (
             <motion.div
               key={a.title}
