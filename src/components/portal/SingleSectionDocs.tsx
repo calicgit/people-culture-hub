@@ -305,7 +305,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
                     size="icon"
                     className="h-8 w-8"
                     title="Pregledaj online"
-                    onClick={() => handlePreview(doc.file_path)}
+                    onClick={() => handlePreview(doc.file_path, doc.file_name)}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
