@@ -121,6 +121,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
       return;
     }
 
+    const formRef = e.currentTarget;
     setUploading(true);
     const safeName = uploadFile.name.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9._-]/g, "");
     const filePath = `${userId}/sections/${sectionId}/${Date.now()}-${safeName}`;
@@ -156,7 +157,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
       setUploadTitle("");
       setUploadDescription("");
       setUploadFile(null);
-      e.currentTarget.reset();
+      formRef.reset();
       await loadDocuments();
       toast({ title: "Dokument je spremljen" });
     } catch (error) {
