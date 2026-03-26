@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { z } from "zod";
 import {
+  Briefcase,
   CalendarDays,
   ChevronDown,
   Download,
@@ -66,6 +67,7 @@ import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
 import SingleSectionDocs from "@/components/portal/SingleSectionDocs";
 import VotingTab from "@/components/portal/VotingTab";
 import ChatTab from "@/components/portal/ChatTab";
+import ProjectsTab from "@/components/portal/ProjectsTab";
 
 type DocumentRecord = {
   id: string;
@@ -939,6 +941,10 @@ const PortalDashboard = () => {
                   <MessageCircle className="h-4 w-4 shrink-0" />
                   Interni chat
                 </TabsTrigger>
+                <TabsTrigger value="projects" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Briefcase className="h-4 w-4 shrink-0" />
+                  Suradnja na projektima
+                </TabsTrigger>
               </TabsList>
 
               {/* Sekcije - collapsible */}
@@ -1435,6 +1441,14 @@ const PortalDashboard = () => {
             {/* Interni chat */}
             <TabsContent value="chat" className="space-y-6">
               <ChatTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                isMasterAdmin={isMasterAdmin}
+              />
+            </TabsContent>
+
+            <TabsContent value="projects" className="space-y-6">
+              <ProjectsTab
                 userId={user!.id}
                 profileNameByUserId={profileNameByUserId}
                 isMasterAdmin={isMasterAdmin}
