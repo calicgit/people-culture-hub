@@ -222,13 +222,13 @@ const MembershipApplication = () => {
               {/* Step 2: GDPR Consent */}
               {step === 2 && (
                 <div className="space-y-6">
-                  <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
                     SUGLASNOST ZA OBRADU PODATAKA <span className="text-destructive">*</span>
                   </h2>
-                  <p className="text-secondary-foreground/80 font-body text-sm">
+                  <p className="text-muted-foreground font-body text-sm">
                     Sudjelovanjem u ovom upitniku potvrđujem da:
                   </p>
-                  <ul className="space-y-3 text-secondary-foreground/80 font-body text-sm">
+                  <ul className="space-y-3 text-muted-foreground font-body text-sm">
                     {[
                       "Razumijem da će moje sudjelovanje uključivati online upitnik u trajanju do 5 minuta.",
                       "Razumijem da je moje sudjelovanje u potpunosti dobrovoljno.",
@@ -245,14 +245,14 @@ const MembershipApplication = () => {
                       </li>
                     ))}
                   </ul>
-                  <p className="text-secondary-foreground/70 font-body text-xs italic">
+                  <p className="text-muted-foreground font-body text-xs italic">
                     Klikom na gumb "Prihvaćam" potvrđujem da sam razumio/la gore navedene informacije i pristajem sudjelovati u upitniku.
                   </p>
                   <div className="flex gap-3 pt-2">
                     <Button onClick={() => setStep(3)} className="flex-1">
                       Prihvaćam
                     </Button>
-                    <Button variant="outline" onClick={() => setStep(1)} className="flex-1 border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10">
+                    <Button onClick={() => setStep(1)} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
                       Ne prihvaćam
                     </Button>
                   </div>
