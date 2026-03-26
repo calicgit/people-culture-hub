@@ -1611,9 +1611,8 @@ const PortalDashboard = () => {
                   <Select value={adminMembershipStatus} onValueChange={setAdminMembershipStatus}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">active</SelectItem>
-                      <SelectItem value="inactive">inactive</SelectItem>
-                      <SelectItem value="pending">pending</SelectItem>
+                      <SelectItem value="active">Aktivan</SelectItem>
+                      <SelectItem value="inactive">Neaktivan</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
