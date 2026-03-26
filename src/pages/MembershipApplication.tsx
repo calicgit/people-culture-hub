@@ -203,14 +203,14 @@ const MembershipApplication = () => {
               {step === 1 && (
                 <div className="text-center space-y-8">
                   <div className="space-y-4">
-                    <h1 className="font-heading text-2xl md:text-3xl font-bold text-secondary-foreground">
+                    <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
                       Poštovani/a,
                     </h1>
-                    <p className="text-secondary-foreground/80 font-body text-lg leading-relaxed">
+                    <p className="text-muted-foreground font-body text-lg leading-relaxed">
                       molimo Vas da odgovorite na nekoliko pitanja kako bi uspješno zaprimili Vašu prijavu!
                     </p>
-                    <p className="text-secondary-foreground/80 font-body text-lg">
-                      Unaprijed hvala, <strong>People & Culture HUB!</strong>
+                    <p className="text-muted-foreground font-body text-lg">
+                      Unaprijed hvala, <strong className="text-foreground">People & Culture HUB!</strong>
                     </p>
                   </div>
                   <Button size="lg" onClick={() => setStep(2)} className="text-lg px-10 py-6">
