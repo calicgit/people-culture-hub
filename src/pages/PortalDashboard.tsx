@@ -869,26 +869,6 @@ const PortalDashboard = () => {
     }
   };
 
-  const overviewCards = [
-    {
-      title: "Zajednički dokumenti",
-      value: documents.length,
-      description: "aktivnih dokumenata u portalu",
-      icon: FileText,
-    },
-    {
-      title: "Kalendar",
-      value: calendarEvents.length,
-      description: "događaja i sastanaka",
-      icon: CalendarDays,
-    },
-    {
-      title: "Korisnici portala",
-      value: directoryProfiles.length,
-      description: "aktivnih članova i profila",
-      icon: Users,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -1040,24 +1020,6 @@ const PortalDashboard = () => {
             </div>
 
             <div className="min-w-0 flex-1 space-y-6">
-              <section className="grid gap-4 md:grid-cols-3">
-                {overviewCards.map((card) => (
-                  <Card key={card.title}>
-                    <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                      <div className="space-y-1">
-                        <CardDescription>{card.title}</CardDescription>
-                        <CardTitle className="text-3xl">{card.value}</CardTitle>
-                      </div>
-                      <div className="rounded-full border border-border bg-accent p-3 text-accent-foreground">
-                        <card.icon className="h-5 w-5" />
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">{card.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </section>
 
             <TabsContent value="documents" className="space-y-6">
               <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
