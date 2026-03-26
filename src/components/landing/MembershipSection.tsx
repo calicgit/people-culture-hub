@@ -8,8 +8,8 @@ const MembershipSection = () => {
   const { t } = useLanguage();
 
   const discountFeature = t(
-    "Popust na kotizacije za konferenciju People & Culture HORIZONS",
-    "Discount on People & Culture HORIZONS conference fees"
+    "Popust na kotizacije za konferenciju People & Culture HORIZONS.",
+    "Discount on People & Culture HORIZONS conference fees."
   );
 
   const tiers = [
