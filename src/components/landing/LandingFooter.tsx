@@ -1,5 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const LandingFooter = () => {
   const { t } = useLanguage();
@@ -33,6 +34,29 @@ const LandingFooter = () => {
                 <p className="text-primary-foreground/40 text-[11px] font-body">Remetinečka cesta 102D, 10000 Zagreb</p>
               </div>
             </div>
+          </div>
+
+          <div className="flex flex-col items-end gap-3">
+            <div>
+              <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-2 text-right">
+                {t("Pratite nas", "Follow us")}
+              </h4>
+              <a
+                href="https://www.linkedin.com/company/108869392"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-primary-foreground/50 hover:text-primary transition-colors text-[11px] font-body"
+              >
+                <Linkedin className="w-4 h-4" />
+                LinkedIn
+              </a>
+            </div>
+            <Link
+              to="/politika-privatnosti"
+              className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body"
+            >
+              {t("Politika privatnosti", "Privacy Policy")}
+            </Link>
           </div>
         </div>
         <div className="border-t border-primary-foreground/10 pt-4 text-center">
