@@ -15,23 +15,23 @@ const LandingFooter = () => {
             </h4>
             <div className="flex items-center gap-2">
               <Mail className="w-3.5 h-3.5 text-primary" />
-              <div>
-                <p className="text-primary-foreground/60 text-[11px] font-body">E-mail</p>
-                <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body">hub@peopleandculture.hr</a>
+              <div className="leading-tight">
+                <p className="text-primary-foreground/60 text-[11px] font-body leading-none">E-mail</p>
+                <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">hub@peopleandculture.hr</a>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Phone className="w-3.5 h-3.5 text-primary" />
-              <div>
-                <p className="text-primary-foreground/60 text-[11px] font-body">{t("Centrala", "Phone")}</p>
-                <a href="tel:+38514103734" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body">+385 1 4103 734</a>
+              <div className="leading-tight">
+                <p className="text-primary-foreground/60 text-[11px] font-body leading-none">{t("Centrala", "Phone")}</p>
+                <a href="tel:+38514103734" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">+385 1 4103 734</a>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="w-3.5 h-3.5 text-primary" />
-              <div>
-                <p className="text-primary-foreground/60 text-[11px] font-body">{t("Adresa", "Address")}</p>
-                <a href="https://maps.google.com/?q=Remetinečka+cesta+102D,+10000+Zagreb" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body">Remetinečka cesta 102D, 10000 Zagreb</a>
+              <div className="leading-tight">
+                <p className="text-primary-foreground/60 text-[11px] font-body leading-none">{t("Adresa", "Address")}</p>
+                <a href="https://maps.google.com/?q=Remetinečka+cesta+102D,+10000+Zagreb" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">Remetinečka cesta 102D, 10000 Zagreb</a>
               </div>
             </div>
           </div>
