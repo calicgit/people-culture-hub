@@ -69,7 +69,7 @@ const Team = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-3xl md:text-5xl font-bold mb-4"
+            className="font-heading text-xl md:text-3xl font-bold mb-4"
           >
             {t("Tim People & Culture HUB-a", "People & Culture HUB Team")}
           </motion.h1>
