@@ -7,6 +7,7 @@ import {
   ChevronDown,
   Download,
   Edit3,
+  Eye,
   FileText,
   FolderOpen,
   History,
@@ -21,6 +22,7 @@ import {
   Trash2,
   Upload,
   Users,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -61,7 +63,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { downloadStorageFile } from "@/lib/storage-download";
+import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
 import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab, { SECTIONS } from "@/components/portal/SectionsTab";
 import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
@@ -191,6 +193,10 @@ const PortalDashboard = () => {
   const [uploadingVersionFor, setUploadingVersionFor] = useState<string | null>(null);
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   const [eventTitle, setEventTitle] = useState("");
   const [eventDescription, setEventDescription] = useState("");
@@ -516,6 +522,31 @@ const PortalDashboard = () => {
       await downloadStorageFile("dms-documents", filePath, fileName);
     } catch (error) {
       toast({ title: "Preuzimanje verzije nije uspjelo", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+    }
+  };
+
+  const handlePreview = async (document: DocumentRecord) => {
+    setPreviewTitle(document.file_name);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewUrl(null);
+
+    try {
+      const blob = await fetchStorageBlob("dms-documents", document.file_path);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch (error) {
+      setPreviewOpen(false);
+      toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
   };
 
@@ -1123,6 +1154,10 @@ const PortalDashboard = () => {
                               </div>
 
                               <div className="flex flex-wrap items-center gap-2">
+                                <Button variant="outline" size="sm" onClick={() => handlePreview(document)}>
+                                  <Eye className="h-4 w-4" />
+                                  Pregled
+                                </Button>
                                 <Button variant="outline" size="sm" onClick={() => handleDownload(document)}>
                                   <Download className="h-4 w-4" />
                                   Preuzmi
@@ -1761,6 +1796,35 @@ const PortalDashboard = () => {
                   {savingSection ? "Dodajem..." : "Dodaj"}
                 </Button>
               </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={previewOpen} onOpenChange={(open) => { if (!open) closePreview(); }}>
+          <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
+            <DialogHeader className="px-4 py-3 border-b border-border flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-sm font-medium truncate pr-4">{previewTitle}</DialogTitle>
+                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={closePreview}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 min-h-0 bg-muted/30">
+              {previewLoading && (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Učitavam dokument...
+                </div>
+              )}
+              {!previewLoading && previewUrl && (
+                <iframe src={previewUrl} className="w-full h-full border-0" title={previewTitle} />
+              )}
+              {!previewLoading && !previewUrl && (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  Dokument nije dostupan.
+                </div>
+              )}
             </div>
           </DialogContent>
         </Dialog>
