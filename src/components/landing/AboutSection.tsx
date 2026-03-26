@@ -1,70 +1,310 @@
 import { motion } from "framer-motion";
-import { Target, Eye, Award, Users } from "lucide-react";
+import { Target, Eye, Heart, Lightbulb, Users, GraduationCap, BarChart3, Rocket, Award, Handshake, Building2, BookOpen } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } }),
+};
 
 const AboutSection = () => {
   const { t } = useLanguage();
 
-  const stats = [
-    { icon: Users, value: "500+", label: t("Članova", "Members") },
-    { icon: Award, value: "15+", label: t("Godina iskustva", "Years of Experience") },
-    { icon: Target, value: "200+", label: t("Projekata", "Projects") },
-    { icon: Eye, value: "30+", label: t("Partnera", "Partners") },
+  const pillars = [
+    {
+      icon: Users,
+      title: t("Izgradnja zajednice", "Building Community"),
+      desc: t(
+        "Povezivanje stručnjaka, mentorstvo i razmjena znanja.",
+        "Connecting professionals, mentorship, and knowledge exchange."
+      ),
+    },
+    {
+      icon: GraduationCap,
+      title: t("Edukacija i razvoj", "Education & Development"),
+      desc: t(
+        "Programi poput People Experience Lab, Culture Circle i Leadership Studio.",
+        "Programs like People Experience Lab, Culture Circle and Leadership Studio."
+      ),
+    },
+    {
+      icon: BarChart3,
+      title: t("Utjecaj na praksu i politike", "Impact on Practice & Policy"),
+      desc: t(
+        "Istraživanja i preporuke za razvoj tržišta rada.",
+        "Research and recommendations for labor market development."
+      ),
+    },
+    {
+      icon: Rocket,
+      title: t("Inovacije i tehnologija", "Innovation & Technology"),
+      desc: t(
+        "People analytics, HR tech i pilot projekti.",
+        "People analytics, HR tech and pilot projects."
+      ),
+    },
+    {
+      icon: Award,
+      title: t("Promocija struke", "Promoting the Profession"),
+      desc: t(
+        "Nagrade, inicijative i jačanje vidljivosti područja.",
+        "Awards, initiatives, and increasing field visibility."
+      ),
+    },
+  ];
+
+  const missionPoints = [
+    { icon: BookOpen, text: t("Znanstvenim spoznajama", "Scientific insights") },
+    { icon: Heart, text: t("Etičkim principima", "Ethical principles") },
+    { icon: Lightbulb, text: t("Stvarnom organizacijskom utjecaju", "Real organizational impact") },
+  ];
+
+  const connectPoints = [
+    t("Gospodarstvo", "Business sector"),
+    t("Akademsku zajednicu", "Academic community"),
+    t("Institucije i državu", "Institutions & government"),
+    t("Sindikate", "Unions"),
   ];
 
   return (
-    <section id="o-nama" className="py-20">
+    <section id="o-nama" className="py-24">
       <div className="container">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        {/* Intro - Tko smo */}
+        <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
+            variants={fadeUp}
+            custom={0}
           >
             <span className="text-primary font-medium text-sm uppercase tracking-wider">
               {t("Tko smo", "About Us")}
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2 mb-6">
-              {t("Udruga za ljude i organizacijsku kulturu.", "Association for People and Organizational Culture.")}
+              {t(
+                "Prva strukovno-znanstvena udruga za ljude i kulturu u Hrvatskoj.",
+                "Croatia's first professional-scientific association for people & culture."
+              )}
             </h2>
             <div className="space-y-4 text-muted-foreground font-body leading-relaxed">
               <p>
                 {t(
-                  "Osnovani smo s ciljem profesionalizacije upravljanja ljudskim potencijalima u Hrvatskoj. Okupljamo HR stručnjake, menadžere i poslovne lidere koji dijele viziju modernog, pravednog i učinkovitog radnog okruženja.",
-                  "We were founded to professionalize HR management in Croatia. We bring together HR professionals, managers, and business leaders who share a vision of a modern, fair, and effective work environment."
+                  "People & Culture HUB je prva strukovno-znanstvena udruga u Hrvatskoj posvećena razvoju organizacijske kulture i upravljanju ljudima kao ključnom faktoru poslovnog uspjeha.",
+                  "People & Culture HUB is Croatia's first professional-scientific association dedicated to developing organizational culture and managing people as a key factor in business success."
                 )}
               </p>
               <p>
                 {t(
-                  "Naša misija je promicanje najboljih praksi u upravljanju ljudskim potencijalima, pružanje podrške profesionalcima i zagovaranje politika koje unapređuju kvalitetu radnog života.",
-                  "Our mission is to promote best practices in HR management, provide support to professionals, and advocate for policies that improve the quality of working life."
+                  "Okupljamo stručnjake iz područja ljudskih potencijala, lidere iz gospodarstva te akademsku zajednicu s ciljem unapređenja praksi rada kroz znanost, etiku i konkretne alate.",
+                  "We bring together HR professionals, business leaders, and the academic community to improve work practices through science, ethics, and practical tools."
                 )}
               </p>
             </div>
           </motion.div>
 
+          {/* Svrha */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-2 gap-4"
+            variants={fadeUp}
+            custom={1}
+            className="bg-accent rounded-2xl p-8 border border-primary/10"
           >
-            {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-accent rounded-xl p-6 text-center border border-primary/10"
-              >
-                <s.icon className="w-7 h-7 text-primary mx-auto mb-3" />
-                <div className="font-heading text-3xl font-bold text-foreground">{s.value}</div>
-                <div className="text-muted-foreground text-xs mt-1 font-body">{s.label}</div>
-              </motion.div>
-            ))}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Target className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-heading text-xl font-bold text-foreground">
+                {t("Naša svrha", "Our Purpose")}
+              </h3>
+            </div>
+            <p className="text-muted-foreground font-body leading-relaxed mb-5">
+              {t(
+                "Djelujemo u vremenu velikih promjena na tržištu rada – od nedostatka radne snage i novih regulativa do promjene vještina i očekivanja zaposlenika. Postojimo kako bismo:",
+                "We operate in a time of major labor market changes – from workforce shortages and new regulations to changing skills and employee expectations. We exist to:"
+              )}
+            </p>
+            <ul className="space-y-3">
+              {[
+                t("Povezali znanost i praksu", "Connect science and practice"),
+                t("Unaprijedili kvalitetu rada i organizacijske kulture", "Improve the quality of work and organizational culture"),
+                t("Doprinosili stvaranju pravednijeg, transparentnijeg i održivog radnog sustava", "Contribute to a fairer, more transparent, and sustainable work system"),
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                  <span className="text-foreground font-body text-sm">{item}</span>
+                </li>
+              ))}
+            </ul>
           </motion.div>
         </div>
+
+        {/* Misija & Vizija */}
+        <div className="grid md:grid-cols-2 gap-6 mb-24">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={0}
+            className="bg-secondary text-secondary-foreground rounded-2xl p-8"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                <Heart className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-heading text-xl font-bold">{t("Naša misija", "Our Mission")}</h3>
+            </div>
+            <p className="font-body leading-relaxed opacity-90 mb-6">
+              {t(
+                "Gradimo zajednicu koja razvija i primjenjuje prakse rada temeljene na:",
+                "We build a community that develops and applies work practices based on:"
+              )}
+            </p>
+            <div className="space-y-4">
+              {missionPoints.map((p, i) => (
+                <motion.div key={p.text} variants={fadeUp} custom={i + 1} className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                    <p.icon className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="font-body text-sm">{p.text}</span>
+                </motion.div>
+              ))}
+            </div>
+            <p className="font-body text-xs opacity-70 mt-5 italic">
+              {t(
+                "S fokusom na psihološku sigurnost, angažiranost, leadership, uključivost i kulturu učenja.",
+                "Focusing on psychological safety, engagement, leadership, inclusion, and a culture of learning."
+              )}
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={1}
+            className="bg-card rounded-2xl p-8 border border-border"
+          >
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Eye className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-heading text-xl font-bold text-foreground">{t("Naša vizija", "Our Vision")}</h3>
+            </div>
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
+              {t(
+                "Postati referentna regionalna platforma za područje People & Culture – mjesto gdje se susreću istraživanja, praksa i stvarne potrebe organizacija i ljudi.",
+                "To become the leading regional platform for People & Culture – where research, practice, and the real needs of organizations and people meet."
+              )}
+            </p>
+
+            <div className="border-t border-border pt-6">
+              <h4 className="font-heading text-sm font-semibold text-foreground mb-3">
+                {t("Kako djelujemo", "How We Operate")}
+              </h4>
+              <p className="text-muted-foreground font-body text-sm leading-relaxed mb-4">
+                {t(
+                  "Djelujemo kao neutralna i stručna platforma koja povezuje:",
+                  "We act as a neutral and expert platform connecting:"
+                )}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {connectPoints.map((cp) => (
+                  <span key={cp} className="px-3 py-1.5 rounded-full bg-accent text-accent-foreground text-xs font-medium">
+                    {cp}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Što radimo - 5 područja */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          custom={0}
+          className="text-center max-w-2xl mx-auto mb-12"
+        >
+          <span className="text-primary font-medium text-sm uppercase tracking-wider">
+            {t("Što radimo", "What We Do")}
+          </span>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
+            {t("Pet ključnih područja djelovanja", "Five Key Areas of Activity")}
+          </h2>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-24">
+          {pillars.map((p, i) => (
+            <motion.div
+              key={p.title}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i}
+              className={`group bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors ${
+                i === 4 ? "sm:col-span-2 lg:col-span-1" : ""
+              }`}
+            >
+              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                <p.icon className="w-5 h-5 text-primary" />
+              </div>
+              <h3 className="font-heading text-lg font-semibold text-foreground mb-2">{p.title}</h3>
+              <p className="text-muted-foreground text-sm font-body leading-relaxed">{p.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Zašto postojimo - CTA */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          custom={0}
+          className="bg-accent rounded-2xl p-10 md:p-14 text-center border border-primary/10"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
+            <Handshake className="w-7 h-7 text-primary" />
+          </div>
+          <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-4">
+            {t("Zašto postojimo", "Why We Exist")}
+          </h3>
+          <p className="text-foreground font-heading text-lg font-semibold mb-6 max-w-xl mx-auto">
+            {t(
+              "Vjerujemo da ljudi nisu resurs – već temelj organizacijske održivosti.",
+              "We believe people are not a resource – they are the foundation of organizational sustainability."
+            )}
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            {[
+              {
+                icon: BarChart3,
+                text: t("Donose odluke temeljene na podacima", "Make data-driven decisions"),
+              },
+              {
+                icon: Building2,
+                text: t("Razvijaju kulturu koja potiče rezultate", "Develop a culture that drives results"),
+              },
+              {
+                icon: Users,
+                text: t("Stvaraju okruženje u kojem ljudi mogu rasti", "Create an environment where people can grow"),
+              },
+            ].map((item, i) => (
+              <motion.div key={item.text} variants={fadeUp} custom={i + 1} className="bg-card rounded-xl p-5 border border-border">
+                <item.icon className="w-6 h-6 text-primary mx-auto mb-3" />
+                <p className="text-foreground font-body text-sm">{item.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
