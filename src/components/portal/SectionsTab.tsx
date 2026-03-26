@@ -231,7 +231,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     setPreviewUrl(null);
     try {
       const blob = await fetchStorageBlob("dms-documents", filePath);
-      setPreviewUrl(URL.createObjectURL(blob));
+      setPreviewUrl(await blobToDataUrl(blob));
     } catch (error) {
       setPreviewOpen(false);
       toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
