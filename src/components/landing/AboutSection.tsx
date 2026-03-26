@@ -38,7 +38,7 @@ const AboutSection = () => {
             <span className="text-primary font-medium text-sm uppercase tracking-wider">
               {t("Tko smo", "About Us")}
             </span>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mt-2 mb-6">
+            <h2 className="font-heading text-xl md:text-2xl font-bold text-foreground mt-2 mb-6">
               {t(
                 "Prva strukovno-znanstvena udruga za ljude i kulturu u Hrvatskoj.",
                 "Croatia's first professional-scientific association for people & culture."
