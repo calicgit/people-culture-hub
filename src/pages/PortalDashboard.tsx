@@ -193,6 +193,10 @@ const PortalDashboard = () => {
   const [uploadingVersionFor, setUploadingVersionFor] = useState<string | null>(null);
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   const [eventTitle, setEventTitle] = useState("");
   const [eventDescription, setEventDescription] = useState("");
