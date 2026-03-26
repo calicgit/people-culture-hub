@@ -143,27 +143,45 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
 
   const handlePreview = async (filePath: string) => {
     try {
-      const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 300);
+      const { data, error } = await supabase.storage.from("dms-documents").download(filePath);
       if (error) throw error;
-      if (!data?.signedUrl) throw new Error("No signed URL");
-      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+      if (!data) throw new Error("Datoteka nije dostupna.");
+
+      const blobUrl = URL.createObjectURL(data);
+      window.open(blobUrl, "_blank", "noopener,noreferrer");
+      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
     } catch (error) {
       console.error("Preview error:", error);
-      toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+      toast({
+        title: "Pregled nije uspio",
+        description: error instanceof Error ? error.message : "Pokušaj ponovno.",
+        variant: "destructive",
+      });
     }
   };
 
   const handleDownload = async (filePath: string, fileName: string) => {
     try {
-      const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60, {
-        download: fileName,
-      });
+      const { data, error } = await supabase.storage.from("dms-documents").download(filePath);
       if (error) throw error;
-      if (!data?.signedUrl) throw new Error("No signed URL");
-      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+      if (!data) throw new Error("Datoteka nije dostupna.");
+
+      const blobUrl = URL.createObjectURL(data);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName;
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
     } catch (error) {
       console.error("Download error:", error);
-      toast({ title: "Preuzimanje nije uspjelo", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+      toast({
+        title: "Preuzimanje nije uspjelo",
+        description: error instanceof Error ? error.message : "Pokušaj ponovno.",
+        variant: "destructive",
+      });
     }
   };
 
