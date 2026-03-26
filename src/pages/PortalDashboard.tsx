@@ -7,6 +7,7 @@ import {
   ChevronDown,
   Download,
   Edit3,
+  Eye,
   FileText,
   FolderOpen,
   History,
@@ -21,6 +22,7 @@ import {
   Trash2,
   Upload,
   Users,
+  X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
