@@ -24,7 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { downloadStorageFile } from "@/lib/storage-download";
+import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Enums } from "@/integrations/supabase/types";
 
 export const SECTIONS = [
