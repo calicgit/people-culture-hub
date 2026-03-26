@@ -100,6 +100,11 @@ const MembershipSection = () => {
                 </span>
               )}
               <h3 className="font-heading text-xl font-bold mb-1">{tier.name}</h3>
+              {tier.description && (
+                <p className={`text-xs mb-2 ${tier.popular ? "text-secondary-foreground/70" : "text-muted-foreground"}`}>
+                  {tier.description}
+                </p>
+              )}
               <div className="font-heading text-3xl font-bold mb-6">{tier.price}</div>
               <ul className="space-y-3 flex-1 mb-8">
                 {tier.features.map((f, fi) => (
