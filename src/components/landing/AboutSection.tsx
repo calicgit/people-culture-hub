@@ -123,7 +123,7 @@ const AboutSection = () => {
             <div className="space-y-4">
               {missionPoints.map((p, i) => (
                 <motion.div key={p.text} variants={fadeUp} custom={i + 1} className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <p.icon className="w-4 h-4 text-primary" />
                   </div>
                   <span className="font-body text-sm">{p.text}</span>
