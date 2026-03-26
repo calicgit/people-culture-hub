@@ -45,16 +45,19 @@ const LandingFooter = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="People & Culture HUB na LinkedInu"
-              className="inline-flex items-center justify-center rounded-full border border-primary-foreground/15 p-2.5 text-primary-foreground/50 transition-colors hover:text-primary hover:border-primary"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="h-4 w-4"
+                viewBox="0 0 72 72"
+                className="h-7 w-7"
                 aria-hidden="true"
               >
-                <path d="M19 3A2 2 0 0 1 21 5v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-9.5 6.5H7V17h2.5zM8.25 6.56a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88M17 12.03c0-2.5-1.33-3.66-3.1-3.66-1.43 0-2.07.79-2.43 1.34V9.5H9V17h2.47v-4.18c0-1.1.21-2.17 1.57-2.17 1.34 0 1.36 1.25 1.36 2.24V17z" />
+                <rect width="72" height="72" rx="8" fill="#0A66C2" />
+                <path
+                  d="M20.1 30.5h6.4V51h-6.4V30.5zM23.3 18c2.1 0 3.8 1.7 3.8 3.8s-1.7 3.8-3.8 3.8-3.8-1.7-3.8-3.8 1.7-3.8 3.8-3.8M31.1 30.5h6.1v2.8h.1c.9-1.6 3-3.3 6.1-3.3 6.5 0 7.7 4.3 7.7 9.9V51h-6.4V41.4c0-2.3 0-5.2-3.2-5.2-3.2 0-3.7 2.5-3.7 5V51h-6.4V30.5z"
+                  fill="#fff"
+                />
               </svg>
             </a>
           </div>
