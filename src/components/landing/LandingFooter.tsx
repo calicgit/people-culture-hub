@@ -8,7 +8,7 @@ const LandingFooter = () => {
   return (
     <footer className="bg-navy-deep py-6">
       <div className="container">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-4">
+        <div className="flex flex-col items-center gap-6 mb-4">
           <div className="w-full">
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-3 text-center">
               {t("Kontakt", "Contact")}
