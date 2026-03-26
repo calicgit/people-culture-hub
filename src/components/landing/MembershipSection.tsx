@@ -9,8 +9,18 @@ const MembershipSection = () => {
 
   const tiers = [
     {
-      name: t("Individualno", "Individual"),
-      price: t("200 kn/god", "€27/yr"),
+      name: t("Student članstvo", "Student Membership"),
+      price: "€30/god",
+      description: t("Namijenjeno redovitim studentima", "For full-time students"),
+      features: [
+        t("Pristup edukacijama", "Access to training sessions"),
+        t("Newsletter i resursi", "Newsletter & resources"),
+        t("Umrežavanje na događanjima", "Networking at events"),
+      ],
+    },
+    {
+      name: t("Basic članstvo", "Basic Membership"),
+      price: "€120/god",
       features: [
         t("Pristup svim edukacijama", "Access to all training sessions"),
         t("Newsletter i resursi", "Newsletter & resources"),
@@ -19,25 +29,30 @@ const MembershipSection = () => {
       ],
     },
     {
-      name: t("Korporativno", "Corporate"),
-      price: t("1.500 kn/god", "€200/yr"),
+      name: t("Advanced članstvo", "Advanced Membership"),
+      price: "€170/god",
       popular: true,
+      description: t(
+        "Namijenjeno članovima vijeća, odbora ili drugih tijela Udruge",
+        "For council, board or other association body members"
+      ),
       features: [
-        t("Do 10 članova tima", "Up to 10 team members"),
-        t("Pristup svim edukacijama", "Access to all training"),
-        t("Benchmarking izvještaji", "Benchmarking reports"),
-        t("Savjetodavna podrška", "Advisory support"),
+        t("Sve pogodnosti Basic članstva", "All Basic membership benefits"),
+        t("Sudjelovanje u vijećima i odborima", "Participation in councils & boards"),
+        t("Pristup ekskluzivnim materijalima", "Access to exclusive materials"),
         t("Prioritetno umrežavanje", "Priority networking"),
       ],
     },
     {
-      name: t("Strateško", "Strategic"),
-      price: t("Po dogovoru", "Custom"),
+      name: t("Korporativno članstvo", "Corporate Membership"),
+      price: "€5.000/god",
+      description: t("Namijenjeno tvrtkama", "For companies"),
       features: [
-        t("Neograničen broj članova", "Unlimited members"),
-        t("Prilagođene edukacije", "Custom training"),
-        t("Ekskluzivna istraživanja", "Exclusive research"),
-        t("Mjesto u savjetodavnom vijeću", "Advisory council seat"),
+        t("Višestruki članovi tima", "Multiple team members"),
+        t("Pristup svim edukacijama", "Access to all training"),
+        t("Benchmarking izvještaji", "Benchmarking reports"),
+        t("Savjetodavna podrška", "Advisory support"),
+        t("Prioritetno umrežavanje", "Priority networking"),
       ],
     },
   ];
