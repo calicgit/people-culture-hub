@@ -56,7 +56,7 @@ const ContactSection = () => {
               </div>
               <div>
                 <h4 className="font-heading text-sm font-semibold text-foreground">Email</h4>
-                <p className="text-muted-foreground text-sm font-body">info@hr-udruga.hr</p>
+                <p className="text-muted-foreground text-sm font-body">hub@peopleandculture.hr</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -65,7 +65,7 @@ const ContactSection = () => {
               </div>
               <div>
                 <h4 className="font-heading text-sm font-semibold text-foreground">{t("Telefon", "Phone")}</h4>
-                <p className="text-muted-foreground text-sm font-body">+385 1 234 5678</p>
+                <p className="text-muted-foreground text-sm font-body">+385 1 4103 734</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -75,7 +75,7 @@ const ContactSection = () => {
               <div>
                 <h4 className="font-heading text-sm font-semibold text-foreground">{t("Adresa", "Address")}</h4>
                 <p className="text-muted-foreground text-sm font-body">
-                  {t("Ilica 1, 10000 Zagreb, Hrvatska", "Ilica 1, 10000 Zagreb, Croatia")}
+                  Kamenarka 37, 10000 Zagreb
                 </p>
               </div>
             </div>
