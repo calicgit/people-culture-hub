@@ -145,7 +145,7 @@ const Team = () => {
                             </div>
                           )}
                         </div>
-                        <div className="p-5">
+                        <div className="p-4 space-y-0">
                           <h3 className="font-heading text-lg font-semibold text-foreground">
                             {member.full_name}
                           </h3>
