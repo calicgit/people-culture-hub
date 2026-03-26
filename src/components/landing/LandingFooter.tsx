@@ -16,7 +16,7 @@ const LandingFooter = () => {
             <div className="flex items-start gap-2">
               <Mail className="w-3.5 h-3.5 text-primary mt-0.5" />
               <div className="flex flex-col gap-0.5">
-                <p className="text-primary-foreground/60 text-[11px] font-body leading-none">E-mail</p>
+                <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">E-mail</p>
                 <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">hub@peopleandculture.hr</a>
               </div>
             </div>
