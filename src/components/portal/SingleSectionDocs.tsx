@@ -172,8 +172,19 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
     }
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
+  const handlePreview = async (filePath: string) => {
+    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 300);
+    if (error || !data?.signedUrl) {
+      toast({ title: "Pregled nije uspjelo", variant: "destructive" });
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownload = async (filePath: string, fileName: string) => {
+    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60, {
+      download: fileName,
+    });
     if (error || !data?.signedUrl) {
       toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
       return;
