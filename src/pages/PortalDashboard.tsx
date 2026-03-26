@@ -1799,6 +1799,35 @@ const PortalDashboard = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        <Dialog open={previewOpen} onOpenChange={(open) => { if (!open) closePreview(); }}>
+          <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
+            <DialogHeader className="px-4 py-3 border-b border-border flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <DialogTitle className="text-sm font-medium truncate pr-4">{previewTitle}</DialogTitle>
+                <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={closePreview}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 min-h-0 bg-muted/30">
+              {previewLoading && (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Učitavam dokument...
+                </div>
+              )}
+              {!previewLoading && previewUrl && (
+                <iframe src={previewUrl} className="w-full h-full border-0" title={previewTitle} />
+              )}
+              {!previewLoading && !previewUrl && (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  Dokument nije dostupan.
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
