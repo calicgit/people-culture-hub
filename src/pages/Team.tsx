@@ -122,7 +122,7 @@ const Team = () => {
                     <div className="h-1 w-16 bg-primary rounded-full" />
                   </motion.div>
 
-                  <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 max-w-4xl">
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 max-w-5xl">
                     {group.members.map((member, mi) => (
                       <motion.div
                         key={member.id}
@@ -137,7 +137,7 @@ const Team = () => {
                             <img
                               src={member.photo_url}
                               alt={member.full_name}
-                              className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-500"
+                              className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (
                             <div className="h-full w-full flex items-center justify-center bg-accent">
