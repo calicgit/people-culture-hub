@@ -141,16 +141,26 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
     }
   };
 
-  const handlePreview = async (filePath: string) => {
+  const handlePreview = async (filePath: string, fileName: string) => {
+    const previewWindow = window.open("", "_blank", "noopener,noreferrer");
+
     try {
       const { data, error } = await supabase.storage.from("dms-documents").download(filePath);
       if (error) throw error;
       if (!data) throw new Error("Datoteka nije dostupna.");
 
       const blobUrl = URL.createObjectURL(data);
-      window.open(blobUrl, "_blank", "noopener,noreferrer");
+
+      if (previewWindow) {
+        previewWindow.document.title = fileName;
+        previewWindow.location.href = blobUrl;
+      } else {
+        window.location.href = blobUrl;
+      }
+
       window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
     } catch (error) {
+      previewWindow?.close();
       console.error("Preview error:", error);
       toast({
         title: "Pregled nije uspio",
@@ -295,7 +305,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
                     size="icon"
                     className="h-8 w-8"
                     title="Pregledaj online"
-                    onClick={() => handlePreview(doc.file_path)}
+                    onClick={() => handlePreview(doc.file_path, doc.file_name)}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
