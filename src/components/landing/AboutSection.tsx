@@ -10,49 +10,6 @@ const fadeUp = {
 const AboutSection = () => {
   const { t } = useLanguage();
 
-  const pillars = [
-    {
-      icon: Users,
-      title: t("Izgradnja zajednice", "Building Community"),
-      desc: t(
-        "Povezivanje stručnjaka, mentorstvo i razmjena znanja.",
-        "Connecting professionals, mentorship, and knowledge exchange."
-      ),
-    },
-    {
-      icon: GraduationCap,
-      title: t("Edukacija i razvoj", "Education & Development"),
-      desc: t(
-        "Programi poput People Experience Lab, Culture Circle i Leadership Studio.",
-        "Programs like People Experience Lab, Culture Circle and Leadership Studio."
-      ),
-    },
-    {
-      icon: BarChart3,
-      title: t("Utjecaj na praksu i politike", "Impact on Practice & Policy"),
-      desc: t(
-        "Istraživanja i preporuke za razvoj tržišta rada.",
-        "Research and recommendations for labor market development."
-      ),
-    },
-    {
-      icon: Rocket,
-      title: t("Inovacije i tehnologija", "Innovation & Technology"),
-      desc: t(
-        "People analytics, HR tech i pilot projekti.",
-        "People analytics, HR tech and pilot projects."
-      ),
-    },
-    {
-      icon: Award,
-      title: t("Promocija struke", "Promoting the Profession"),
-      desc: t(
-        "Nagrade, inicijative i jačanje vidljivosti područja.",
-        "Awards, initiatives, and increasing field visibility."
-      ),
-    },
-  ];
-
   const missionPoints = [
     { icon: BookOpen, text: t("Znanstvenim spoznajama", "Scientific insights") },
     { icon: Heart, text: t("Etičkim principima", "Ethical principles") },
