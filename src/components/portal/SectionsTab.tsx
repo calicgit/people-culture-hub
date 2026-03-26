@@ -25,8 +25,9 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { blobToDataUrl, downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Enums } from "@/integrations/supabase/types";
+import DocumentPreviewContent from "@/components/portal/DocumentPreviewContent";
 
 export const SECTIONS = [
   { id: "talent-acquisition", label: "Talent Acquisition, Employer Branding" },
@@ -502,7 +503,10 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
 
     {/* Inline document preview dialog */}
     <Dialog open={previewOpen} onOpenChange={(open) => { if (!open) closePreview(); }}>
-      <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
+      <DialogContent className="max-w-5xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0 [&>button]:hidden">
+        <DialogDescription className="sr-only">
+          Ugrađeni pregled dokumenta unutar portala.
+        </DialogDescription>
         <DialogHeader className="px-4 py-3 border-b border-border flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-sm font-medium truncate pr-4">
@@ -520,9 +524,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
               Učitavam dokument...
             </div>
           )}
-          {!previewLoading && previewUrl && (
-            <iframe src={previewUrl} className="w-full h-full border-0" title={previewTitle} />
-          )}
+          {!previewLoading && previewUrl && <DocumentPreviewContent source={previewUrl} fileName={previewTitle} />}
           {!previewLoading && !previewUrl && (
             <div className="flex items-center justify-center h-full text-muted-foreground">
               Dokument nije dostupan.
