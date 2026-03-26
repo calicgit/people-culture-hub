@@ -7,6 +7,11 @@ import { Link } from "react-router-dom";
 const MembershipSection = () => {
   const { t } = useLanguage();
 
+  const discountFeature = t(
+    "Popust na kotizacije za konferenciju People & Culture HORIZONS",
+    "Discount on People & Culture HORIZONS conference fees"
+  );
+
   const tiers = [
     {
       name: t("Student članstvo", "Student Membership"),
@@ -16,22 +21,23 @@ const MembershipSection = () => {
         t("Pristup edukacijama", "Access to training sessions"),
         t("Newsletter i resursi", "Newsletter & resources"),
         t("Umrežavanje na događanjima", "Networking at events"),
+        discountFeature,
       ],
     },
     {
       name: t("Basic članstvo", "Basic Membership"),
       price: "€120/god",
+      popular: true,
       features: [
         t("Pristup svim edukacijama", "Access to all training sessions"),
         t("Newsletter i resursi", "Newsletter & resources"),
         t("Umrežavanje na događanjima", "Networking at events"),
-        t("Popusti na konferencije", "Conference discounts"),
+        discountFeature,
       ],
     },
     {
       name: t("Advanced članstvo", "Advanced Membership"),
       price: "€170/god",
-      popular: true,
       description: t(
         "Namijenjeno članovima vijeća, odbora ili drugih tijela Udruge",
         "For council, board or other association body members"
@@ -41,6 +47,7 @@ const MembershipSection = () => {
         t("Sudjelovanje u vijećima i odborima", "Participation in councils & boards"),
         t("Pristup ekskluzivnim materijalima", "Access to exclusive materials"),
         t("Prioritetno umrežavanje", "Priority networking"),
+        discountFeature,
       ],
     },
     {
@@ -53,6 +60,7 @@ const MembershipSection = () => {
         t("Benchmarking izvještaji", "Benchmarking reports"),
         t("Savjetodavna podrška", "Advisory support"),
         t("Prioritetno umrežavanje", "Priority networking"),
+        discountFeature,
       ],
     },
   ];
