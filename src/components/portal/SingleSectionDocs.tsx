@@ -7,12 +7,14 @@ import {
   Loader2,
   Trash2,
   Upload,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -52,6 +54,11 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
   const [uploadDescription, setUploadDescription] = useState("");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   const getDisplayName = (uid: string) => {
     if (uid === userId) return "Ti";
@@ -142,7 +149,10 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
   };
 
   const handlePreview = async (filePath: string, fileName: string) => {
-    const previewWindow = window.open("", "_blank", "noopener,noreferrer");
+    setPreviewTitle(fileName);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewUrl(null);
 
     try {
       const { data, error } = await supabase.storage.from("dms-documents").download(filePath);
@@ -150,23 +160,25 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
       if (!data) throw new Error("Datoteka nije dostupna.");
 
       const blobUrl = URL.createObjectURL(data);
-
-      if (previewWindow) {
-        previewWindow.document.title = fileName;
-        previewWindow.location.href = blobUrl;
-      } else {
-        window.location.href = blobUrl;
-      }
-
-      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+      setPreviewUrl(blobUrl);
     } catch (error) {
-      previewWindow?.close();
       console.error("Preview error:", error);
+      setPreviewOpen(false);
       toast({
         title: "Pregled nije uspio",
         description: error instanceof Error ? error.message : "Pokušaj ponovno.",
         variant: "destructive",
       });
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
     }
   };
 
@@ -304,7 +316,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8"
-                    title="Pregledaj online"
+                    title="Pregledaj"
                     onClick={() => handlePreview(doc.file_path, doc.file_name)}
                   >
                     <Eye className="h-4 w-4" />
@@ -333,6 +345,42 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
           ))}
         </CardContent>
       </Card>
+
+      {/* Inline document preview dialog */}
+      <Dialog open={previewOpen} onOpenChange={(open) => { if (!open) closePreview(); }}>
+        <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="px-4 py-3 border-b border-border flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-sm font-medium truncate pr-4">
+                {previewTitle}
+              </DialogTitle>
+              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={closePreview}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          <div className="flex-1 min-h-0 bg-muted/30">
+            {previewLoading && (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Učitavam dokument...
+              </div>
+            )}
+            {!previewLoading && previewUrl && (
+              <iframe
+                src={previewUrl}
+                className="w-full h-full border-0"
+                title={previewTitle}
+              />
+            )}
+            {!previewLoading && !previewUrl && (
+              <div className="flex items-center justify-center h-full text-muted-foreground">
+                Dokument nije dostupan.
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
