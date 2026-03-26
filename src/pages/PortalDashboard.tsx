@@ -941,6 +941,10 @@ const PortalDashboard = () => {
                   <MessageCircle className="h-4 w-4 shrink-0" />
                   Interni chat
                 </TabsTrigger>
+                <TabsTrigger value="projects" className="justify-start gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                  <Briefcase className="h-4 w-4 shrink-0" />
+                  Suradnja na projektima
+                </TabsTrigger>
               </TabsList>
 
               {/* Sekcije - collapsible */}
