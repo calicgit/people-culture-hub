@@ -242,9 +242,13 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) { URL.revokeObjectURL(previewUrl); setPreviewUrl(null); }
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
   };
 
+  const handleDelete = async (docId: string, filePath: string, sectionId: string) => {
     const { error } = await supabase.from("documents" as never).delete().eq("id", docId);
     if (error) {
       toast({ title: "Brisanje nije uspjelo", description: error.message, variant: "destructive" });
