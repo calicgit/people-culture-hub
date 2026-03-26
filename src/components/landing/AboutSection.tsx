@@ -126,7 +126,7 @@ const AboutSection = () => {
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <p.icon className="w-4 h-4 text-primary" />
                   </div>
-                  <span className="font-body text-sm">{p.text}</span>
+                  <span className="font-body text-sm text-foreground">{p.text}</span>
                 </motion.div>
               ))}
             </div>
