@@ -67,6 +67,7 @@ import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
 import SingleSectionDocs from "@/components/portal/SingleSectionDocs";
 import VotingTab from "@/components/portal/VotingTab";
 import ChatTab from "@/components/portal/ChatTab";
+import ProjectsTab from "@/components/portal/ProjectsTab";
 
 type DocumentRecord = {
   id: string;
