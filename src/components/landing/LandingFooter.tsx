@@ -59,8 +59,8 @@ const LandingFooter = () => {
             </a>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/10 pt-4 flex justify-between items-center">
-          <p className="text-primary-foreground/30 text-[10px] font-body">
+        <div className="border-t border-primary-foreground/10 pt-4 flex flex-col items-center gap-2">
+          <p className="text-primary-foreground/30 text-[10px] font-body text-center">
             © {new Date().getFullYear()} People & Culture HUB. {t("Sva prava pridržana.", "All rights reserved.")}
           </p>
           <Link
