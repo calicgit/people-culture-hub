@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
 import {
   Download,
+  Eye,
   FileText,
   Loader2,
   MessageSquareText,
@@ -171,8 +172,19 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
     }
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
+  const handlePreview = async (filePath: string) => {
+    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 300);
+    if (error || !data?.signedUrl) {
+      toast({ title: "Pregled nije uspjelo", variant: "destructive" });
+      return;
+    }
+    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownload = async (filePath: string, fileName: string) => {
+    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60, {
+      download: fileName,
+    });
     if (error || !data?.signedUrl) {
       toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
       return;
@@ -326,7 +338,17 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => handleDownload(doc.file_path)}
+                      title="Pregledaj online"
+                      onClick={() => handlePreview(doc.file_path)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      title="Preuzmi"
+                      onClick={() => handleDownload(doc.file_path, doc.file_name)}
                     >
                       <Download className="h-4 w-4" />
                     </Button>
