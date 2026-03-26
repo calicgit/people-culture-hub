@@ -544,10 +544,7 @@ const PortalDashboard = () => {
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   const handleDeleteDocument = async (documentId: string, filePath: string) => {
