@@ -50,7 +50,7 @@ const NewsSection = () => {
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
             {t("Novosti", "News")}
           </span>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mt-2 mb-4">
             {t("Najnovije vijesti", "Latest News")}
           </h2>
           <p className="text-muted-foreground font-body">
