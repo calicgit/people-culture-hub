@@ -525,6 +525,31 @@ const PortalDashboard = () => {
     }
   };
 
+  const handlePreview = async (document: DocumentRecord) => {
+    setPreviewTitle(document.file_name);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewUrl(null);
+
+    try {
+      const blob = await fetchStorageBlob("dms-documents", document.file_path);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch (error) {
+      setPreviewOpen(false);
+      toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  };
+
   const handleDeleteDocument = async (documentId: string, filePath: string) => {
     const { error } = await supabase.from("documents" as never).delete().eq("id", documentId);
 
