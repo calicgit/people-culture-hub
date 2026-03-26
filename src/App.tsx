@@ -16,6 +16,7 @@ import MeetupInvite from "./pages/MeetupInvite";
 import Resources from "./pages/Resources";
 import Team from "./pages/Team";
 import MembershipApplication from "./pages/MembershipApplication";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

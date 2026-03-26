@@ -6,6 +6,7 @@ import WhatWeDoSection from "@/components/landing/WhatWeDoSection";
 import MembershipSection from "@/components/landing/MembershipSection";
 import ContactSection from "@/components/landing/ContactSection";
 import LandingFooter from "@/components/landing/LandingFooter";
+import CookieConsent from "@/components/CookieConsent";
 
 const Landing = () => (
   <div className="min-h-screen">
@@ -17,6 +18,7 @@ const Landing = () => (
     <MembershipSection />
     <ContactSection />
     <LandingFooter />
+    <CookieConsent />
   </div>
 );
 
