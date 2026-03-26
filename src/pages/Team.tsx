@@ -137,7 +137,7 @@ const Team = () => {
                             <img
                               src={member.photo_url}
                               alt={member.full_name}
-                              className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-500"
+                              className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (
                             <div className="h-full w-full flex items-center justify-center bg-accent">
