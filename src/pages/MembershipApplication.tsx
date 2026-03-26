@@ -145,7 +145,13 @@ const MembershipApplication = () => {
     }
   };
 
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const prevStep = () => {
+    if (step === 2) {
+      setStep(1);
+    } else {
+      setStep((s) => Math.max(s - 1, 1));
+    }
+  };
 
   const toggleReferral = (name: string) => {
     if (name === "NITKO") {
