@@ -69,7 +69,7 @@ const Team = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-heading text-3xl md:text-5xl font-bold mb-4"
+            className="font-heading text-xl md:text-3xl font-bold mb-4"
           >
             {t("Tim People & Culture HUB-a", "People & Culture HUB Team")}
           </motion.h1>
@@ -80,8 +80,8 @@ const Team = () => {
             className="text-lg text-secondary-foreground/80 max-w-2xl font-body"
           >
             {t(
-              "Upoznajte članove upravnog, savjetodavnog i znanstvenog vijeća naše udruge.",
-              "Meet the members of our association's executive, advisory and scientific boards."
+              "Upoznajte članove Upravnog, Savjetodavnog i Znanstvenog vijeća naše Udruge.",
+              "Meet the members of our association's Executive, Advisory and Scientific boards."
             )}
           </motion.p>
         </div>
@@ -145,7 +145,7 @@ const Team = () => {
                             </div>
                           )}
                         </div>
-                        <div className="p-5">
+                        <div className="p-4 space-y-0">
                           <h3 className="font-heading text-lg font-semibold text-foreground">
                             {member.full_name}
                           </h3>
