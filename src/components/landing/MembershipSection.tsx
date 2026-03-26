@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "react-router-dom";
 
 const MembershipSection = () => {
   const { t } = useLanguage();
