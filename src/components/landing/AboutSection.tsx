@@ -114,7 +114,7 @@ const AboutSection = () => {
               </div>
               <h3 className="font-heading text-xl font-bold text-foreground">{t("Naša misija", "Our Mission")}</h3>
             </div>
-            <p className="font-body leading-relaxed opacity-90 mb-6">
+            <p className="text-muted-foreground font-body leading-relaxed mb-6">
               {t(
                 "Gradimo zajednicu koja razvija i primjenjuje prakse rada temeljene na:",
                 "We build a community that develops and applies work practices based on:"
