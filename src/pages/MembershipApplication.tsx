@@ -168,10 +168,10 @@ const MembershipApplication = () => {
   };
 
   return (
-    <div className="min-h-screen bg-secondary flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-secondary text-secondary-foreground py-4 px-6 flex items-center justify-between">
-        <Link to="/" className="text-sm opacity-80 hover:opacity-100 flex items-center gap-1">
+      <div className="bg-background text-foreground py-4 px-6 flex items-center justify-between border-b border-border">
+        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
           <ArrowLeft size={16} /> Natrag
         </Link>
         <span className="font-heading text-sm font-medium">People & Culture HUB</span>
