@@ -177,9 +177,15 @@ const MembershipApplication = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="bg-background text-foreground py-4 px-6 flex items-center justify-between border-b border-border">
-        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
-          <ArrowLeft size={16} /> Natrag
-        </Link>
+        {step > 1 ? (
+          <button onClick={prevStep} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
+            <ArrowLeft size={16} /> Natrag
+          </button>
+        ) : (
+          <Link to="/" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
+            <ArrowLeft size={16} /> Natrag
+          </Link>
+        )}
         <span className="font-heading text-sm font-medium">People & Culture HUB</span>
       </div>
 

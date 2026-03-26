@@ -75,7 +75,7 @@ const ContactSection = () => {
               <div>
                 <h4 className="font-heading text-sm font-semibold text-foreground">{t("Adresa", "Address")}</h4>
                 <p className="text-muted-foreground text-sm font-body">
-                  Kamenarka 37, 10000 Zagreb
+                  Remetinečka cesta 102D, 10000 Zagreb
                 </p>
               </div>
             </div>
