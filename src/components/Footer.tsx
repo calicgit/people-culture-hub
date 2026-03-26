@@ -32,7 +32,7 @@ const Footer = () => (
           <div className="space-y-3 text-primary-foreground/50 text-sm">
             <div className="flex items-center gap-2"><Mail size={14} /> hub@peopleandculture.hr</div>
             <div className="flex items-center gap-2"><Phone size={14} /> +385 1 4103 734</div>
-            <div className="flex items-center gap-2"><MapPin size={14} /> Kamenarka 37, 10000 Zagreb</div>
+            <div className="flex items-center gap-2"><MapPin size={14} /> Remetinečka cesta 102D, 10000 Zagreb</div>
           </div>
         </div>
       </div>

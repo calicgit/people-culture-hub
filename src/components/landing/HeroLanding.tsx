@@ -30,8 +30,8 @@ const HeroLanding = () => {
           </h1>
           <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 font-body leading-relaxed max-w-lg">
             {t(
-              "Profesionalna udruga posvećena unapređenju prakse upravljanja ljudskim potencijalima i poslovnog okruženja u Hrvatskoj.",
-              "A professional association dedicated to advancing HR management practices and the business environment in Croatia."
+              "Profesionalna udruga stručnjaka koji oblikuju zdravije, otpornije i smislenije radne organizacije kroz ljude, kulturu i znanstveno utemeljene prakse.\n\nPovezujemo P&C profesionalce, organizacijske psihologe, konzultante, voditelje timova i sve one koji vjeruju da je kvaliteta rada jednako važna kao i rezultat.",
+              "A professional association of experts shaping healthier, more resilient, and more meaningful work organizations through people, culture, and evidence-based practices.\n\nWe connect P&C professionals, organizational psychologists, consultants, team leaders, and all those who believe that the quality of work is just as important as the result."
             )}
           </p>
           <div className="flex flex-wrap gap-4">
