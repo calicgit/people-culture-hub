@@ -67,10 +67,16 @@ const LandingFooter = () => {
             </Link>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/10 pt-4 text-center">
+        <div className="border-t border-primary-foreground/10 pt-4 flex justify-between items-center">
           <p className="text-primary-foreground/30 text-[10px] font-body">
             © {new Date().getFullYear()} People & Culture HUB. {t("Sva prava pridržana.", "All rights reserved.")}
           </p>
+          <Link
+            to="/politika-privatnosti"
+            className="text-primary-foreground/40 hover:text-primary transition-colors text-[10px] font-body"
+          >
+            {t("Politika privatnosti", "Privacy Policy")}
+          </Link>
         </div>
       </div>
     </footer>
