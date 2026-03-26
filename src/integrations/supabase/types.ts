@@ -552,6 +552,42 @@ export type Database = {
         }
         Relationships: []
       }
+      team_members: {
+        Row: {
+          bio: string | null
+          council: string
+          created_at: string
+          display_order: number
+          full_name: string
+          id: string
+          photo_url: string | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          council: string
+          created_at?: string
+          display_order?: number
+          full_name: string
+          id?: string
+          photo_url?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          council?: string
+          created_at?: string
+          display_order?: number
+          full_name?: string
+          id?: string
+          photo_url?: string | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_body_memberships: {
         Row: {
           body: Database["public"]["Enums"]["association_body"]
