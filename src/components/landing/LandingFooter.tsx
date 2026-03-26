@@ -23,7 +23,7 @@ const LandingFooter = () => {
             <div className="flex items-start gap-2">
               <Phone className="w-3.5 h-3.5 text-primary mt-0.5" />
               <div className="flex flex-col gap-0.5">
-                <p className="text-primary-foreground/60 text-[11px] font-body leading-none">{t("Centrala", "Phone")}</p>
+                <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Centrala", "Phone")}</p>
                 <a href="tel:+38514103734" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">+385 1 4103 734</a>
               </div>
             </div>
