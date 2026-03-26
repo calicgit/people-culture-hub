@@ -1,12 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import {
   Download,
   Eye,
   FileText,
   Loader2,
-  MessageSquareText,
-  SendHorizontal,
   Trash2,
   Upload,
 } from "lucide-react";
@@ -31,14 +29,6 @@ type SectionDocument = {
   created_at: string;
 };
 
-type SectionComment = {
-  id: string;
-  document_id: string;
-  author_id: string;
-  body: string;
-  created_at: string;
-};
-
 interface SingleSectionDocsProps {
   sectionId: string;
   sectionLabel: string;
@@ -56,16 +46,12 @@ const formatFileSize = (size: number | null) => {
 const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserId }: SingleSectionDocsProps) => {
   const { toast } = useToast();
   const [documents, setDocuments] = useState<SectionDocument[]>([]);
-  const [comments, setComments] = useState<SectionComment[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-
-  const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
-  const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
 
   const getDisplayName = (uid: string) => {
     if (uid === userId) return "Ti";
@@ -82,24 +68,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
         .order("created_at", { ascending: false });
 
       if (docsError) throw docsError;
-
-      const typedDocs = (docs ?? []) as unknown as SectionDocument[];
-      setDocuments(typedDocs);
-
-      if (typedDocs.length > 0) {
-        const docIds = typedDocs.map((d) => d.id);
-        const { data: cmts, error: cmtsError } = await supabase
-          .from("document_comments" as never)
-          .select("*")
-          .in("document_id", docIds)
-          .order("created_at", { ascending: true });
-
-        if (!cmtsError) {
-          setComments((cmts ?? []) as unknown as SectionComment[]);
-        }
-      } else {
-        setComments([]);
-      }
+      setDocuments((docs ?? []) as unknown as SectionDocument[]);
     } catch (error) {
       toast({
         title: "Greška pri učitavanju dokumenata",
@@ -173,23 +142,29 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
   };
 
   const handlePreview = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 300);
-    if (error || !data?.signedUrl) {
-      toast({ title: "Pregled nije uspjelo", variant: "destructive" });
-      return;
+    try {
+      const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 300);
+      if (error) throw error;
+      if (!data?.signedUrl) throw new Error("No signed URL");
+      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Preview error:", error);
+      toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDownload = async (filePath: string, fileName: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60, {
-      download: fileName,
-    });
-    if (error || !data?.signedUrl) {
-      toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
-      return;
+    try {
+      const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60, {
+        download: fileName,
+      });
+      if (error) throw error;
+      if (!data?.signedUrl) throw new Error("No signed URL");
+      window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("Download error:", error);
+      toast({ title: "Preuzimanje nije uspjelo", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDelete = async (docId: string, filePath: string) => {
@@ -203,41 +178,6 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
     toast({ title: "Dokument je obrisan" });
   };
 
-  const handleSubmitComment = async (documentId: string) => {
-    const body = commentDrafts[documentId]?.trim();
-    if (!body) return;
-
-    setSubmittingCommentFor(documentId);
-    try {
-      const { error } = await supabase.from("document_comments" as never).insert({
-        document_id: documentId,
-        author_id: userId,
-        body,
-      } as never);
-      if (error) throw error;
-
-      setCommentDrafts((prev) => ({ ...prev, [documentId]: "" }));
-      await loadDocuments();
-    } catch (error) {
-      toast({
-        title: "Komentar nije spremljen",
-        description: error instanceof Error ? error.message : "Pokušaj ponovno.",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmittingCommentFor(null);
-    }
-  };
-
-  const commentsByDocId = useMemo(() => {
-    const map = new Map<string, SectionComment[]>();
-    comments.forEach((c) => {
-      const arr = map.get(c.document_id) ?? [];
-      map.set(c.document_id, [...arr, c]);
-    });
-    return map;
-  }, [comments]);
-
   return (
     <div className="space-y-4">
       <Card>
@@ -246,7 +186,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
             <FileText className="h-5 w-5" />
             {sectionLabel}
           </CardTitle>
-          <CardDescription>Upload dokumenata, komentari i kolaboracija.</CardDescription>
+          <CardDescription>Upload i pregled dokumenata.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Upload form */}
@@ -310,112 +250,59 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
             </p>
           )}
 
-          {documents.map((doc) => {
-            const docComments = commentsByDocId.get(doc.id) ?? [];
-            return (
-              <div key={doc.id} className="rounded-lg border border-border bg-background p-4 space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 shrink-0 text-primary" />
-                      <span className="font-medium text-sm truncate">{doc.title}</span>
-                    </div>
-                    {doc.description && (
-                      <p className="mt-1 text-xs text-muted-foreground">{doc.description}</p>
-                    )}
-                    <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                      <span>{doc.file_name}</span>
-                      <span>·</span>
-                      <span>{formatFileSize(doc.file_size_bytes)}</span>
-                      <span>·</span>
-                      <span>{getDisplayName(doc.uploaded_by)}</span>
-                      <span>·</span>
-                      <span>{format(new Date(doc.created_at), "dd.MM.yyyy HH:mm")}</span>
-                    </div>
+          {documents.map((doc) => (
+            <div key={doc.id} className="rounded-lg border border-border bg-background p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 shrink-0 text-primary" />
+                    <span className="font-medium text-sm truncate">{doc.title}</span>
                   </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      title="Pregledaj online"
-                      onClick={() => handlePreview(doc.file_path)}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      title="Preuzmi"
-                      onClick={() => handleDownload(doc.file_path, doc.file_name)}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive hover:text-destructive"
-                      onClick={() => handleDelete(doc.id, doc.file_path)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  {doc.description && (
+                    <p className="mt-1 text-xs text-muted-foreground">{doc.description}</p>
+                  )}
+                  <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <span>{doc.file_name}</span>
+                    <span>·</span>
+                    <span>{formatFileSize(doc.file_size_bytes)}</span>
+                    <span>·</span>
+                    <span>{getDisplayName(doc.uploaded_by)}</span>
+                    <span>·</span>
+                    <span>{format(new Date(doc.created_at), "dd.MM.yyyy HH:mm")}</span>
                   </div>
                 </div>
-
-                {/* Comments */}
-                <div className="space-y-2 border-t border-border pt-3">
-                  <p className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
-                    <MessageSquareText className="h-3.5 w-3.5" />
-                    Komentari ({docComments.length})
-                  </p>
-
-                  {docComments.map((comment) => (
-                    <div key={comment.id} className="rounded-md bg-muted/50 px-3 py-2">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="font-medium text-foreground">
-                          {getDisplayName(comment.author_id)}
-                        </span>
-                        <span>·</span>
-                        <span>{format(new Date(comment.created_at), "dd.MM.yyyy HH:mm")}</span>
-                      </div>
-                      <p className="mt-1 text-sm">{comment.body}</p>
-                    </div>
-                  ))}
-
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Napiši komentar..."
-                      className="h-8 text-sm"
-                      value={commentDrafts[doc.id] ?? ""}
-                      onChange={(e) =>
-                        setCommentDrafts((prev) => ({ ...prev, [doc.id]: e.target.value }))
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          void handleSubmitComment(doc.id);
-                        }
-                      }}
-                    />
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-8 w-8"
-                      disabled={!commentDrafts[doc.id]?.trim() || submittingCommentFor === doc.id}
-                      onClick={() => handleSubmitComment(doc.id)}
-                    >
-                      {submittingCommentFor === doc.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <SendHorizontal className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    title="Pregledaj online"
+                    onClick={() => handlePreview(doc.file_path)}
+                  >
+                    <Eye className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    title="Preuzmi"
+                    onClick={() => handleDownload(doc.file_path, doc.file_name)}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:text-destructive"
+                    title="Obriši"
+                    onClick={() => handleDelete(doc.id, doc.file_path)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </CardContent>
       </Card>
     </div>
