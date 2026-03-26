@@ -42,6 +42,7 @@ const App = () => (
               <Route path="/meetup-invite" element={<MeetupInvite />} />
               <Route path="/tim" element={<Team />} />
               <Route path="/prijava-clanstvo" element={<MembershipApplication />} />
+              <Route path="/politika-privatnosti" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
