@@ -339,6 +339,72 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_applications: {
+        Row: {
+          applicant_date_of_birth: string | null
+          applicant_oib: string | null
+          company: string | null
+          created_at: string
+          email: string
+          first_name: string
+          how_heard: string | null
+          id: string
+          invoice_email: string | null
+          last_name: string
+          membership_tier: string
+          paid_by: string
+          payer_address: string | null
+          payer_company_name: string | null
+          payer_full_name: string | null
+          payer_oib: string | null
+          phone: string
+          referrals: string[] | null
+          status: string
+        }
+        Insert: {
+          applicant_date_of_birth?: string | null
+          applicant_oib?: string | null
+          company?: string | null
+          created_at?: string
+          email: string
+          first_name: string
+          how_heard?: string | null
+          id?: string
+          invoice_email?: string | null
+          last_name: string
+          membership_tier: string
+          paid_by: string
+          payer_address?: string | null
+          payer_company_name?: string | null
+          payer_full_name?: string | null
+          payer_oib?: string | null
+          phone: string
+          referrals?: string[] | null
+          status?: string
+        }
+        Update: {
+          applicant_date_of_birth?: string | null
+          applicant_oib?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string
+          first_name?: string
+          how_heard?: string | null
+          id?: string
+          invoice_email?: string | null
+          last_name?: string
+          membership_tier?: string
+          paid_by?: string
+          payer_address?: string | null
+          payer_company_name?: string | null
+          payer_full_name?: string | null
+          payer_oib?: string | null
+          phone?: string
+          referrals?: string[] | null
+          status?: string
+        }
+        Relationships: []
+      }
       poll_comments: {
         Row: {
           author_id: string
