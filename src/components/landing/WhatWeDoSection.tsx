@@ -86,9 +86,9 @@ const WhatWeDoSection = () => {
           </p>
         </motion.div>
 
-        {/* 5 Key Areas - first row of 3, second row of 2 centered */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-5 mb-20">
-          {areas.map((a, i) => (
+        {/* 5 Key Areas - 3 top, 2 centered below */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-20">
+          {areas.slice(0, 3).map((a, i) => (
             <motion.div
               key={a.title}
               initial="hidden"
@@ -96,10 +96,26 @@ const WhatWeDoSection = () => {
               viewport={{ once: true }}
               variants={fadeUp}
               custom={i}
-              className={`group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all ${
-                i < 3 ? "lg:col-span-2" : "lg:col-span-2 lg:col-start-' + (i === 3 ? '2' : '4') + '"
-              }`}
-              style={i >= 3 ? { gridColumn: i === 3 ? '2 / span 2' : '4 / span 2' } : undefined}
+              className="group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all"
+            >
+              <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5 group-hover:bg-primary/25 transition-colors">
+                <a.icon className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="font-heading text-lg font-semibold mb-2">{a.title}</h3>
+              <p className="text-sm font-body opacity-75 leading-relaxed">{a.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+        <div className="flex justify-center gap-5 mb-20 -mt-15">
+          {areas.slice(3).map((a, i) => (
+            <motion.div
+              key={a.title}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i + 3}
+              className="group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all w-full max-w-sm"
             >
               <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5 group-hover:bg-primary/25 transition-colors">
                 <a.icon className="w-6 h-6 text-primary" />
