@@ -96,7 +96,7 @@ const WhatWeDoSection = () => {
               viewport={{ once: true }}
               variants={fadeUp}
               custom={i}
-              className="group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all"
+              className="group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all text-center flex flex-col items-center"
             >
               <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5 group-hover:bg-primary/25 transition-colors">
                 <a.icon className="w-6 h-6 text-primary" />
@@ -115,7 +115,7 @@ const WhatWeDoSection = () => {
               viewport={{ once: true }}
               variants={fadeUp}
               custom={i + 3}
-              className="group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all w-full max-w-sm"
+              className="group bg-white/5 backdrop-blur-sm rounded-2xl p-7 border border-white/10 hover:border-primary/40 hover:bg-white/10 transition-all w-full max-w-sm text-center flex flex-col items-center"
             >
               <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-5 group-hover:bg-primary/25 transition-colors">
                 <a.icon className="w-6 h-6 text-primary" />
