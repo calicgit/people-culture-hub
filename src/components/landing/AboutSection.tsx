@@ -112,7 +112,7 @@ const AboutSection = () => {
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Heart className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="font-heading text-xl font-bold">{t("Naša misija", "Our Mission")}</h3>
+              <h3 className="font-heading text-xl font-bold text-foreground">{t("Naša misija", "Our Mission")}</h3>
             </div>
             <p className="font-body leading-relaxed opacity-90 mb-6">
               {t(
