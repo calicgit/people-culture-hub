@@ -30,7 +30,7 @@ const LandingFooter = () => {
             <div className="flex items-start gap-2">
               <MapPin className="w-3.5 h-3.5 text-primary mt-0.5" />
               <div className="flex flex-col gap-0.5">
-                <p className="text-primary-foreground/60 text-[11px] font-body leading-none">{t("Adresa", "Address")}</p>
+                <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Adresa", "Address")}</p>
                 <a href="https://maps.google.com/?q=Remetinečka+cesta+102D,+10000+Zagreb" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">Remetinečka cesta 102D, 10000 Zagreb</a>
               </div>
             </div>
