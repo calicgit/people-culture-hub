@@ -145,7 +145,13 @@ const MembershipApplication = () => {
     }
   };
 
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
+  const prevStep = () => {
+    if (step === 2) {
+      setStep(1);
+    } else {
+      setStep((s) => Math.max(s - 1, 1));
+    }
+  };
 
   const toggleReferral = (name: string) => {
     if (name === "NITKO") {
@@ -168,10 +174,10 @@ const MembershipApplication = () => {
   };
 
   return (
-    <div className="min-h-screen bg-secondary flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-secondary text-secondary-foreground py-4 px-6 flex items-center justify-between">
-        <Link to="/" className="text-sm opacity-80 hover:opacity-100 flex items-center gap-1">
+      <div className="bg-background text-foreground py-4 px-6 flex items-center justify-between border-b border-border">
+        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1">
           <ArrowLeft size={16} /> Natrag
         </Link>
         <span className="font-heading text-sm font-medium">People & Culture HUB</span>
@@ -179,7 +185,7 @@ const MembershipApplication = () => {
 
       {/* Progress bar */}
       {step < 9 && (
-        <div className="w-full h-1 bg-secondary-foreground/10">
+        <div className="w-full h-1 bg-muted">
           <div
             className="h-full bg-primary transition-all duration-500"
             style={{ width: `${progress}%` }}
@@ -203,14 +209,14 @@ const MembershipApplication = () => {
               {step === 1 && (
                 <div className="text-center space-y-8">
                   <div className="space-y-4">
-                    <h1 className="font-heading text-2xl md:text-3xl font-bold text-secondary-foreground">
+                    <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground">
                       Poštovani/a,
                     </h1>
-                    <p className="text-secondary-foreground/80 font-body text-lg leading-relaxed">
+                    <p className="text-muted-foreground font-body text-lg leading-relaxed">
                       molimo Vas da odgovorite na nekoliko pitanja kako bi uspješno zaprimili Vašu prijavu!
                     </p>
-                    <p className="text-secondary-foreground/80 font-body text-lg">
-                      Unaprijed hvala, <strong>People & Culture HUB!</strong>
+                    <p className="text-muted-foreground font-body text-lg">
+                      Unaprijed hvala, <strong className="text-foreground">People & Culture HUB!</strong>
                     </p>
                   </div>
                   <Button size="lg" onClick={() => setStep(2)} className="text-lg px-10 py-6">
@@ -222,13 +228,13 @@ const MembershipApplication = () => {
               {/* Step 2: GDPR Consent */}
               {step === 2 && (
                 <div className="space-y-6">
-                  <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
                     SUGLASNOST ZA OBRADU PODATAKA <span className="text-destructive">*</span>
                   </h2>
-                  <p className="text-secondary-foreground/80 font-body text-sm">
+                  <p className="text-muted-foreground font-body text-sm">
                     Sudjelovanjem u ovom upitniku potvrđujem da:
                   </p>
-                  <ul className="space-y-3 text-secondary-foreground/80 font-body text-sm">
+                  <ul className="space-y-3 text-muted-foreground font-body text-sm">
                     {[
                       "Razumijem da će moje sudjelovanje uključivati online upitnik u trajanju do 5 minuta.",
                       "Razumijem da je moje sudjelovanje u potpunosti dobrovoljno.",
@@ -245,14 +251,14 @@ const MembershipApplication = () => {
                       </li>
                     ))}
                   </ul>
-                  <p className="text-secondary-foreground/70 font-body text-xs italic">
+                  <p className="text-muted-foreground font-body text-xs italic">
                     Klikom na gumb "Prihvaćam" potvrđujem da sam razumio/la gore navedene informacije i pristajem sudjelovati u upitniku.
                   </p>
                   <div className="flex gap-3 pt-2">
                     <Button onClick={() => setStep(3)} className="flex-1">
                       Prihvaćam
                     </Button>
-                    <Button variant="outline" onClick={() => setStep(1)} className="flex-1 border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10">
+                    <Button onClick={() => setStep(1)} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
                       Ne prihvaćam
                     </Button>
                   </div>
@@ -263,32 +269,32 @@ const MembershipApplication = () => {
               {step === 3 && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                    <h2 className="font-heading text-xl font-bold text-foreground">
                       Osobni podaci <span className="text-destructive">*</span>
                     </h2>
-                    <p className="text-secondary-foreground/70 font-body text-sm mt-1">
+                    <p className="text-muted-foreground font-body text-sm mt-1">
                       Upišite email adresu i broj telefona s kojih želite komunicirati prilikom sudjelovanja u People & Culture HUB udruzi
                     </p>
                   </div>
                   <div className="space-y-4">
                     <div>
-                      <Label className="text-secondary-foreground">Ime <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground">Ime <span className="text-destructive">*</span></Label>
                       <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground">Prezime <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground">Prezime <span className="text-destructive">*</span></Label>
                       <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground">Telefonski broj <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground">Telefonski broj <span className="text-destructive">*</span></Label>
                       <Input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground">Adresa e-pošte <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground">Adresa e-pošte <span className="text-destructive">*</span></Label>
                       <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground">Kompanija</Label>
+                      <Label className="text-foreground">Kompanija</Label>
                       <Input value={company} onChange={(e) => setCompany(e.target.value)} className="mt-1" />
                     </div>
                   </div>
@@ -302,10 +308,10 @@ const MembershipApplication = () => {
               {step === 4 && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                    <h2 className="font-heading text-xl font-bold text-foreground">
                       Vrsta članstva <span className="text-destructive">*</span>
                     </h2>
-                    <p className="text-secondary-foreground/70 font-body text-sm mt-1">
+                    <p className="text-muted-foreground font-body text-sm mt-1">
                       Molimo odaberite vrstu članstva za koje se prijavljujete. Ako se prijavljujete kao privatna osoba, odaberite opcije Basic ili Advanced. Ako se prijavljujete kao student, odaberite opciju Student.
                     </p>
                   </div>
@@ -320,16 +326,16 @@ const MembershipApplication = () => {
                         className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
                           membershipTier === tier.value
                             ? "border-primary bg-primary/10"
-                            : "border-secondary-foreground/20 hover:border-primary/50"
+                            : "border-border hover:border-primary"
                         }`}
                       >
                         <RadioGroupItem value={tier.value} className="mt-0.5" />
                         <div>
-                          <span className="font-heading font-semibold text-secondary-foreground">
+                          <span className="font-heading font-semibold text-foreground">
                             {tier.label} — {tier.price}
                           </span>
                           {tier.desc && (
-                            <p className="text-secondary-foreground/60 text-xs mt-0.5">({tier.desc})</p>
+                            <p className="text-muted-foreground text-xs mt-0.5">({tier.desc})</p>
                           )}
                         </div>
                       </label>
@@ -345,13 +351,13 @@ const MembershipApplication = () => {
               {step === 5 && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                    <h2 className="font-heading text-xl font-bold text-foreground">
                       Preporuka <span className="text-destructive">*</span>
                     </h2>
-                    <p className="text-secondary-foreground/70 font-body text-sm mt-1">
+                    <p className="text-muted-foreground font-body text-sm mt-1">
                       Radi učinkovitije obrade prijava, udruga omogućuje članovima osnivačima da preporuče nove kandidate. Preporuka nije uvjet za učlanjenje, niti daje prednost u proces, već služi isključivo tome da brže potvrdimo podatke navedene u prijavnici.
                     </p>
-                    <p className="text-secondary-foreground/70 font-body text-sm mt-2">
+                    <p className="text-muted-foreground font-body text-sm mt-2">
                       Ukoliko ne postoji takva osoba, molimo odaberite <strong>NITKO</strong>.
                     </p>
                   </div>
@@ -362,14 +368,14 @@ const MembershipApplication = () => {
                         className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
                           referrals.includes(name)
                             ? "border-primary bg-primary/10"
-                            : "border-secondary-foreground/20 hover:border-primary/50"
+                            : "border-border hover:border-primary"
                         }`}
                       >
                         <Checkbox
                           checked={referrals.includes(name)}
                           onCheckedChange={() => toggleReferral(name)}
                         />
-                        <span className={`font-body text-sm ${name === "NITKO" ? "font-semibold" : ""} text-secondary-foreground`}>
+                        <span className={`font-body text-sm ${name === "NITKO" ? "font-semibold" : ""} text-foreground`}>
                           {name}
                         </span>
                       </label>
@@ -384,7 +390,7 @@ const MembershipApplication = () => {
               {/* Step 6: How did you hear */}
               {step === 6 && (
                 <div className="space-y-5">
-                  <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
                     Gdje ste saznali za People & Culture HUB udrugu?
                   </h2>
                   <Textarea
@@ -402,7 +408,7 @@ const MembershipApplication = () => {
               {/* Step 7: Who pays */}
               {step === 7 && (
                 <div className="space-y-5">
-                  <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                  <h2 className="font-heading text-xl font-bold text-foreground">
                     Članarinu plaća <span className="text-destructive">*</span>
                   </h2>
                   <RadioGroup value={paidBy} onValueChange={setPaidBy} className="space-y-3">
@@ -415,11 +421,11 @@ const MembershipApplication = () => {
                         className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer transition-colors ${
                           paidBy === opt.value
                             ? "border-primary bg-primary/10"
-                            : "border-secondary-foreground/20 hover:border-primary/50"
+                            : "border-border hover:border-primary"
                         }`}
                       >
                         <RadioGroupItem value={opt.value} />
-                        <span className="font-heading font-semibold text-secondary-foreground">{opt.label}</span>
+                        <span className="font-heading font-semibold text-foreground">{opt.label}</span>
                       </label>
                     ))}
                   </RadioGroup>
@@ -433,40 +439,40 @@ const MembershipApplication = () => {
               {step === 8 && paidBy === "employer" && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                    <h2 className="font-heading text-xl font-bold text-foreground">
                       Podaci za plaćanje — Poslodavac <span className="text-destructive">*</span>
                     </h2>
-                    <p className="text-secondary-foreground/70 font-body text-sm mt-1">
+                    <p className="text-muted-foreground font-body text-sm mt-1">
                       Ukoliko članarinu plaća poslodavac, molimo upišite podatke:
                     </p>
                   </div>
                   <div className="space-y-3">
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Naziv tvrtke <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Naziv tvrtke <span className="text-destructive">*</span></Label>
                       <Input value={payerCompanyName} onChange={(e) => setPayerCompanyName(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Ime i prezime <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Ime i prezime <span className="text-destructive">*</span></Label>
                       <Input value={payerFullName} onChange={(e) => setPayerFullName(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Adresa poslodavca <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Adresa poslodavca <span className="text-destructive">*</span></Label>
                       <Input value={payerAddress} onChange={(e) => setPayerAddress(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">OIB poslodavca <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">OIB poslodavca <span className="text-destructive">*</span></Label>
                       <Input value={payerOib} onChange={(e) => setPayerOib(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Vaš OIB <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Vaš OIB <span className="text-destructive">*</span></Label>
                       <Input value={applicantOib} onChange={(e) => setApplicantOib(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Vaš datum rođenja <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Vaš datum rođenja <span className="text-destructive">*</span></Label>
                       <Input value={applicantDob} onChange={(e) => setApplicantDob(e.target.value)} type="date" className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">E-mail na koji se šalje ponuda <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">E-mail na koji se šalje ponuda <span className="text-destructive">*</span></Label>
                       <Input value={invoiceEmail} onChange={(e) => setInvoiceEmail(e.target.value)} type="email" className="mt-1" />
                     </div>
                   </div>
@@ -480,32 +486,32 @@ const MembershipApplication = () => {
               {step === 8 && paidBy === "personal" && (
                 <div className="space-y-5">
                   <div>
-                    <h2 className="font-heading text-xl font-bold text-secondary-foreground">
+                    <h2 className="font-heading text-xl font-bold text-foreground">
                       Podaci za plaćanje — Osobno <span className="text-destructive">*</span>
                     </h2>
-                    <p className="text-secondary-foreground/70 font-body text-sm mt-1">
+                    <p className="text-muted-foreground font-body text-sm mt-1">
                       Ukoliko članarinu plaćate osobno, molimo upišite podatke:
                     </p>
                   </div>
                   <div className="space-y-3">
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Ime i prezime <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Ime i prezime <span className="text-destructive">*</span></Label>
                       <Input value={personalFullName} onChange={(e) => setPersonalFullName(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Vaša adresa prebivališta <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Vaša adresa prebivališta <span className="text-destructive">*</span></Label>
                       <Input value={personalAddress} onChange={(e) => setPersonalAddress(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Vaš OIB <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Vaš OIB <span className="text-destructive">*</span></Label>
                       <Input value={personalOib} onChange={(e) => setPersonalOib(e.target.value)} className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">Vaš datum rođenja <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">Vaš datum rođenja <span className="text-destructive">*</span></Label>
                       <Input value={personalDob} onChange={(e) => setPersonalDob(e.target.value)} type="date" className="mt-1" />
                     </div>
                     <div>
-                      <Label className="text-secondary-foreground text-xs uppercase tracking-wide">E-mail na koji se šalje ponuda <span className="text-destructive">*</span></Label>
+                      <Label className="text-foreground text-xs uppercase tracking-wide">E-mail na koji se šalje ponuda <span className="text-destructive">*</span></Label>
                       <Input value={personalInvoiceEmail} onChange={(e) => setPersonalInvoiceEmail(e.target.value)} type="email" className="mt-1" />
                     </div>
                   </div>
@@ -522,17 +528,17 @@ const MembershipApplication = () => {
                   <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
                     <Check className="text-primary" size={32} />
                   </div>
-                  <h2 className="font-heading text-2xl font-bold text-secondary-foreground">
+                  <h2 className="font-heading text-2xl font-bold text-foreground">
                     Hvala na prijavi!
                   </h2>
-                  <p className="text-secondary-foreground/80 font-body text-lg">
+                  <p className="text-muted-foreground font-body text-lg">
                     Kontaktirati ćemo Vas ubrzo!
                   </p>
                   <p className="font-heading text-lg font-semibold text-primary">
                     People & Culture HUB
                   </p>
                   <Link to="/">
-                    <Button variant="outline" className="border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10">
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       Natrag na početnu
                     </Button>
                   </Link>
@@ -545,7 +551,7 @@ const MembershipApplication = () => {
           {step >= 3 && step <= 8 && (
             <button
               onClick={prevStep}
-              className="mt-6 flex items-center gap-1 text-secondary-foreground/60 hover:text-secondary-foreground text-sm font-body mx-auto"
+              className="mt-6 flex items-center gap-1 text-muted-foreground hover:text-foreground text-sm font-body mx-auto"
             >
               <ArrowLeft size={14} /> Natrag
             </button>
