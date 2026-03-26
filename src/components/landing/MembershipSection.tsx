@@ -82,7 +82,7 @@ const MembershipSection = () => {
           </h2>
           <p className="text-muted-foreground font-body">
             {t(
-              "Odaberite razinu članstva koja odgovara vašim potrebama i počnite koristiti sve pogodnosti.",
+              "Odaberite razinu članstva koja odgovara vašim potrebama i krenite koristiti pogodnosti.",
               "Choose the membership level that fits your needs and start enjoying all benefits."
             )}
           </p>
