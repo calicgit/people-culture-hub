@@ -899,7 +899,7 @@ const PortalDashboard = () => {
               <Badge variant="secondary">DMS portal</Badge>
               {isMasterAdmin && <Badge>Administracija</Badge>}
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Interni portal udruge</h1>
+            <h1 className="text-2xl font-bold text-foreground">Interni portal</h1>
             <p className="text-sm text-muted-foreground">
               {profile?.full_name ?? user?.email} · {memberSummary.length > 0 ? memberSummary.join(", ") : "Pristup članskom portalu"}
             </p>

@@ -242,10 +242,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   const handleDelete = async (docId: string, filePath: string, sectionId: string) => {

@@ -174,10 +174,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
 
   const closePreview = () => {
     setPreviewOpen(false);
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
+    setPreviewUrl(null);
   };
 
   const handleDownload = async (filePath: string, fileName: string) => {
