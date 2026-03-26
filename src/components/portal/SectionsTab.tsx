@@ -4,6 +4,7 @@ import {
   ChevronDown,
   ChevronRight,
   Download,
+  Eye,
   FileText,
   FolderOpen,
   Loader2,
@@ -12,6 +13,7 @@ import {
   SendHorizontal,
   Trash2,
   Upload,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { downloadStorageFile } from "@/lib/storage-download";
+import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Enums } from "@/integrations/supabase/types";
 
 export const SECTIONS = [
@@ -91,6 +94,11 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
   const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
   const [submittingCommentFor, setSubmittingCommentFor] = useState<string | null>(null);
 
+  // Preview state
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewLoading, setPreviewLoading] = useState(false);
 
   const getDisplayName = (uid: string) => {
     if (uid === userId) return "Ti";
@@ -216,7 +224,27 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   };
 
-  const handleDelete = async (docId: string, filePath: string, sectionId: string) => {
+  const handlePreview = async (filePath: string, fileName: string) => {
+    setPreviewTitle(fileName);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewUrl(null);
+    try {
+      const blob = await fetchStorageBlob("dms-documents", filePath);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch (error) {
+      setPreviewOpen(false);
+      toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); setPreviewUrl(null); }
+  };
+
     const { error } = await supabase.from("documents" as never).delete().eq("id", docId);
     if (error) {
       toast({ title: "Brisanje nije uspjelo", description: error.message, variant: "destructive" });
@@ -263,6 +291,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
   }, [sectionComments]);
 
   return (
+    <>
     <div className="space-y-3">
       <Card>
         <CardHeader>
@@ -382,6 +411,16 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
+                              title="Pregledaj"
+                              onClick={() => handlePreview(doc.file_path, doc.file_name)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              title="Preuzmi"
                               onClick={() => handleDownload(doc.file_path, doc.file_name)}
                             >
                               <Download className="h-4 w-4" />
@@ -459,6 +498,39 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
         </CardContent>
       </Card>
     </div>
+
+    {/* Inline document preview dialog */}
+    <Dialog open={previewOpen} onOpenChange={(open) => { if (!open) closePreview(); }}>
+      <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0 gap-0">
+        <DialogHeader className="px-4 py-3 border-b border-border flex-shrink-0">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-sm font-medium truncate pr-4">
+              {previewTitle}
+            </DialogTitle>
+            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={closePreview}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </DialogHeader>
+        <div className="flex-1 min-h-0 bg-muted/30">
+          {previewLoading && (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Učitavam dokument...
+            </div>
+          )}
+          {!previewLoading && previewUrl && (
+            <iframe src={previewUrl} className="w-full h-full border-0" title={previewTitle} />
+          )}
+          {!previewLoading && !previewUrl && (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+              Dokument nije dostupan.
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
 
