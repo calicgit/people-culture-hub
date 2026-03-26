@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Target, Eye, Heart, Lightbulb, Users, GraduationCap, BarChart3, Rocket, Award, Handshake, Building2, BookOpen } from "lucide-react";
+import { Target, Eye, Heart, Lightbulb, BookOpen } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const fadeUp = {
@@ -9,49 +9,6 @@ const fadeUp = {
 
 const AboutSection = () => {
   const { t } = useLanguage();
-
-  const pillars = [
-    {
-      icon: Users,
-      title: t("Izgradnja zajednice", "Building Community"),
-      desc: t(
-        "Povezivanje stručnjaka, mentorstvo i razmjena znanja.",
-        "Connecting professionals, mentorship, and knowledge exchange."
-      ),
-    },
-    {
-      icon: GraduationCap,
-      title: t("Edukacija i razvoj", "Education & Development"),
-      desc: t(
-        "Programi poput People Experience Lab, Culture Circle i Leadership Studio.",
-        "Programs like People Experience Lab, Culture Circle and Leadership Studio."
-      ),
-    },
-    {
-      icon: BarChart3,
-      title: t("Utjecaj na praksu i politike", "Impact on Practice & Policy"),
-      desc: t(
-        "Istraživanja i preporuke za razvoj tržišta rada.",
-        "Research and recommendations for labor market development."
-      ),
-    },
-    {
-      icon: Rocket,
-      title: t("Inovacije i tehnologija", "Innovation & Technology"),
-      desc: t(
-        "People analytics, HR tech i pilot projekti.",
-        "People analytics, HR tech and pilot projects."
-      ),
-    },
-    {
-      icon: Award,
-      title: t("Promocija struke", "Promoting the Profession"),
-      desc: t(
-        "Nagrade, inicijative i jačanje vidljivosti područja.",
-        "Awards, initiatives, and increasing field visibility."
-      ),
-    },
-  ];
 
   const missionPoints = [
     { icon: BookOpen, text: t("Znanstvenim spoznajama", "Scientific insights") },
@@ -223,88 +180,6 @@ const AboutSection = () => {
           </motion.div>
         </div>
 
-        {/* Što radimo - 5 područja */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          custom={0}
-          className="text-center max-w-2xl mx-auto mb-12"
-        >
-          <span className="text-primary font-medium text-sm uppercase tracking-wider">
-            {t("Što radimo", "What We Do")}
-          </span>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
-            {t("Pet ključnih područja djelovanja", "Five Key Areas of Activity")}
-          </h2>
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-24">
-          {pillars.map((p, i) => (
-            <motion.div
-              key={p.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={fadeUp}
-              custom={i}
-              className={`group bg-card rounded-2xl p-6 border border-border hover:border-primary/30 transition-colors ${
-                i === 4 ? "sm:col-span-2 lg:col-span-1" : ""
-              }`}
-            >
-              <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <p.icon className="w-5 h-5 text-primary" />
-              </div>
-              <h3 className="font-heading text-lg font-semibold text-foreground mb-2">{p.title}</h3>
-              <p className="text-muted-foreground text-sm font-body leading-relaxed">{p.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Zašto postojimo - CTA */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          custom={0}
-          className="bg-accent rounded-2xl p-10 md:p-14 text-center border border-primary/10"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
-            <Handshake className="w-7 h-7 text-primary" />
-          </div>
-          <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-4">
-            {t("Zašto postojimo", "Why We Exist")}
-          </h3>
-          <p className="text-foreground font-heading text-lg font-semibold mb-6 max-w-xl mx-auto">
-            {t(
-              "Vjerujemo da ljudi nisu resurs – već temelj organizacijske održivosti.",
-              "We believe people are not a resource – they are the foundation of organizational sustainability."
-            )}
-          </p>
-          <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            {[
-              {
-                icon: BarChart3,
-                text: t("Donose odluke temeljene na podacima", "Make data-driven decisions"),
-              },
-              {
-                icon: Building2,
-                text: t("Razvijaju kulturu koja potiče rezultate", "Develop a culture that drives results"),
-              },
-              {
-                icon: Users,
-                text: t("Stvaraju okruženje u kojem ljudi mogu rasti", "Create an environment where people can grow"),
-              },
-            ].map((item, i) => (
-              <motion.div key={item.text} variants={fadeUp} custom={i + 1} className="bg-card rounded-xl p-5 border border-border">
-                <item.icon className="w-6 h-6 text-primary mx-auto mb-3" />
-                <p className="text-foreground font-body text-sm">{item.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );
