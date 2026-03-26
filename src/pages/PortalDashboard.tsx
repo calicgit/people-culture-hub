@@ -533,7 +533,7 @@ const PortalDashboard = () => {
 
     try {
       const blob = await fetchStorageBlob("dms-documents", document.file_path);
-      setPreviewUrl(URL.createObjectURL(blob));
+      setPreviewUrl(await blobToDataUrl(blob));
     } catch (error) {
       setPreviewOpen(false);
       toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
