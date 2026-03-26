@@ -15,6 +15,7 @@ import Legal from "./pages/Legal";
 import MeetupInvite from "./pages/MeetupInvite";
 import Resources from "./pages/Resources";
 import Team from "./pages/Team";
+import MembershipApplication from "./pages/MembershipApplication";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/legal" element={<Legal />} />
               <Route path="/meetup-invite" element={<MeetupInvite />} />
               <Route path="/tim" element={<Team />} />
+              <Route path="/prijava-clanstvo" element={<MembershipApplication />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
