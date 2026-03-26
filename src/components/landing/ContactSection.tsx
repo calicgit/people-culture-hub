@@ -43,50 +43,13 @@ const ContactSection = () => {
           </h2>
         </motion.div>
 
-        <div className="grid lg:grid-cols-5 gap-10 max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="lg:col-span-2 space-y-6"
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Mail className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-heading text-sm font-semibold text-foreground">Email</h4>
-                <p className="text-muted-foreground text-sm font-body">hub@peopleandculture.hr</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <Phone className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-heading text-sm font-semibold text-foreground">{t("Telefon", "Phone")}</h4>
-                <p className="text-muted-foreground text-sm font-body">+385 1 4103 734</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <MapPin className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h4 className="font-heading text-sm font-semibold text-foreground">{t("Adresa", "Address")}</h4>
-                <p className="text-muted-foreground text-sm font-body">
-                  Remetinečka cesta 102D, 10000 Zagreb
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
+        <div className="max-w-2xl mx-auto">
           <motion.form
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             onSubmit={handleSubmit}
-            className="lg:col-span-3 bg-card rounded-xl border border-border p-6 space-y-4"
+            className="bg-card rounded-xl border border-border p-6 space-y-4"
           >
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
