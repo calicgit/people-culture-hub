@@ -869,26 +869,6 @@ const PortalDashboard = () => {
     }
   };
 
-  const overviewCards = [
-    {
-      title: "Zajednički dokumenti",
-      value: documents.length,
-      description: "aktivnih dokumenata u portalu",
-      icon: FileText,
-    },
-    {
-      title: "Kalendar",
-      value: calendarEvents.length,
-      description: "događaja i sastanaka",
-      icon: CalendarDays,
-    },
-    {
-      title: "Korisnici portala",
-      value: directoryProfiles.length,
-      description: "aktivnih članova i profila",
-      icon: Users,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
