@@ -150,7 +150,7 @@ const Team = () => {
                             {member.full_name}
                           </h3>
                           {member.title && (
-                            <p className="text-sm text-primary font-medium mt-0.5">
+                            <p className="text-sm text-primary font-medium">
                               {member.title}
                             </p>
                           )}
