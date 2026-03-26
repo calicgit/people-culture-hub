@@ -38,7 +38,7 @@ const ContactSection = () => {
           <span className="text-primary font-medium text-sm uppercase tracking-wider">
             {t("Kontakt", "Contact")}
           </span>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mt-2 mb-4">
+          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mt-2 mb-4">
             {t("Javite nam se!", "Get in Touch!")}
           </h2>
         </motion.div>

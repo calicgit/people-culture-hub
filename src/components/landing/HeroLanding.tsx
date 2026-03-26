@@ -23,7 +23,7 @@ const HeroLanding = () => {
             <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6 border border-primary/30">
               {t("Udruga za ljude i organizacijsku kulturu", "Association for People and Organizational Culture")}
           </span>
-          <h1 className="font-heading text-4xl md:text-6xl font-bold text-primary-foreground leading-tight mb-6">
+          <h1 className="font-heading text-3xl md:text-5xl font-bold text-primary-foreground leading-tight mb-6">
             {t("Povezujemo ljude,", "Connecting people,")}
             <br />
             <span className="text-primary">{t("gradimo budućnost.", "building the future.")}</span>
