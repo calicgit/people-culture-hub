@@ -132,12 +132,12 @@ const Team = () => {
                         transition={{ delay: mi * 0.05 }}
                         className="group rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                       >
-                        <div className="bg-muted overflow-hidden flex items-center justify-center">
+                        <div className="aspect-[3/4] bg-muted overflow-hidden flex items-center justify-center">
                           {member.photo_url ? (
                             <img
                               src={member.photo_url}
                               alt={member.full_name}
-                              className="w-full h-auto group-hover:scale-105 transition-transform duration-500"
+                              className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-500"
                             />
                           ) : (
                             <div className="h-full w-full flex items-center justify-center bg-accent">
