@@ -15,6 +15,7 @@ import Legal from "./pages/Legal";
 import MeetupInvite from "./pages/MeetupInvite";
 import Resources from "./pages/Resources";
 import Team from "./pages/Team";
+import MembershipApplication from "./pages/MembershipApplication";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
