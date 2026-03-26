@@ -157,8 +157,8 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
 
     try {
       const blob = await fetchStorageBlob("dms-documents", filePath);
-      const blobUrl = URL.createObjectURL(blob);
-      setPreviewUrl(blobUrl);
+      const dataUrl = await blobToDataUrl(blob);
+      setPreviewUrl(dataUrl);
     } catch (error) {
       console.error("Preview error:", error);
       setPreviewOpen(false);
