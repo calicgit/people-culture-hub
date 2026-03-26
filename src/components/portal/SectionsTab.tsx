@@ -208,13 +208,12 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
-    if (error || !data?.signedUrl) {
+  const handleDownload = async (filePath: string, fileName: string) => {
+    try {
+      await downloadStorageFile("dms-documents", filePath, fileName);
+    } catch {
       toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
-      return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDelete = async (docId: string, filePath: string, sectionId: string) => {
