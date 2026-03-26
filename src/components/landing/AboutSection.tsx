@@ -144,7 +144,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             variants={fadeUp}
             custom={1}
-            className="bg-card rounded-2xl p-8 border border-border"
+            className="bg-accent rounded-2xl p-8 border border-primary/10"
           >
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
