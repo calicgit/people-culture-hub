@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadStorageFile, fetchStorageBlob } from "@/lib/storage-download";
 
 type SectionDocument = {
   id: string;
@@ -155,11 +156,8 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
     setPreviewUrl(null);
 
     try {
-      const { data, error } = await supabase.storage.from("dms-documents").download(filePath);
-      if (error) throw error;
-      if (!data) throw new Error("Datoteka nije dostupna.");
-
-      const blobUrl = URL.createObjectURL(data);
+      const blob = await fetchStorageBlob("dms-documents", filePath);
+      const blobUrl = URL.createObjectURL(blob);
       setPreviewUrl(blobUrl);
     } catch (error) {
       console.error("Preview error:", error);
@@ -184,19 +182,7 @@ const SingleSectionDocs = ({ sectionId, sectionLabel, userId, profileNameByUserI
 
   const handleDownload = async (filePath: string, fileName: string) => {
     try {
-      const { data, error } = await supabase.storage.from("dms-documents").download(filePath);
-      if (error) throw error;
-      if (!data) throw new Error("Datoteka nije dostupna.");
-
-      const blobUrl = URL.createObjectURL(data);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = fileName;
-      link.rel = "noopener noreferrer";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+      await downloadStorageFile("dms-documents", filePath, fileName);
     } catch (error) {
       console.error("Download error:", error);
       toast({

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadStorageFile } from "@/lib/storage-download";
 
 type Project = {
   id: string;
@@ -276,13 +277,12 @@ const ProjectsTab = ({ userId, profileNameByUserId, isMasterAdmin }: ProjectsTab
     }
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
-    if (error || !data?.signedUrl) {
+  const handleDownload = async (filePath: string, fileName: string) => {
+    try {
+      await downloadStorageFile("dms-documents", filePath, fileName);
+    } catch {
       toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
-      return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDeleteDoc = async (docId: string, filePath: string) => {
@@ -486,7 +486,7 @@ const ProjectsTab = ({ userId, profileNameByUserId, isMasterAdmin }: ProjectsTab
                         </p>
                       </div>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownload(doc.file_path)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownload(doc.file_path, doc.file_name)}>
                           <Download className="h-3.5 w-3.5" />
                         </Button>
                         <Button

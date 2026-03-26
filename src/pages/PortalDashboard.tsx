@@ -61,6 +61,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadStorageFile } from "@/lib/storage-download";
 import type { Enums, Tables } from "@/integrations/supabase/types";
 import SectionsTab, { SECTIONS } from "@/components/portal/SectionsTab";
 import AssociationMembersTab from "@/components/portal/AssociationMembersTab";
@@ -503,25 +504,19 @@ const PortalDashboard = () => {
   };
 
   const handleDownload = async (document: DocumentRecord) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(document.file_path, 60);
-
-    if (error || !data?.signedUrl) {
-      toast({ title: "Preuzimanje nije uspjelo", description: error?.message ?? "Pokušaj ponovno.", variant: "destructive" });
-      return;
+    try {
+      await downloadStorageFile("dms-documents", document.file_path, document.file_name);
+    } catch (error) {
+      toast({ title: "Preuzimanje nije uspjelo", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
     }
-
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
-  const handleVersionDownload = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
-
-    if (error || !data?.signedUrl) {
-      toast({ title: "Preuzimanje verzije nije uspjelo", description: error?.message ?? "Pokušaj ponovno.", variant: "destructive" });
-      return;
+  const handleVersionDownload = async (filePath: string, fileName: string) => {
+    try {
+      await downloadStorageFile("dms-documents", filePath, fileName);
+    } catch (error) {
+      toast({ title: "Preuzimanje verzije nije uspjelo", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
     }
-
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDeleteDocument = async (documentId: string, filePath: string) => {
@@ -1174,7 +1169,7 @@ const PortalDashboard = () => {
                                             </p>
                                             {version.description && <p className="text-xs text-muted-foreground">{version.description}</p>}
                                           </div>
-                                          <Button variant="outline" size="sm" onClick={() => handleVersionDownload(version.file_path)}>
+                                          <Button variant="outline" size="sm" onClick={() => handleVersionDownload(version.file_path, version.file_name)}>
                                             <Download className="h-4 w-4" />
                                             Preuzmi v{version.version_number}
                                           </Button>

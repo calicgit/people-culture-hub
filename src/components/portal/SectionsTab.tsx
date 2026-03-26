@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { downloadStorageFile } from "@/lib/storage-download";
 import type { Enums } from "@/integrations/supabase/types";
 
 export const SECTIONS = [
@@ -207,13 +208,12 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   };
 
-  const handleDownload = async (filePath: string) => {
-    const { data, error } = await supabase.storage.from("dms-documents").createSignedUrl(filePath, 60);
-    if (error || !data?.signedUrl) {
+  const handleDownload = async (filePath: string, fileName: string) => {
+    try {
+      await downloadStorageFile("dms-documents", filePath, fileName);
+    } catch {
       toast({ title: "Preuzimanje nije uspjelo", variant: "destructive" });
-      return;
     }
-    window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   };
 
   const handleDelete = async (docId: string, filePath: string, sectionId: string) => {
@@ -382,7 +382,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => handleDownload(doc.file_path)}
+                              onClick={() => handleDownload(doc.file_path, doc.file_name)}
                             >
                               <Download className="h-4 w-4" />
                             </Button>
