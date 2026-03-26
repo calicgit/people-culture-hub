@@ -532,7 +532,7 @@ const MembershipApplication = () => {
                     People & Culture HUB
                   </p>
                   <Link to="/">
-                    <Button variant="outline" className="border-secondary-foreground/30 text-secondary-foreground hover:bg-secondary-foreground/10">
+                    <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
                       Natrag na početnu
                     </Button>
                   </Link>
