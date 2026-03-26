@@ -130,7 +130,7 @@ const AboutSection = () => {
                 </motion.div>
               ))}
             </div>
-            <p className="font-body text-xs opacity-70 mt-5 italic">
+            <p className="font-body text-xs text-muted-foreground mt-5 italic">
               {t(
                 "S fokusom na psihološku sigurnost, angažiranost, leadership, uključivost i kulturu učenja.",
                 "Focusing on psychological safety, engagement, leadership, inclusion, and a culture of learning."
