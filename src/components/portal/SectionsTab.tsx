@@ -382,7 +382,7 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => handleDownload(doc.file_path)}
+                              onClick={() => handleDownload(doc.file_path, doc.file_name)}
                             >
                               <Download className="h-4 w-4" />
                             </Button>

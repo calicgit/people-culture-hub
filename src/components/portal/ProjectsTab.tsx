@@ -486,7 +486,7 @@ const ProjectsTab = ({ userId, profileNameByUserId, isMasterAdmin }: ProjectsTab
                         </p>
                       </div>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownload(doc.file_path)}>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDownload(doc.file_path, doc.file_name)}>
                           <Download className="h-3.5 w-3.5" />
                         </Button>
                         <Button

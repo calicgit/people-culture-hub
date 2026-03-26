@@ -1169,7 +1169,7 @@ const PortalDashboard = () => {
                                             </p>
                                             {version.description && <p className="text-xs text-muted-foreground">{version.description}</p>}
                                           </div>
-                                          <Button variant="outline" size="sm" onClick={() => handleVersionDownload(version.file_path)}>
+                                          <Button variant="outline" size="sm" onClick={() => handleVersionDownload(version.file_path, version.file_name)}>
                                             <Download className="h-4 w-4" />
                                             Preuzmi v{version.version_number}
                                           </Button>
