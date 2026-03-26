@@ -17,7 +17,7 @@ const LandingFooter = () => {
               <Mail className="w-3.5 h-3.5 text-primary" />
               <div>
                 <p className="text-primary-foreground/60 text-[11px] font-body">E-mail</p>
-                <p className="text-primary-foreground/40 text-[11px] font-body">hub@peopleandculture.hr</p>
+                <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body">hub@peopleandculture.hr</a>
               </div>
             </div>
             <div className="flex items-center gap-2">
