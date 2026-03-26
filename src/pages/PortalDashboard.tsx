@@ -1447,6 +1447,14 @@ const PortalDashboard = () => {
               />
             </TabsContent>
 
+            <TabsContent value="projects" className="space-y-6">
+              <ProjectsTab
+                userId={user!.id}
+                profileNameByUserId={profileNameByUserId}
+                isMasterAdmin={isMasterAdmin}
+              />
+            </TabsContent>
+
             {SECTIONS.map((section) => (
               <TabsContent key={section.id} value={`section-${section.id}`} className="space-y-6">
                 <SingleSectionDocs
