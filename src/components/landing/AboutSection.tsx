@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Target, Eye, Heart, Lightbulb, Users, GraduationCap, BarChart3, Rocket, Award, Handshake, Building2, BookOpen } from "lucide-react";
+import { Target, Eye, Heart, Lightbulb, BookOpen } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const fadeUp = {
