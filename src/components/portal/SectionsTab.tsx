@@ -224,7 +224,27 @@ const SectionsTab = ({ userId, profileNameByUserId, onDataRefresh, activeSection
     }
   };
 
-  const handleDelete = async (docId: string, filePath: string, sectionId: string) => {
+  const handlePreview = async (filePath: string, fileName: string) => {
+    setPreviewTitle(fileName);
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewUrl(null);
+    try {
+      const blob = await fetchStorageBlob("dms-documents", filePath);
+      setPreviewUrl(URL.createObjectURL(blob));
+    } catch (error) {
+      setPreviewOpen(false);
+      toast({ title: "Pregled nije uspio", description: error instanceof Error ? error.message : "Pokušaj ponovno.", variant: "destructive" });
+    } finally {
+      setPreviewLoading(false);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); setPreviewUrl(null); }
+  };
+
     const { error } = await supabase.from("documents" as never).delete().eq("id", docId);
     if (error) {
       toast({ title: "Brisanje nije uspjelo", description: error.message, variant: "destructive" });
