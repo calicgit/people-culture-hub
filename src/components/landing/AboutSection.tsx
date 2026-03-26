@@ -159,24 +159,6 @@ const AboutSection = () => {
               )}
             </p>
 
-            <div className="border-t border-border pt-6">
-              <h4 className="font-heading text-sm font-semibold text-foreground mb-3">
-                {t("Kako djelujemo", "How We Operate")}
-              </h4>
-              <p className="text-muted-foreground font-body text-sm leading-relaxed mb-4">
-                {t(
-                  "Djelujemo kao neutralna i stručna platforma koja povezuje:",
-                  "We act as a neutral and expert platform connecting:"
-                )}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {connectPoints.map((cp) => (
-                  <span key={cp} className="px-3 py-1.5 rounded-full bg-accent text-accent-foreground text-xs font-medium">
-                    {cp}
-                  </span>
-                ))}
-              </div>
-            </div>
           </motion.div>
         </div>
 
