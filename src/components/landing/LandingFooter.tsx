@@ -9,32 +9,6 @@ const LandingFooter = () => {
     <footer className="bg-navy-deep py-6">
       <div className="container">
         <div className="flex flex-col items-center gap-6 mb-4">
-          <div className="flex flex-col items-center">
-            <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-2 text-center">
-              {t("Pratite nas", "Follow us")}
-            </h4>
-            <a
-              href="https://www.linkedin.com/company/108869392"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="People & Culture HUB na LinkedInu"
-              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 72 72"
-                className="h-7 w-7"
-                aria-hidden="true"
-              >
-                <rect width="72" height="72" rx="8" fill="#0A66C2" />
-                <path
-                  d="M20.1 30.5h6.4V51h-6.4V30.5zM23.3 18c2.1 0 3.8 1.7 3.8 3.8s-1.7 3.8-3.8 3.8-3.8-1.7-3.8-3.8 1.7-3.8 3.8-3.8M31.1 30.5h6.1v2.8h.1c.9-1.6 3-3.3 6.1-3.3 6.5 0 7.7 4.3 7.7 9.9V51h-6.4V41.4c0-2.3 0-5.2-3.2-5.2-3.2 0-3.7 2.5-3.7 5V51h-6.4V30.5z"
-                  fill="#fff"
-                />
-              </svg>
-            </a>
-          </div>
-
           <div className="w-full">
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-3 text-center">
               {t("Kontakt", "Contact")}
@@ -62,6 +36,32 @@ const LandingFooter = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-2 text-center">
+              {t("Pratite nas", "Follow us")}
+            </h4>
+            <a
+              href="https://www.linkedin.com/company/108869392"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="People & Culture HUB na LinkedInu"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 72 72"
+                className="h-7 w-7"
+                aria-hidden="true"
+              >
+                <rect width="72" height="72" rx="8" fill="#0A66C2" />
+                <path
+                  d="M20.1 30.5h6.4V51h-6.4V30.5zM23.3 18c2.1 0 3.8 1.7 3.8 3.8s-1.7 3.8-3.8 3.8-3.8-1.7-3.8-3.8 1.7-3.8 3.8-3.8M31.1 30.5h6.1v2.8h.1c.9-1.6 3-3.3 6.1-3.3 6.5 0 7.7 4.3 7.7 9.9V51h-6.4V41.4c0-2.3 0-5.2-3.2-5.2-3.2 0-3.7 2.5-3.7 5V51h-6.4V30.5z"
+                  fill="#fff"
+                />
+              </svg>
+            </a>
           </div>
         </div>
         <div className="border-t border-primary-foreground/10 pt-4 relative flex items-center justify-center">
