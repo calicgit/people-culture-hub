@@ -41,11 +41,16 @@ const NewsSection = () => {
 
         <div className="space-y-4">
           {news.map((n, i) => (
-            <a
+            <motion.a
+              key={i}
               href={n.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-card rounded-xl border border-border p-6 flex flex-col md:flex-row md:items-center gap-4 hover:shadow-lg transition-shadow group cursor-pointer no-underline"
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              className="block bg-card rounded-xl border border-border p-6 flex flex-col md:flex-row md:items-center gap-4 hover:shadow-lg transition-shadow group cursor-pointer no-underline"
             >
               <div className="flex items-center gap-2 text-xs text-muted-foreground font-body md:w-36 shrink-0">
                 <CalendarDays size={14} />
@@ -64,7 +69,7 @@ const NewsSection = () => {
                 size={16}
                 className="text-muted-foreground group-hover:text-primary transition-colors shrink-0 hidden md:block"
               />
-            </a>
+            </motion.a>
           ))}
         </div>
       </div>
