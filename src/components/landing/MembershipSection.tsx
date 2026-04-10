@@ -17,6 +17,7 @@ const MembershipSection = () => {
       name: t("Student članstvo", "Student Membership"),
       price: "€30/god",
       description: t("Namijenjeno redovitim studentima", "For full-time students"),
+      link: "/prijava-clanstvo",
       features: [
         t("Pristup edukacijama", "Access to training sessions"),
         t("Newsletter i resursi", "Newsletter & resources"),
@@ -28,6 +29,7 @@ const MembershipSection = () => {
       name: t("Basic članstvo", "Basic Membership"),
       price: "€120/god",
       popular: true,
+      link: "/prijava-clanstvo",
       features: [
         t("Pristup svim edukacijama", "Access to all training sessions"),
         t("Newsletter i resursi", "Newsletter & resources"),
@@ -42,6 +44,7 @@ const MembershipSection = () => {
         "Namijenjeno članovima vijeća, odbora ili drugih tijela Udruge",
         "For council, board or other association body members"
       ),
+      link: "/prijava-clanstvo",
       features: [
         t("Sve pogodnosti Basic članstva", "All Basic membership benefits"),
         t("Sudjelovanje u vijećima i odborima", "Participation in councils & boards"),
@@ -52,8 +55,9 @@ const MembershipSection = () => {
     },
     {
       name: t("Korporativno članstvo", "Corporate Membership"),
-      price: "€5.000/god",
+      price: "",
       description: t("Namijenjeno tvrtkama", "For companies"),
+      link: "/prijava-korporativno",
       features: [
         t("Višestruki članovi tima", "Multiple team members"),
         t("Pristup svim edukacijama", "Access to all training"),
@@ -113,7 +117,7 @@ const MembershipSection = () => {
                   {tier.description}
                 </p>
               )}
-              <div className="font-heading text-3xl font-bold mb-6">{tier.price}</div>
+              {tier.price && <div className="font-heading text-3xl font-bold mb-6">{tier.price}</div>}
               <ul className="space-y-3 flex-1 mb-8">
                 {tier.features.map((f, fi) => (
                   <li key={fi} className="flex items-start gap-2 text-sm font-body">
@@ -122,7 +126,7 @@ const MembershipSection = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/prijava-clanstvo" className="w-full">
+              <Link to={tier.link || "/prijava-clanstvo"} className="w-full">
                 <Button
                   className="w-full"
                   variant={tier.popular ? "default" : "outline"}
