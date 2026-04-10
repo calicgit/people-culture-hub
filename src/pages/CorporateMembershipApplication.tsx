@@ -33,7 +33,6 @@ interface MemberEntry {
   address: string;
   oib: string;
   dateOfBirth: string;
-  email: string;
 }
 
 const TOTAL_STEPS = 8;
@@ -65,7 +64,7 @@ const CorporateMembershipApplication = () => {
 
   // Step 7: Member details
   const [members, setMembers] = useState<MemberEntry[]>([
-    { fullName: "", address: "", oib: "", dateOfBirth: "", email: "" },
+    { fullName: "", address: "", oib: "", dateOfBirth: "" },
   ]);
 
   const canProceed = () => {
@@ -100,9 +99,7 @@ const CorporateMembershipApplication = () => {
             m.fullName.trim() &&
             m.address.trim() &&
             m.oib.trim() &&
-            m.dateOfBirth &&
-            m.email.trim() &&
-            m.email.includes("@")
+            m.dateOfBirth
         );
       default:
         return true;
@@ -152,7 +149,6 @@ const CorporateMembershipApplication = () => {
               address: m.address.trim(),
               oib: m.oib.trim(),
               dateOfBirth: m.dateOfBirth,
-              email: m.email.trim(),
             })),
           },
         });
@@ -172,9 +168,9 @@ const CorporateMembershipApplication = () => {
   const nextStep = () => {
     if (step === 6) {
       // Adjust members array to match count
-      const newMembers = [...members];
+      const newMembers: MemberEntry[] = [...members];
       while (newMembers.length < memberCount) {
-        newMembers.push({ fullName: "", address: "", oib: "", dateOfBirth: "", email: "" });
+        newMembers.push({ fullName: "", address: "", oib: "", dateOfBirth: "" });
       }
       setMembers(newMembers.slice(0, memberCount));
       setStep(7);
@@ -471,7 +467,7 @@ const CorporateMembershipApplication = () => {
                           />
                         </div>
                         <div>
-                          <Label className="text-foreground text-xs">Vaša adresa prebivališta <span className="text-destructive">*</span></Label>
+                          <Label className="text-foreground text-xs">Adresa prebivališta <span className="text-destructive">*</span></Label>
                           <Input
                             value={member.address}
                             onChange={(e) => updateMember(idx, "address", e.target.value)}
@@ -479,7 +475,7 @@ const CorporateMembershipApplication = () => {
                           />
                         </div>
                         <div>
-                          <Label className="text-foreground text-xs">Vaš OIB <span className="text-destructive">*</span></Label>
+                          <Label className="text-foreground text-xs">OIB <span className="text-destructive">*</span></Label>
                           <Input
                             value={member.oib}
                             onChange={(e) => updateMember(idx, "oib", e.target.value)}
@@ -487,20 +483,11 @@ const CorporateMembershipApplication = () => {
                           />
                         </div>
                         <div>
-                          <Label className="text-foreground text-xs">Vaš datum rođenja <span className="text-destructive">*</span></Label>
+                          <Label className="text-foreground text-xs">Datum rođenja <span className="text-destructive">*</span></Label>
                           <Input
                             type="date"
                             value={member.dateOfBirth}
                             onChange={(e) => updateMember(idx, "dateOfBirth", e.target.value)}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-foreground text-xs">E-mail na koji se šalje ponuda <span className="text-destructive">*</span></Label>
-                          <Input
-                            type="email"
-                            value={member.email}
-                            onChange={(e) => updateMember(idx, "email", e.target.value)}
                             className="mt-1"
                           />
                         </div>
