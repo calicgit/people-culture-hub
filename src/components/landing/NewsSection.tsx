@@ -11,8 +11,8 @@ const NewsSection = () => {
       dateEn: "November 26–27, 2026",
       title: t("Konferencija People & Culture HORIZONS", "People & Culture HORIZONS Conference"),
       desc: t(
-        "Vodeća HR & Business konferencija. Pridružite nam se 26. i 27. studenoga 2026.",
-        "The leading HR & Business conference. Join us on November 26–27, 2026."
+        "Vodeća HR & Business konferencija.",
+        "The leading HR & Business conference."
       ),
       tag: t("Događaj", "Event"),
       link: "https://peopleandculture.hr/",
