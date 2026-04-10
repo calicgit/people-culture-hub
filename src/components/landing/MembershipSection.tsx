@@ -52,7 +52,7 @@ const MembershipSection = () => {
     },
     {
       name: t("Korporativno članstvo", "Corporate Membership"),
-      price: "€5.000/god",
+      price: "",
       description: t("Namijenjeno tvrtkama", "For companies"),
       features: [
         t("Višestruki članovi tima", "Multiple team members"),
@@ -113,7 +113,7 @@ const MembershipSection = () => {
                   {tier.description}
                 </p>
               )}
-              <div className="font-heading text-3xl font-bold mb-6">{tier.price}</div>
+              {tier.price && <div className="font-heading text-3xl font-bold mb-6">{tier.price}</div>}
               <ul className="space-y-3 flex-1 mb-8">
                 {tier.features.map((f, fi) => (
                   <li key={fi} className="flex items-start gap-2 text-sm font-body">
