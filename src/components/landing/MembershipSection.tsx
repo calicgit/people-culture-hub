@@ -117,7 +117,7 @@ const MembershipSection = () => {
                   {tier.description}
                 </p>
               )}
-              {tier.price && <div className="font-heading text-3xl font-bold mb-6">{tier.price}</div>}
+              {tier.price && <div className={`font-heading font-bold mb-6 ${tier.price === t("Cijena na upit", "Price on request") ? "text-base" : "text-3xl"}`}>{tier.price}</div>}
               <ul className="space-y-3 flex-1 mb-8">
                 {tier.features.map((f, fi) => (
                   <li key={fi} className="flex items-start gap-2 text-sm font-body">
