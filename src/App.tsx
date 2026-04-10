@@ -16,6 +16,7 @@ import MeetupInvite from "./pages/MeetupInvite";
 import Resources from "./pages/Resources";
 import Team from "./pages/Team";
 import MembershipApplication from "./pages/MembershipApplication";
+import CorporateMembershipApplication from "./pages/CorporateMembershipApplication";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/meetup-invite" element={<MeetupInvite />} />
               <Route path="/tim" element={<Team />} />
               <Route path="/prijava-clanstvo" element={<MembershipApplication />} />
+              <Route path="/prijava-korporativno" element={<CorporateMembershipApplication />} />
               <Route path="/politika-privatnosti" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
