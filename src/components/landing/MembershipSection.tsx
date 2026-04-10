@@ -55,7 +55,7 @@ const MembershipSection = () => {
     },
     {
       name: t("Korporativno članstvo", "Corporate Membership"),
-      price: t("Na upit", "On request"),
+      price: t("Cijena na upit", "Price on request"),
       description: t("Namijenjeno tvrtkama", "For companies"),
       link: "/prijava-korporativno",
       features: [
