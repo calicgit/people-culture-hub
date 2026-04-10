@@ -7,34 +7,14 @@ const NewsSection = () => {
 
   const news = [
     {
-      date: "15. ožujka 2026.",
-      dateEn: "March 15, 2026",
-      title: t("Konferencija o budućnosti rada u Zagrebu", "Conference on the Future of Work in Zagreb"),
+      date: "26. – 27. studenoga 2026.",
+      dateEn: "November 26–27, 2026",
+      title: t("Konferencija People & Culture HORIZONS", "People & Culture HORIZONS Conference"),
       desc: t(
-        "Najavljena je godišnja konferencija udruge s fokusom na digitalnu transformaciju i hibridne modele rada.",
-        "The association's annual conference has been announced, focusing on digital transformation and hybrid work models."
+        "Vodeća HR & Business konferencija. Pridružite nam se 26. i 27. studenoga 2026.",
+        "The leading HR & Business conference. Join us on November 26–27, 2026."
       ),
       tag: t("Događaj", "Event"),
-    },
-    {
-      date: "28. veljače 2026.",
-      dateEn: "February 28, 2026",
-      title: t("Nova istraživanja o zadovoljstvu zaposlenika", "New Research on Employee Satisfaction"),
-      desc: t(
-        "Objavljeni rezultati istraživanja o zadovoljstvu zaposlenika u hrvatskim tvrtkama s preporukama za poboljšanje.",
-        "Published results of employee satisfaction research in Croatian companies with improvement recommendations."
-      ),
-      tag: t("Istraživanje", "Research"),
-    },
-    {
-      date: "10. veljače 2026.",
-      dateEn: "February 10, 2026",
-      title: t("Partnerstvo s europskim HR mrežama", "Partnership with European HR Networks"),
-      desc: t(
-        "Udruga je potpisala sporazum o suradnji s vodećim europskim organizacijama za upravljanje ljudskim potencijalima.",
-        "The association signed a cooperation agreement with leading European HR management organizations."
-      ),
-      tag: t("Vijest", "News"),
     },
   ];
 
