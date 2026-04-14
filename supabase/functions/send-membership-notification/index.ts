@@ -1,5 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,9 +32,12 @@ serve(async (req) => {
       advanced: "Advanced (170€/god)",
     };
 
-    const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const SMTP_HOST = Deno.env.get("SMTP_HOST");
+    const SMTP_PORT = parseInt(Deno.env.get("SMTP_PORT") || "465");
+    const SMTP_USER = Deno.env.get("SMTP_USER");
+    const SMTP_PASS = Deno.env.get("SMTP_PASS");
+    const SMTP_FROM = Deno.env.get("SMTP_FROM_EMAIL");
 
-    // Build email body
     const htmlBody = `
       <h2>Nova prijava za članstvo - People & Culture HUB</h2>
       <table style="border-collapse:collapse;width:100%;">
@@ -48,32 +52,38 @@ serve(async (req) => {
       </table>
     `;
 
-    if (RESEND_API_KEY) {
-      // Use Resend if configured
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "People & Culture HUB <noreply@peopleandculture.hr>",
-          to: ["hub@peopleandculture.hr"],
-          subject: `Nova prijava za članstvo: ${firstName} ${lastName}`,
-          html: htmlBody,
-        }),
+    if (SMTP_HOST && SMTP_USER && SMTP_PASS && SMTP_FROM) {
+      const client = new SmtpClient();
+
+      const connectConfig: any = {
+        hostname: SMTP_HOST,
+        port: SMTP_PORT,
+        username: SMTP_USER,
+        password: SMTP_PASS,
+      };
+
+      if (SMTP_PORT === 465) {
+        await client.connectTLS(connectConfig);
+      } else {
+        await client.connect(connectConfig);
+        if (SMTP_PORT === 587) {
+          await client.starttls(connectConfig);
+        }
+      }
+
+      await client.send({
+        from: SMTP_FROM,
+        to: "hub@peopleandculture.hr",
+        subject: `Nova prijava za članstvo: ${firstName} ${lastName}`,
+        content: "Nova prijava za članstvo",
+        html: htmlBody,
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Resend error:", errorText);
-      }
+      await client.close();
+      console.log("Email sent via SMTP successfully");
     } else {
-      // Fallback: log to console (email will be sent when Resend is configured)
-      console.log("Email notification (no RESEND_API_KEY configured):");
-      console.log("To: hub@peopleandculture.hr");
+      console.log("SMTP not configured. Missing env vars.");
       console.log("Subject:", `Nova prijava za članstvo: ${firstName} ${lastName}`);
-      console.log("Body:", htmlBody);
     }
 
     return new Response(JSON.stringify({ success: true }), {
