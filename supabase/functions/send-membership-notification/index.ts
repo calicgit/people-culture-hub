@@ -70,7 +70,7 @@ serve(async (req) => {
       });
 
       await client.send({
-        from: SMTP_FROM,
+        from: cleanFrom,
         to: "hub@peopleandculture.hr",
         subject: `Nova prijava za članstvo: ${firstName} ${lastName}`,
         content: "Nova prijava za članstvo",
