@@ -52,7 +52,11 @@ serve(async (req) => {
       </table>
     `;
 
+    console.log("SMTP config:", { SMTP_HOST, SMTP_PORT, SMTP_USER: SMTP_USER ? "set" : "missing", SMTP_FROM });
+
     if (SMTP_HOST && SMTP_USER && SMTP_PASS && SMTP_FROM) {
+      // Ensure from is a clean email address
+      const cleanFrom = SMTP_FROM.trim();
       const client = new SMTPClient({
         connection: {
           hostname: SMTP_HOST,
