@@ -535,7 +535,7 @@ const MembershipApplication = () => {
                     <Check className="text-primary" size={32} />
                   </div>
                   <h2 className="font-heading text-2xl font-bold text-foreground">
-                    Hvala na prijavi!
+                    Prijava je uspješno poslana!
                   </h2>
                   <p className="text-muted-foreground font-body text-lg">
                     Kontaktirati ćemo Vas ubrzo!
