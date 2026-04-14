@@ -1,6 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/smtp@v0.7.0/mod.ts";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -53,23 +53,17 @@ serve(async (req) => {
     `;
 
     if (SMTP_HOST && SMTP_USER && SMTP_PASS && SMTP_FROM) {
-      const client = new SmtpClient();
-
-      const connectConfig: any = {
-        hostname: SMTP_HOST,
-        port: SMTP_PORT,
-        username: SMTP_USER,
-        password: SMTP_PASS,
-      };
-
-      if (SMTP_PORT === 465) {
-        await client.connectTLS(connectConfig);
-      } else {
-        await client.connect(connectConfig);
-        if (SMTP_PORT === 587) {
-          await client.starttls(connectConfig);
-        }
-      }
+      const client = new SMTPClient({
+        connection: {
+          hostname: SMTP_HOST,
+          port: SMTP_PORT,
+          tls: SMTP_PORT === 465,
+          auth: {
+            username: SMTP_USER,
+            password: SMTP_PASS,
+          },
+        },
+      });
 
       await client.send({
         from: SMTP_FROM,
@@ -83,7 +77,6 @@ serve(async (req) => {
       console.log("Email sent via SMTP successfully");
     } else {
       console.log("SMTP not configured. Missing env vars.");
-      console.log("Subject:", `Nova prijava za članstvo: ${firstName} ${lastName}`);
     }
 
     return new Response(JSON.stringify({ success: true }), {
