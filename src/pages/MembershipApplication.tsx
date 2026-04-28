@@ -109,17 +109,30 @@ const MembershipApplication = () => {
 
       // Send notification email
       try {
-        await supabase.functions.invoke("send-membership-notification", {
+        const tierLabels: Record<string, string> = {
+          student: "Student (30€/god)",
+          basic: "Basic (120€/god)",
+          advanced: "Advanced (170€/god)",
+        };
+        const html = `
+          <h2>Nova prijava za članstvo - People & Culture HUB</h2>
+          <table style="border-collapse:collapse;width:100%;">
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Ime i prezime</td><td style="padding:8px;border:1px solid #ddd;">${firstName.trim()} ${lastName.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Email</td><td style="padding:8px;border:1px solid #ddd;">${email.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Telefon</td><td style="padding:8px;border:1px solid #ddd;">${phone.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kompanija</td><td style="padding:8px;border:1px solid #ddd;">${company.trim() || "—"}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Vrsta članstva</td><td style="padding:8px;border:1px solid #ddd;">${tierLabels[membershipTier] || membershipTier}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Preporuka</td><td style="padding:8px;border:1px solid #ddd;">${(referrals || []).join(", ") || "—"}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kako je saznao/la</td><td style="padding:8px;border:1px solid #ddd;">${howHeard.trim() || "—"}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Članarinu plaća</td><td style="padding:8px;border:1px solid #ddd;">${paidBy === "employer" ? "Poslodavac" : "Osobno"}</td></tr>
+          </table>
+        `;
+        await supabase.functions.invoke("send-email", {
           body: {
-            firstName: firstName.trim(),
-            lastName: lastName.trim(),
-            email: email.trim(),
-            phone: phone.trim(),
-            company: company.trim(),
-            membershipTier,
-            referrals,
-            howHeard: howHeard.trim(),
-            paidBy,
+            to: "hub@peopleandculture.hr",
+            subject: `Nova prijava za članstvo: ${firstName.trim()} ${lastName.trim()}`,
+            html,
+            replyTo: email.trim(),
           },
         });
       } catch {
