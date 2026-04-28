@@ -132,24 +132,47 @@ const CorporateMembershipApplication = () => {
       if (error) throw error;
 
       try {
-        await supabase.functions.invoke("send-membership-notification", {
+        const membersRows = members
+          .map(
+            (m, i) => `
+            <tr><td style="padding:6px;border:1px solid #ddd;">${i + 1}</td>
+            <td style="padding:6px;border:1px solid #ddd;">${m.fullName.trim()}</td>
+            <td style="padding:6px;border:1px solid #ddd;">${m.address.trim()}</td>
+            <td style="padding:6px;border:1px solid #ddd;">${m.oib.trim()}</td>
+            <td style="padding:6px;border:1px solid #ddd;">${m.dateOfBirth || "—"}</td></tr>`,
+          )
+          .join("");
+        const html = `
+          <h2>Nova korporativna prijava - People & Culture HUB</h2>
+          <table style="border-collapse:collapse;width:100%;margin-bottom:20px;">
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kompanija</td><td style="padding:8px;border:1px solid #ddd;">${companyName.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">OIB</td><td style="padding:8px;border:1px solid #ddd;">${companyOib.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Adresa</td><td style="padding:8px;border:1px solid #ddd;">${companyAddress.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kontakt osoba</td><td style="padding:8px;border:1px solid #ddd;">${contactName.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Email</td><td style="padding:8px;border:1px solid #ddd;">${contactEmail.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Telefon</td><td style="padding:8px;border:1px solid #ddd;">${contactPhone.trim()}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Broj članova</td><td style="padding:8px;border:1px solid #ddd;">${memberCount}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Preporuka</td><td style="padding:8px;border:1px solid #ddd;">${(referrals || []).join(", ") || "—"}</td></tr>
+            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kako je saznao/la</td><td style="padding:8px;border:1px solid #ddd;">${howHeard.trim() || "—"}</td></tr>
+          </table>
+          <h3>Članovi</h3>
+          <table style="border-collapse:collapse;width:100%;">
+            <tr style="background:#f5f5f5;">
+              <th style="padding:6px;border:1px solid #ddd;">#</th>
+              <th style="padding:6px;border:1px solid #ddd;">Ime i prezime</th>
+              <th style="padding:6px;border:1px solid #ddd;">Adresa</th>
+              <th style="padding:6px;border:1px solid #ddd;">OIB</th>
+              <th style="padding:6px;border:1px solid #ddd;">Datum rođenja</th>
+            </tr>
+            ${membersRows}
+          </table>
+        `;
+        await supabase.functions.invoke("send-email", {
           body: {
-            firstName: contactName.split(" ")[0] || contactName.trim(),
-            lastName: contactName.split(" ").slice(1).join(" ") || "-",
-            email: contactEmail.trim(),
-            phone: contactPhone.trim(),
-            company: companyName.trim(),
-            membershipTier: "korporativno",
-            referrals,
-            howHeard: howHeard.trim(),
-            paidBy: "employer",
-            memberCount,
-            members: members.map((m) => ({
-              fullName: m.fullName.trim(),
-              address: m.address.trim(),
-              oib: m.oib.trim(),
-              dateOfBirth: m.dateOfBirth,
-            })),
+            to: "hub@peopleandculture.hr",
+            subject: `Nova korporativna prijava: ${companyName.trim()}`,
+            html,
+            replyTo: contactEmail.trim(),
           },
         });
       } catch {
