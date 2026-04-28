@@ -169,11 +169,6 @@ const Team = () => {
                                 {member.title}
                               </p>
                             )}
-                            {hasBio && (
-                              <p className="mt-2 text-xs text-muted-foreground">
-                                {t("Kliknite za biografiju", "Click for biography")}
-                              </p>
-                            )}
                           </div>
                         </motion.button>
                       );
