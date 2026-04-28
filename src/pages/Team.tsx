@@ -6,6 +6,13 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import LandingNavbar from "@/components/landing/LandingNavbar";
 import LandingFooter from "@/components/landing/LandingFooter";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type TeamMember = {
   id: string;
@@ -29,6 +36,7 @@ const Team = () => {
   const { t } = useLanguage();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<TeamMember | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -123,51 +131,94 @@ const Team = () => {
                   </motion.div>
 
                   <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 max-w-4xl">
-                    {group.members.map((member, mi) => (
-                      <motion.div
-                        key={member.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: mi * 0.05 }}
-                        className="group rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                      >
-                        <div className="aspect-[3/4] bg-muted overflow-hidden flex items-center justify-center">
-                          {member.photo_url ? (
-                            <img
-                              src={member.photo_url}
-                              alt={member.full_name}
-                              className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                            />
-                          ) : (
-                            <div className="h-full w-full flex items-center justify-center bg-accent">
-                              <Users className="h-16 w-16 text-accent-foreground/30" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="p-4 space-y-0">
-                          <h3 className="font-heading text-lg font-semibold text-foreground">
-                            {member.full_name}
-                          </h3>
-                          {member.title && (
-                            <p className="text-sm text-primary font-medium">
-                              {member.title}
-                            </p>
-                          )}
-                          {member.bio && (
-                            <p className="mt-3 text-sm text-muted-foreground font-body leading-relaxed">
-                              {member.bio}
-                            </p>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
+                    {group.members.map((member, mi) => {
+                      const hasBio = !!member.bio;
+                      return (
+                        <motion.button
+                          type="button"
+                          key={member.id}
+                          onClick={() => hasBio && setSelected(member)}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: mi * 0.05 }}
+                          className={`group text-left rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
+                            hasBio ? "cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary" : "cursor-default"
+                          }`}
+                          aria-label={hasBio ? t(`Otvori biografiju: ${member.full_name}`, `Open bio: ${member.full_name}`) : member.full_name}
+                        >
+                          <div className="aspect-[3/4] bg-muted overflow-hidden flex items-center justify-center">
+                            {member.photo_url ? (
+                              <img
+                                src={member.photo_url}
+                                alt={member.full_name}
+                                className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center bg-accent">
+                                <Users className="h-16 w-16 text-accent-foreground/30" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-4 space-y-0">
+                            <h3 className="font-heading text-lg font-semibold text-foreground">
+                              {member.full_name}
+                            </h3>
+                            {member.title && (
+                              <p className="text-sm text-primary font-medium">
+                                {member.title}
+                              </p>
+                            )}
+                            {hasBio && (
+                              <p className="mt-2 text-xs text-muted-foreground">
+                                {t("Kliknite za biografiju", "Click for biography")}
+                              </p>
+                            )}
+                          </div>
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
               ))
           )}
         </div>
       </section>
+
+      <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          {selected && (
+            <>
+              <DialogHeader>
+                <div className="flex items-start gap-4">
+                  {selected.photo_url && (
+                    <img
+                      src={selected.photo_url}
+                      alt={selected.full_name}
+                      className="w-20 h-24 rounded-md object-cover object-top flex-shrink-0"
+                    />
+                  )}
+                  <div>
+                    <DialogTitle className="font-heading text-xl text-left">
+                      {selected.full_name}
+                    </DialogTitle>
+                    {selected.title && (
+                      <DialogDescription className="text-primary font-medium text-left mt-1">
+                        {selected.title}
+                      </DialogDescription>
+                    )}
+                  </div>
+                </div>
+              </DialogHeader>
+              {selected.bio && (
+                <div className="mt-4 space-y-3 text-sm text-foreground/90 font-body leading-relaxed whitespace-pre-line">
+                  {selected.bio}
+                </div>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <LandingFooter />
     </div>
