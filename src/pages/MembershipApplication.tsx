@@ -114,17 +114,40 @@ const MembershipApplication = () => {
           basic: "Basic (120€/god)",
           advanced: "Advanced (170€/god)",
         };
+        const isEmp = paidBy === "employer";
+        const esc = (s: string) => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        const row = (k: string, v: string) =>
+          `<tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;width:40%;">${k}</td><td style="padding:8px;border:1px solid #ddd;">${esc(v || "—")}</td></tr>`;
+        const paymentRows = isEmp
+          ? row("Naziv tvrtke (platitelj)", payerCompanyName.trim()) +
+            row("Ime i prezime kontakta", payerFullName.trim()) +
+            row("Adresa tvrtke", payerAddress.trim()) +
+            row("OIB tvrtke", payerOib.trim()) +
+            row("OIB prijavitelja", applicantOib.trim()) +
+            row("Datum rođenja prijavitelja", applicantDob) +
+            row("E-mail za ponudu/račun", invoiceEmail.trim())
+          : row("Ime i prezime", personalFullName.trim()) +
+            row("Adresa prebivališta", personalAddress.trim()) +
+            row("OIB", personalOib.trim()) +
+            row("Datum rođenja", personalDob) +
+            row("E-mail za ponudu/račun", personalInvoiceEmail.trim());
+
         const html = `
           <h2>Nova prijava za članstvo - People & Culture HUB</h2>
+          <h3 style="margin-top:20px;">Osnovni podaci</h3>
           <table style="border-collapse:collapse;width:100%;">
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Ime i prezime</td><td style="padding:8px;border:1px solid #ddd;">${firstName.trim()} ${lastName.trim()}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Email</td><td style="padding:8px;border:1px solid #ddd;">${email.trim()}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Telefon</td><td style="padding:8px;border:1px solid #ddd;">${phone.trim()}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kompanija</td><td style="padding:8px;border:1px solid #ddd;">${company.trim() || "—"}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Vrsta članstva</td><td style="padding:8px;border:1px solid #ddd;">${tierLabels[membershipTier] || membershipTier}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Preporuka</td><td style="padding:8px;border:1px solid #ddd;">${(referrals || []).join(", ") || "—"}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Kako je saznao/la</td><td style="padding:8px;border:1px solid #ddd;">${howHeard.trim() || "—"}</td></tr>
-            <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;">Članarinu plaća</td><td style="padding:8px;border:1px solid #ddd;">${paidBy === "employer" ? "Poslodavac" : "Osobno"}</td></tr>
+            ${row("Ime i prezime", `${firstName.trim()} ${lastName.trim()}`)}
+            ${row("Email", email.trim())}
+            ${row("Telefon", phone.trim())}
+            ${row("Kompanija", company.trim())}
+            ${row("Vrsta članstva", tierLabels[membershipTier] || membershipTier)}
+            ${row("Preporuka", (referrals || []).join(", "))}
+            ${row("Kako je saznao/la", howHeard.trim())}
+            ${row("Članarinu plaća", isEmp ? "Poslodavac" : "Osobno")}
+          </table>
+          <h3 style="margin-top:20px;">Podaci za plaćanje — ${isEmp ? "Poslodavac" : "Osobno"}</h3>
+          <table style="border-collapse:collapse;width:100%;">
+            ${paymentRows}
           </table>
         `;
         await supabase.functions.invoke("send-email", {
