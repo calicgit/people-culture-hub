@@ -32,6 +32,10 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
+const tightCropMembers = ["Dario Perak", "Dario Car", "Petar Čalić", "Szabolcs Annus", "Tome Barić", "Iva Taiber", "Maja Darija Škrljak", "Marina Klačmer Čalopa"];
+
+const needsTightCrop = (name: string) => tightCropMembers.some((memberName) => name.includes(memberName));
+
 const Team = () => {
   const { t } = useLanguage();
   const [members, setMembers] = useState<TeamMember[]>([]);
@@ -133,6 +137,7 @@ const Team = () => {
                   <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 max-w-4xl">
                     {group.members.map((member, mi) => {
                       const hasBio = !!member.bio;
+                      const tightCrop = needsTightCrop(member.full_name);
                       return (
                         <motion.button
                           type="button"
@@ -152,7 +157,9 @@ const Team = () => {
                               <img
                                 src={member.photo_url}
                                 alt={member.full_name}
-                                className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                                className={`h-full w-full object-cover object-center transition-transform duration-500 ${
+                                  tightCrop ? "origin-bottom scale-[1.2] group-hover:scale-[1.26]" : "group-hover:scale-105"
+                                }`}
                               />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center bg-accent">
@@ -190,7 +197,7 @@ const Team = () => {
                     <img
                       src={selected.photo_url}
                       alt={selected.full_name}
-                      className="w-20 h-24 rounded-md object-cover object-top flex-shrink-0"
+                      className={`w-20 h-24 rounded-md object-cover object-center flex-shrink-0 ${needsTightCrop(selected.full_name) ? "origin-bottom scale-[1.2]" : ""}`}
                     />
                   )}
                   <div>
