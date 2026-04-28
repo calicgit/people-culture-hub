@@ -13,7 +13,6 @@ import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const REFERRAL_OPTIONS = [
-  "Antonija Kapović",
   "Bruna Kostelac Košir",
   "Dunja Vorkapić",
   "Maja Darija Škrljak",
