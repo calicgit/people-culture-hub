@@ -14,7 +14,7 @@ const PrivacyPolicy = () => (
           <div className="space-y-8 text-muted-foreground font-body text-sm leading-relaxed">
             <div>
               <h2 className="font-heading text-xl font-bold text-foreground mb-3">Tko smo mi</h2>
-              <p>Adresa naše web stranice je: <a href="/" className="text-primary hover:underline">peopleandculture.hr</a></p>
+              <p>Adresa naše web stranice je: <a href="/" className="text-primary hover:underline">hub.peopleandculture.hr</a></p>
             </div>
 
             <div>
