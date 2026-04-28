@@ -1,11 +1,9 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
@@ -14,17 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      company,
-      membershipTier,
-      referrals,
-      howHeard,
-      paidBy,
-    } = await req.json();
+    const { firstName, lastName, email, phone, company, membershipTier, referrals, howHeard, paidBy } =
+      await req.json();
 
     const tierLabels: Record<string, string> = {
       student: "Student (30€/god)",
@@ -33,7 +22,7 @@ serve(async (req) => {
     };
 
     const SMTP_HOST = Deno.env.get("SMTP_HOST");
-    const SMTP_PORT = parseInt(Deno.env.get("SMTP_PORT") || "465");
+    const SMTP_PORT = parseInt(Deno.env.get("SMTP_PORT") || "587");
     const SMTP_USER = Deno.env.get("SMTP_USER");
     const SMTP_PASS = Deno.env.get("SMTP_PASS");
     const SMTP_FROM = Deno.env.get("SMTP_FROM_EMAIL");
@@ -61,7 +50,7 @@ serve(async (req) => {
         connection: {
           hostname: SMTP_HOST,
           port: SMTP_PORT,
-          tls: SMTP_PORT === 465,
+          #tls: SMTP_PORT === 465,
           auth: {
             username: SMTP_USER,
             password: SMTP_PASS,
@@ -88,9 +77,9 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
