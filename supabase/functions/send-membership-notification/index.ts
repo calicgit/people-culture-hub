@@ -50,7 +50,7 @@ serve(async (req) => {
         connection: {
           hostname: SMTP_HOST,
           port: SMTP_PORT,
-          #tls: SMTP_PORT === 465,
+          tls: SMTP_PORT === 465,
           auth: {
             username: SMTP_USER,
             password: SMTP_PASS,
