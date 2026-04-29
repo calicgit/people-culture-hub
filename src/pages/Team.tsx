@@ -152,7 +152,7 @@ const Team = () => {
                               <img
                                 src={member.photo_url}
                                 alt={member.full_name}
-                                className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                                className="h-full w-full object-cover object-center scale-110 origin-center group-hover:scale-[1.14] transition-transform duration-500"
                               />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center bg-accent">
@@ -190,7 +190,7 @@ const Team = () => {
                     <img
                       src={selected.photo_url}
                       alt={selected.full_name}
-                      className="w-20 h-24 rounded-md object-cover object-top flex-shrink-0"
+                      className="w-20 h-24 rounded-md object-cover object-center scale-110 flex-shrink-0"
                     />
                   )}
                   <div>
