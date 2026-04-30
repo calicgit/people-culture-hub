@@ -13,24 +13,24 @@ const LandingFooter = () => {
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-3 text-center">
               {t("Kontakt", "Contact")}
             </h4>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-              <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-primary" />
-                <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col md:flex-row items-center md:items-center justify-center gap-3 md:gap-8">
+              <div className="flex items-start gap-2 w-full md:w-auto justify-center">
+                <Mail className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-0.5 text-center md:text-left">
                   <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">E-mail</p>
                   <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">hub@peopleandculture.hr</a>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-primary" />
-                <div className="flex flex-col gap-0.5">
+              <div className="flex items-start gap-2 w-full md:w-auto justify-center">
+                <Phone className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-0.5 text-center md:text-left">
                   <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Centrala", "Phone")}</p>
                   <a href="tel:+38514103734" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">+385 1 4103 734</a>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-primary" />
-                <div className="flex flex-col gap-0.5">
+              <div className="flex items-start gap-2 w-full md:w-auto justify-center">
+                <MapPin className="w-3.5 h-3.5 text-primary mt-0.5 shrink-0" />
+                <div className="flex flex-col gap-0.5 text-center md:text-left">
                   <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Adresa", "Address")}</p>
                   <a href="https://maps.google.com/?q=Remetinečka+cesta+102D,+10000+Zagreb" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">Remetinečka cesta 102D, 10000 Zagreb</a>
                 </div>
