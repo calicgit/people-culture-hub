@@ -19,6 +19,7 @@ type TeamMember = {
   full_name: string;
   council: string;
   title: string | null;
+  title_en: string | null;
   bio: string | null;
   photo_url: string | null;
   display_order: number;
