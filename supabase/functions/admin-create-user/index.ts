@@ -90,18 +90,32 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Invalid body membership." }, { status: 400, headers: corsHeaders });
     }
 
-    const { data: createdUserData, error: createUserError } = await adminClient.auth.admin.inviteUserByEmail(email, {
-      redirectTo,
-      data: {
-        full_name: fullName,
-      },
+    // 1) Create user without sending default Supabase email
+    const { data: createdUserData, error: createUserError } = await adminClient.auth.admin.createUser({
+      email,
+      email_confirm: false,
+      user_metadata: { full_name: fullName },
     });
 
     if (createUserError || !createdUserData.user) {
-      return Response.json({ error: createUserError?.message ?? "User invitation failed." }, { status: 400, headers: corsHeaders });
+      return Response.json({ error: createUserError?.message ?? "User creation failed." }, { status: 400, headers: corsHeaders });
     }
 
     const newUserId = createdUserData.user.id;
+
+    // 2) Generate invite link (does NOT send an email)
+    const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
+      type: "invite",
+      email,
+      options: { redirectTo },
+    });
+
+    if (linkError || !linkData?.properties?.action_link) {
+      await adminClient.auth.admin.deleteUser(newUserId);
+      return Response.json({ error: linkError?.message ?? "Failed to generate invite link." }, { status: 400, headers: corsHeaders });
+    }
+
+    const inviteLink = linkData.properties.action_link;
 
     const profileInsert = await adminClient.from("profiles").insert({
       user_id: newUserId,
