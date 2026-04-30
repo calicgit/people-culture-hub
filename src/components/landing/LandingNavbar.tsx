@@ -6,13 +6,14 @@ import { Link, useNavigate } from "react-router-dom";
 import logoDark from "@/assets/logo-horizons-black.svg";
 import logoLight from "@/assets/logo-horizons-white.svg";
 
-const LandingNavbar = () => {
+const LandingNavbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolledRaw, setScrolled] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const aboutTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
+  const scrolled = forceSolid || scrolledRaw;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 24);
