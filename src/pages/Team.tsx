@@ -52,7 +52,7 @@ const normalizedPhotoFiles: Record<string, string> = {
 const getPhotoSrc = (url: string) => {
   const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
   const normalizedFile = normalizedPhotoFiles[fileName];
-  return normalizedFile ? `/team/normalized/${normalizedFile}?v=20260430h` : url;
+  return normalizedFile ? `/team/normalized/${normalizedFile}?v=20260430i` : url;
 };
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
