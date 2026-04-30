@@ -36,12 +36,23 @@ const getPhotoSrc = (url: string) => {
   return url.startsWith("/team/") ? `${url}?v=20260430-restored` : url;
 };
 
+const getPhotoPosition = (name: string) => {
+  const normalized = name.toLowerCase();
+
+  if (normalized.includes("vjekoslav golubović") || normalized.includes("vjekoslav golubovic")) {
+    return "center center";
+  }
+
+  return "center top";
+};
+
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
-  <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100 flex items-center justify-center">
+  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
     <img
       src={src}
       alt={alt}
-      className="absolute inset-0 block h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]"
+      style={{ objectPosition: getPhotoPosition(alt) }}
+      className="absolute inset-0 block h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
     />
   </div>
 );
@@ -167,7 +178,7 @@ const Team = () => {
                               alt={member.full_name}
                             />
                           ) : (
-                            <div className="aspect-[3/4] w-full flex items-center justify-center bg-accent">
+                            <div className="aspect-[4/3] w-full flex items-center justify-center bg-accent">
                               <Users className="h-16 w-16 text-accent-foreground/30" />
                             </div>
                           )}
