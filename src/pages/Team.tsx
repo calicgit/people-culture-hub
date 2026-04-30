@@ -36,6 +36,7 @@ const normalizedPhotoFiles: Record<string, string> = {
   "dario-car.jpg": "dario-car.jpg",
   "dario-perak.jpg": "dario-perak.jpg",
   "dunja-vorkapic.jpg": "dunja-vorkapic.jpg",
+  "dunja-vorkapic.jpeg": "dunja-vorkapic.jpg",
   "iva-taiber.jpg": "iva-taiber.jpg",
   "maja-darija-skrljak.jpg": "maja-darija-skrljak.jpg",
   "marija-felkel.jpg": "marija-felkel.jpg",
