@@ -115,7 +115,7 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <LandingNavbar />
+      <LandingNavbar forceSolid />
       <main className="flex-1 pt-20">
         <section className="py-16">
           <div className="container max-w-3xl space-y-10">
