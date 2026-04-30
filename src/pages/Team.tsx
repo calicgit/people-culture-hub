@@ -32,14 +32,22 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
-const getPhotoSrc = (url: string) => url;
+const getPhotoSrc = (url: string) => {
+  return url.startsWith("/team/") ? `${url}?v=20260430-restored` : url;
+};
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
-  <div className="relative w-full bg-muted">
+  <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      className="absolute inset-0 block h-full w-full scale-110 object-cover object-center blur-md opacity-40"
+    />
     <img
       src={src}
       alt={alt}
-      className="block h-auto w-full rounded-t-2xl"
+      className="relative z-10 block h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
     />
   </div>
 );
@@ -154,7 +162,7 @@ const Team = () => {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: mi * 0.05 }}
-                          className={`group p-0 text-left rounded-2xl border border-border bg-card shadow-sm hover:shadow-md transition-shadow ${
+                          className={`group p-0 text-left rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
                             hasBio ? "cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary" : "cursor-default"
                           }`}
                           aria-label={hasBio ? t(`Otvori biografiju: ${member.full_name}`, `Open bio: ${member.full_name}`) : member.full_name}
