@@ -159,7 +159,7 @@ const Team = () => {
                                 <img
                                   src={member.photo_url}
                                   alt={member.full_name}
-                                  className="relative z-10 h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                                  className="relative z-10 h-full w-full object-contain object-top origin-top scale-[1.06] transition-transform duration-500 group-hover:scale-[1.08]"
                                 />
                               </>
                             ) : (
