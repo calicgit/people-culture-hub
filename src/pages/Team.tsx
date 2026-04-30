@@ -36,7 +36,7 @@ const getPortraitStyle = (name: string) => {
   return { objectPosition: "center top", transform: "none", transformOrigin: "top center" };
 };
 
-const getPhotoSrc = (url: string) => (url.startsWith("/team/") ? `${url}?v=20260430` : url);
+const getPhotoSrc = (url: string) => (url.startsWith("/team/") ? `${url}?v=20260430b` : url);
 
 const Team = () => {
   const { t } = useLanguage();
