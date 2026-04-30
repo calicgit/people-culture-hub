@@ -32,10 +32,6 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
-const getPortraitStyle = (name: string) => {
-  return { objectPosition: "center top", transform: "none", transformOrigin: "top center" };
-};
-
 const getPhotoSrc = (url: string) => (url.startsWith("/team/") ? `${url}?v=20260430b` : url);
 
 const Team = () => {
@@ -165,8 +161,7 @@ const Team = () => {
                                 <img
                                   src={getPhotoSrc(member.photo_url)}
                                   alt={member.full_name}
-                                  className="relative z-10 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]"
-                                  style={getPortraitStyle(member.full_name)}
+                                  className="relative z-10 h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
                                 />
                               </>
                             ) : (
