@@ -154,7 +154,7 @@ const Team = () => {
                                   src={member.photo_url}
                                   alt=""
                                   aria-hidden="true"
-                                  className="absolute inset-0 h-full w-full object-cover object-center scale-110 blur-md opacity-40 transition-transform duration-500 group-hover:scale-115"
+                                  className="absolute inset-0 h-full w-full object-cover object-center scale-110 blur-md opacity-40 transition-transform duration-500 group-hover:scale-[1.15]"
                                 />
                                 <img
                                   src={member.photo_url}
