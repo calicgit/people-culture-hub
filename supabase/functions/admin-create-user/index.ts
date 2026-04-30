@@ -167,7 +167,7 @@ Deno.serve(async (req) => {
             <tr>
               <td style="background:#55bab7;padding:24px 32px;">
                 <h1 style="margin:0;color:#ffffff;font-family:Arial,sans-serif;font-size:20px;font-weight:bold;">
-                  Udruga People &amp; Culture Hub
+                  Pozivnica
                 </h1>
               </td>
             </tr>
@@ -175,12 +175,14 @@ Deno.serve(async (req) => {
               <td style="padding:32px;">
                 <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Poštovani/a ${fullName},</p>
                 <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
-                  pozvani ste pridružiti se portalu <strong>Udruge People &amp; Culture Hub</strong>.
-                  Kako biste aktivirali svoj korisnički račun i postavili lozinku, kliknite na gumb ispod:
+                  pozvani ste da se pridružite internom portalu <strong>Udruge People &amp; Culture HUB</strong>.
+                </p>
+                <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+                  Kliknite na gumb ispod kako biste prihvatili pozivnicu i kreirali svoj račun:
                 </p>
                 <p style="margin:32px 0;text-align:center;">
                   <a href="${inviteLink}" style="background:#55bab7;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:bold;display:inline-block;font-family:Arial,sans-serif;">
-                    Aktiviraj račun
+                    Prihvati pozivnicu
                   </a>
                 </p>
                 <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#666;">
@@ -197,7 +199,7 @@ Deno.serve(async (req) => {
             <tr>
               <td style="background:#f9f9f9;padding:16px 32px;text-align:center;border-top:1px solid #eee;">
                 <p style="margin:0;font-size:12px;color:#999;">
-                  Udruga People &amp; Culture Hub · hub@peopleandculture.hr
+                  Udruga People &amp; Culture HUB · hub@peopleandculture.hr
                 </p>
               </td>
             </tr>
@@ -212,7 +214,7 @@ Deno.serve(async (req) => {
       const sendRes = await adminClient.functions.invoke("send-email", {
         body: {
           to: email,
-          subject: "Pozivnica za portal Udruge People & Culture Hub",
+          subject: "Pozivnica",
           html: emailHtml,
         },
       });
