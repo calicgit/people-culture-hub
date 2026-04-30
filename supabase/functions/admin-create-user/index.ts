@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
       ? Array.from(new Set(body.bodies.map((item: unknown) => String(item))))
       : [];
 
-    if (email.length < 5 || !email.includes("@") || fullName.length < 2 || !redirectTo.startsWith("http")) {
+    if (email.length < 5 || !email.includes("@") || fullName.length < 2) {
       return Response.json({ error: "Invalid payload." }, { status: 400, headers: corsHeaders });
     }
 
