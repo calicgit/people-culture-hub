@@ -34,10 +34,10 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
 
 const getPortraitTransform = (name: string) => {
   const normalized = name.toLowerCase();
-  if (normalized.includes("dario perak")) return "translateY(-20%) scale(1.32)";
-  if (normalized.includes("dario car")) return "translateY(-16%) scale(1.26)";
-  if (normalized.includes("petar")) return "translateY(-14%) scale(1.24)";
-  return "translateY(-13%) scale(1.21)";
+  if (normalized.includes("dario perak")) return "center 34%";
+  if (normalized.includes("dario car")) return "center 30%";
+  if (normalized.includes("petar")) return "center 24%";
+  return "center 32%";
 };
 
 const Team = () => {
