@@ -13,22 +13,22 @@ const LandingFooter = () => {
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-3 text-center">
               {t("Kontakt", "Contact")}
             </h4>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8">
-              <div className="inline-flex items-center gap-2">
+            <div className="grid w-full justify-items-center gap-3 md:flex md:items-center md:justify-center md:gap-8">
+              <div className="mx-auto grid w-fit grid-cols-[auto_auto] items-center justify-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
                 <div className="flex flex-col gap-0.5 text-left">
                   <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">E-mail</p>
                   <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">hub@peopleandculture.hr</a>
                 </div>
               </div>
-              <div className="inline-flex items-center gap-2">
+              <div className="mx-auto grid w-fit grid-cols-[auto_auto] items-center justify-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-primary shrink-0" />
                 <div className="flex flex-col gap-0.5 text-left">
                   <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Centrala", "Phone")}</p>
                   <a href="tel:+38514103734" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">+385 1 4103 734</a>
                 </div>
               </div>
-              <div className="inline-flex items-center gap-2">
+              <div className="mx-auto grid w-fit grid-cols-[auto_auto] items-center justify-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
                 <div className="flex flex-col gap-0.5 text-left">
                   <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Adresa", "Address")}</p>
