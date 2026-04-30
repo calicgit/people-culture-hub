@@ -32,6 +32,7 @@ export default {
         navy: { DEFAULT: "hsl(var(--navy))", deep: "hsl(var(--navy-deep))" },
         coral: "hsl(var(--coral))",
         "warm-gray": "hsl(var(--warm-gray))",
+        "team-photo-bg": "hsl(var(--team-photo-bg))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
