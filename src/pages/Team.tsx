@@ -32,37 +32,25 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
-const normalizedPhotoFiles = new Set([
-  "dario-car.jpg",
-  "dario-perak.jpg",
-  "dunja-vorkapic.jpg",
-  "iva-taiber.jpg",
-  "maja-darija-skrljak.jpg",
-  "marija-felkel.jpg",
-  "marina-klacmer-calopa.jpg",
-  "mirela-kotarac.jpg",
-  "nina-poloski-vokic.jpg",
-  "petar-calic.jpg",
-  "romina-ivancic-macesic.jpg",
-  "szabolcs-annus.jpg",
-  "tome-baric.jpg",
-  "vjekoslav-golubovic.jpg",
-]);
-
 const getPhotoSrc = (url: string) => {
-  const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
-  const normalizedFile = fileName === "dunja-vorkapic.jpeg"
-    ? "dunja-vorkapic.jpg"
-    : fileName === "romina-ivancic.png"
-      ? "romina-ivancic-macesic.jpg"
-      : fileName;
-
-  if (normalizedPhotoFiles.has(normalizedFile)) {
-    return `/team/normalized/${normalizedFile}?v=20260430e`;
-  }
-
-  return url.startsWith("/team/") ? `${url}?v=20260430e` : url;
+  return url.startsWith("/team/") ? `${url}?v=20260430f` : url;
 };
+
+const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
+  <div className="relative aspect-[3/4] overflow-hidden bg-muted">
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      className="absolute inset-0 block h-full w-full scale-110 object-cover object-center blur-md"
+    />
+    <img
+      src={src}
+      alt={alt}
+      className="relative z-10 block h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
+    />
+  </div>
+);
 
 const Team = () => {
   const { t } = useLanguage();
@@ -179,19 +167,16 @@ const Team = () => {
                           }`}
                           aria-label={hasBio ? t(`Otvori biografiju: ${member.full_name}`, `Open bio: ${member.full_name}`) : member.full_name}
                         >
-                          <div className="relative aspect-[3/4] bg-muted overflow-hidden">
-                            {member.photo_url ? (
-                              <img
-                                src={getPhotoSrc(member.photo_url)}
-                                alt={member.full_name}
-                                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
-                              />
-                            ) : (
-                              <div className="aspect-[3/4] w-full flex items-center justify-center bg-accent">
-                                <Users className="h-16 w-16 text-accent-foreground/30" />
-                              </div>
-                            )}
-                          </div>
+                          {member.photo_url ? (
+                            <TeamPhoto
+                              src={getPhotoSrc(member.photo_url)}
+                              alt={member.full_name}
+                            />
+                          ) : (
+                            <div className="aspect-[3/4] w-full flex items-center justify-center bg-accent">
+                              <Users className="h-16 w-16 text-accent-foreground/30" />
+                            </div>
+                          )}
                           <div className="p-4 space-y-0">
                             <h3 className="font-heading text-lg font-semibold text-foreground">
                               {member.full_name}
