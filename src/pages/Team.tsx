@@ -178,9 +178,9 @@ const Team = () => {
                             <h3 className="font-heading text-lg font-semibold text-foreground">
                               {member.full_name}
                             </h3>
-                            {member.title && (
+                            {displayTitle(member) && (
                               <p className="text-sm text-primary font-medium">
-                                {member.title}
+                                {displayTitle(member)}
                               </p>
                             )}
                           </div>
