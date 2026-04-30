@@ -36,6 +36,7 @@ const LandingFooter = () => {
                 </div>
               </div>
             </div>
+          </div>
 
           <div className="flex flex-col items-center">
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-2 text-center">
