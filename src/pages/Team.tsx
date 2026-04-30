@@ -41,7 +41,7 @@ const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
     <img
       src={src}
       alt={alt}
-      className="block h-full w-full object-fill transition-transform duration-500 group-hover:scale-[1.01]"
+      className="absolute inset-0 block h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]"
     />
   </div>
 );
