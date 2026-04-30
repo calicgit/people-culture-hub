@@ -214,7 +214,7 @@ Deno.serve(async (req) => {
       const sendRes = await adminClient.functions.invoke("send-email", {
         body: {
           to: email,
-          subject: "Pozivnica za portal Udruge People & Culture Hub",
+          subject: "Pozivnica",
           html: emailHtml,
         },
       });
