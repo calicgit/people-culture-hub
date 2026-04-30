@@ -167,7 +167,8 @@ const Team = () => {
                                 <img
                                   src={member.photo_url}
                                   alt={member.full_name}
-                                  className="relative z-10 h-full w-full object-contain object-top origin-top -translate-y-[11%] scale-[1.19] transition-transform duration-500 group-hover:-translate-y-[12%] group-hover:scale-[1.21]"
+                                  className="relative z-10 h-full w-full object-contain object-top origin-top transition-transform duration-500 group-hover:brightness-105"
+                                  style={{ transform: getPortraitTransform(member.full_name) }}
                                 />
                               </>
                             ) : (
