@@ -32,12 +32,18 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
-const getPortraitTransform = (name: string) => {
+const getPortraitStyle = (name: string) => {
   const normalized = name.toLowerCase();
-  if (normalized.includes("dario perak")) return "center 34%";
-  if (normalized.includes("dario car")) return "center 30%";
-  if (normalized.includes("petar")) return "center 24%";
-  return "center 32%";
+  if (normalized.includes("dario perak")) {
+    return { objectPosition: "center 28%", transform: "translateY(-8%) scale(1.12)", transformOrigin: "top center" };
+  }
+  if (normalized.includes("dario car")) {
+    return { objectPosition: "center 26%", transform: "translateY(-6%) scale(1.1)", transformOrigin: "top center" };
+  }
+  if (normalized.includes("petar")) {
+    return { objectPosition: "center 18%", transform: "translateY(-3%) scale(1.06)", transformOrigin: "top center" };
+  }
+  return { objectPosition: "center 28%", transform: "translateY(-4%) scale(1.08)", transformOrigin: "top center" };
 };
 
 const Team = () => {
