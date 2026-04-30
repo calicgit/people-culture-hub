@@ -58,11 +58,11 @@ const getPhotoSrc = (url: string) => {
 };
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
-  <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
+  <div className="relative w-full overflow-hidden bg-muted">
     <img
       src={src}
       alt={alt}
-      className="block h-full w-full object-cover object-top"
+      className="block h-auto w-full"
     />
   </div>
 );
