@@ -32,7 +32,34 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
-const getPhotoSrc = (url: string) => (url.startsWith("/team/") ? `${url}?v=20260430b` : url);
+const normalizedPhotoFiles = new Set([
+  "dario-car.jpg",
+  "dario-perak.jpg",
+  "dunja-vorkapic.jpg",
+  "iva-taiber.jpg",
+  "maja-darija-skrljak.jpg",
+  "marija-felkel.jpg",
+  "marina-klacmer-calopa.jpg",
+  "mirela-kotarac.jpg",
+  "nina-poloski-vokic.jpg",
+  "petar-calic.jpg",
+  "romina-ivancic.png",
+  "romina-ivancic-macesic.jpg",
+  "szabolcs-annus.jpg",
+  "tome-baric.jpg",
+  "vjekoslav-golubovic.jpg",
+]);
+
+const getPhotoSrc = (url: string) => {
+  const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
+  const normalizedFile = fileName === "romina-ivancic.png" ? "romina-ivancic-macesic.jpg" : fileName;
+
+  if (normalizedPhotoFiles.has(normalizedFile)) {
+    return `/team/normalized/${normalizedFile}?v=20260430c`;
+  }
+
+  return url.startsWith("/team/") ? `${url}?v=20260430c` : url;
+};
 
 const Team = () => {
   const { t } = useLanguage();
@@ -151,19 +178,11 @@ const Team = () => {
                         >
                           <div className="relative aspect-[3/4] bg-muted overflow-hidden">
                             {member.photo_url ? (
-                              <>
-                                <img
-                                  src={getPhotoSrc(member.photo_url)}
-                                  alt=""
-                                  aria-hidden="true"
-                                  className="absolute inset-0 h-full w-full object-cover object-top scale-105 blur-sm opacity-35 transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <img
-                                  src={getPhotoSrc(member.photo_url)}
-                                  alt={member.full_name}
-                                  className="relative z-10 h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
-                                />
-                              </>
+                              <img
+                                src={getPhotoSrc(member.photo_url)}
+                                alt={member.full_name}
+                                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
+                              />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center bg-accent">
                                 <Users className="h-16 w-16 text-accent-foreground/30" />
@@ -198,9 +217,9 @@ const Team = () => {
                 <div className="flex items-start gap-4">
                   {selected.photo_url && (
                     <img
-                      src={selected.photo_url}
+                      src={getPhotoSrc(selected.photo_url)}
                       alt={selected.full_name}
-                      className="w-20 h-24 rounded-md object-cover object-center scale-125 flex-shrink-0"
+                      className="w-20 h-24 rounded-md object-cover object-top flex-shrink-0"
                     />
                   )}
                   <div>
