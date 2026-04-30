@@ -147,13 +147,21 @@ const Team = () => {
                           }`}
                           aria-label={hasBio ? t(`Otvori biografiju: ${member.full_name}`, `Open bio: ${member.full_name}`) : member.full_name}
                         >
-                          <div className="aspect-[3/4] bg-muted overflow-hidden flex items-center justify-center">
+                          <div className="relative aspect-[3/4] bg-muted overflow-hidden">
                             {member.photo_url ? (
-                              <img
-                                src={member.photo_url}
-                                alt={member.full_name}
-                                className="h-full w-full object-cover object-center scale-125 origin-center group-hover:scale-[1.28] transition-transform duration-500"
-                              />
+                              <>
+                                <img
+                                  src={member.photo_url}
+                                  alt=""
+                                  aria-hidden="true"
+                                  className="absolute inset-0 h-full w-full object-cover object-center scale-110 blur-md opacity-40 transition-transform duration-500 group-hover:scale-[1.15]"
+                                />
+                                <img
+                                  src={member.photo_url}
+                                  alt={member.full_name}
+                                  className="relative z-10 h-full w-full object-contain object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                                />
+                              </>
                             ) : (
                               <div className="h-full w-full flex items-center justify-center bg-accent">
                                 <Users className="h-16 w-16 text-accent-foreground/30" />
