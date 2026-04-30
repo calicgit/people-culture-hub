@@ -154,7 +154,7 @@ const Team = () => {
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: mi * 0.05 }}
-                          className={`group text-left rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
+                          className={`group p-0 text-left rounded-2xl border border-border bg-card overflow-hidden shadow-sm hover:shadow-md transition-shadow ${
                             hasBio ? "cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary" : "cursor-default"
                           }`}
                           aria-label={hasBio ? t(`Otvori biografiju: ${member.full_name}`, `Open bio: ${member.full_name}`) : member.full_name}
