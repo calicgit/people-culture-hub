@@ -32,16 +32,35 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
+const normalizedPhotoFiles: Record<string, string> = {
+  "dario-car.jpg": "dario-car.jpg",
+  "dario-perak.jpg": "dario-perak.jpg",
+  "dunja-vorkapic.jpeg": "dunja-vorkapic.jpg",
+  "iva-taiber.jpg": "iva-taiber.jpg",
+  "maja-darija-skrljak.jpg": "maja-darija-skrljak.jpg",
+  "marija-felkel.jpg": "marija-felkel.jpg",
+  "marina-klacmer-calopa.jpg": "marina-klacmer-calopa.jpg",
+  "mirela-kotarac.jpg": "mirela-kotarac.jpg",
+  "nina-poloski-vokic.jpg": "nina-poloski-vokic.jpg",
+  "petar-calic.jpg": "petar-calic.jpg",
+  "romina-ivancic.png": "romina-ivancic-macesic.jpg",
+  "szabolcs-annus.jpg": "szabolcs-annus.jpg",
+  "tome-baric.jpg": "tome-baric.jpg",
+  "vjekoslav-golubovic.jpg": "vjekoslav-golubovic.jpg",
+};
+
 const getPhotoSrc = (url: string) => {
-  return url.startsWith("/team/") ? `${url}?v=20260430f` : url;
+  const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
+  const normalizedFile = normalizedPhotoFiles[fileName];
+  return normalizedFile ? `/team/normalized/${normalizedFile}?v=20260430g` : url;
 };
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
-  <div className="w-full overflow-hidden bg-muted">
+  <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
     <img
       src={src}
       alt={alt}
-      className="block h-auto w-full"
+      className="block h-full w-full object-cover object-top"
     />
   </div>
 );
