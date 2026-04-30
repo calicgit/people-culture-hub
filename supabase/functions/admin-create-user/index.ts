@@ -192,7 +192,7 @@ Deno.serve(async (req) => {
                   ${inviteLink}
                 </p>
                 <p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:#666;">
-                  Poveznica vrijedi ograničeno vrijeme. Ako niste očekivali ovaj poziv, slobodno zanemarite poruku.
+                  Poveznica vrijedi ograničeno vrijeme. Ako niste očekivali ovu pozivnicu, zanemarite ovaj e-mail.
                 </p>
               </td>
             </tr>
