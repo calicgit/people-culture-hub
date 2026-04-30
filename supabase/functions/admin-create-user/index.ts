@@ -90,18 +90,32 @@ Deno.serve(async (req) => {
       return Response.json({ error: "Invalid body membership." }, { status: 400, headers: corsHeaders });
     }
 
-    const { data: createdUserData, error: createUserError } = await adminClient.auth.admin.inviteUserByEmail(email, {
-      redirectTo,
-      data: {
-        full_name: fullName,
-      },
+    // 1) Create user without sending default Supabase email
+    const { data: createdUserData, error: createUserError } = await adminClient.auth.admin.createUser({
+      email,
+      email_confirm: false,
+      user_metadata: { full_name: fullName },
     });
 
     if (createUserError || !createdUserData.user) {
-      return Response.json({ error: createUserError?.message ?? "User invitation failed." }, { status: 400, headers: corsHeaders });
+      return Response.json({ error: createUserError?.message ?? "User creation failed." }, { status: 400, headers: corsHeaders });
     }
 
     const newUserId = createdUserData.user.id;
+
+    // 2) Generate invite link (does NOT send an email)
+    const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
+      type: "invite",
+      email,
+      options: { redirectTo },
+    });
+
+    if (linkError || !linkData?.properties?.action_link) {
+      await adminClient.auth.admin.deleteUser(newUserId);
+      return Response.json({ error: linkError?.message ?? "Failed to generate invite link." }, { status: 400, headers: corsHeaders });
+    }
+
+    const inviteLink = linkData.properties.action_link;
 
     const profileInsert = await adminClient.from("profiles").insert({
       user_id: newUserId,
@@ -139,6 +153,74 @@ Deno.serve(async (req) => {
         await adminClient.auth.admin.deleteUser(newUserId);
         return Response.json({ error: membershipsInsert.error.message }, { status: 400, headers: corsHeaders });
       }
+    }
+
+    // 3) Send custom Croatian invitation email via send-email (MS Graph)
+    const emailHtml = `
+<!DOCTYPE html>
+<html lang="hr">
+  <body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;color:#222;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:32px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;">
+            <tr>
+              <td style="background:#55bab7;padding:24px 32px;">
+                <h1 style="margin:0;color:#ffffff;font-family:Arial,sans-serif;font-size:20px;font-weight:bold;">
+                  Udruga People &amp; Culture Hub
+                </h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">Poštovani/a ${fullName},</p>
+                <p style="margin:0 0 16px;font-size:15px;line-height:1.6;">
+                  pozvani ste pridružiti se portalu <strong>Udruge People &amp; Culture Hub</strong>.
+                  Kako biste aktivirali svoj korisnički račun i postavili lozinku, kliknite na gumb ispod:
+                </p>
+                <p style="margin:32px 0;text-align:center;">
+                  <a href="${inviteLink}" style="background:#55bab7;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:6px;font-size:15px;font-weight:bold;display:inline-block;font-family:Arial,sans-serif;">
+                    Aktiviraj račun
+                  </a>
+                </p>
+                <p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#666;">
+                  Ako gumb ne radi, kopirajte i zalijepite sljedeću poveznicu u preglednik:
+                </p>
+                <p style="margin:0 0 24px;font-size:12px;line-height:1.5;word-break:break-all;color:#55bab7;">
+                  ${inviteLink}
+                </p>
+                <p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:#666;">
+                  Poveznica vrijedi ograničeno vrijeme. Ako niste očekivali ovaj poziv, slobodno zanemarite poruku.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#f9f9f9;padding:16px 32px;text-align:center;border-top:1px solid #eee;">
+                <p style="margin:0;font-size:12px;color:#999;">
+                  Udruga People &amp; Culture Hub · hub@peopleandculture.hr
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+
+    try {
+      const sendRes = await adminClient.functions.invoke("send-email", {
+        body: {
+          to: email,
+          subject: "Pozivnica za portal Udruge People & Culture Hub",
+          html: emailHtml,
+        },
+      });
+      if (sendRes.error) {
+        console.error("send-email failed:", sendRes.error);
+      }
+    } catch (e) {
+      console.error("send-email invoke error:", e);
     }
 
     return Response.json(
