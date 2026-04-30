@@ -48,7 +48,9 @@ const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
 );
 
 const Team = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const displayTitle = (m: { title: string | null; title_en: string | null }) =>
+    lang === "en" ? (m.title_en || m.title) : m.title;
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<TeamMember | null>(null);
