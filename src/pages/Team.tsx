@@ -19,6 +19,7 @@ type TeamMember = {
   full_name: string;
   council: string;
   title: string | null;
+  title_en: string | null;
   bio: string | null;
   photo_url: string | null;
   display_order: number;
@@ -47,7 +48,9 @@ const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
 );
 
 const Team = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const displayTitle = (m: { title: string | null; title_en: string | null }) =>
+    lang === "en" ? (m.title_en || m.title) : m.title;
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<TeamMember | null>(null);
@@ -175,9 +178,9 @@ const Team = () => {
                             <h3 className="font-heading text-lg font-semibold text-foreground">
                               {member.full_name}
                             </h3>
-                            {member.title && (
+                            {displayTitle(member) && (
                               <p className="text-sm text-primary font-medium">
-                                {member.title}
+                                {displayTitle(member)}
                               </p>
                             )}
                           </div>
@@ -208,9 +211,9 @@ const Team = () => {
                     <DialogTitle className="font-heading text-xl text-left">
                       {selected.full_name}
                     </DialogTitle>
-                    {selected.title && (
+                    {displayTitle(selected) && (
                       <DialogDescription className="text-primary font-medium text-left mt-1">
-                        {selected.title}
+                        {displayTitle(selected)}
                       </DialogDescription>
                     )}
                   </div>
