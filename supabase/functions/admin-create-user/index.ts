@@ -73,12 +73,13 @@ Deno.serve(async (req) => {
     const membershipStatus = String(body.membershipStatus ?? "active").trim() || "active";
     const isActive = body.isActive !== false;
     const role = String(body.role ?? "member").trim();
-    const redirectTo = body.redirectTo ? String(body.redirectTo).trim() : "";
+    // Always force production URL for invitation links, regardless of where the admin triggered it from.
+    const redirectTo = "https://peopleandculture.hr/reset-password";
     const bodies = Array.isArray(body.bodies)
       ? Array.from(new Set(body.bodies.map((item: unknown) => String(item))))
       : [];
 
-    if (email.length < 5 || !email.includes("@") || fullName.length < 2 || !redirectTo.startsWith("http")) {
+    if (email.length < 5 || !email.includes("@") || fullName.length < 2) {
       return Response.json({ error: "Invalid payload." }, { status: 400, headers: corsHeaders });
     }
 
