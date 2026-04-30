@@ -151,19 +151,11 @@ const Team = () => {
                         >
                           <div className="relative aspect-[3/4] bg-muted overflow-hidden">
                             {member.photo_url ? (
-                              <>
-                                <img
-                                  src={getPhotoSrc(member.photo_url)}
-                                  alt=""
-                                  aria-hidden="true"
-                                  className="absolute inset-0 h-full w-full object-cover object-top scale-105 blur-sm opacity-35 transition-transform duration-500 group-hover:scale-110"
-                                />
-                                <img
-                                  src={getPhotoSrc(member.photo_url)}
-                                  alt={member.full_name}
-                                  className="relative z-10 h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
-                                />
-                              </>
+                              <img
+                                src={getPhotoSrc(member.photo_url)}
+                                alt={member.full_name}
+                                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
+                              />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center bg-accent">
                                 <Users className="h-16 w-16 text-accent-foreground/30" />
@@ -198,9 +190,9 @@ const Team = () => {
                 <div className="flex items-start gap-4">
                   {selected.photo_url && (
                     <img
-                      src={selected.photo_url}
+                      src={getPhotoSrc(selected.photo_url)}
                       alt={selected.full_name}
-                      className="w-20 h-24 rounded-md object-cover object-center scale-125 flex-shrink-0"
+                      className="w-20 h-24 rounded-md object-cover object-top flex-shrink-0"
                     />
                   )}
                   <div>
