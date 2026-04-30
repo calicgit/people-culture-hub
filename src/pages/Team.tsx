@@ -37,14 +37,7 @@ const getPhotoSrc = (url: string) => {
 };
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
-  <div className="relative h-[260px] w-full overflow-hidden bg-muted">
-    <img
-      src={src}
-      alt=""
-      aria-hidden="true"
-      className="absolute inset-0 block h-full w-full scale-110 object-cover object-center blur-xl"
-    />
-    <div className="absolute inset-0 bg-background/35" />
+  <div className="relative h-[260px] w-full overflow-hidden rounded-t-2xl bg-team-photo-bg">
     <img
       src={src}
       alt={alt}
