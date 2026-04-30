@@ -110,12 +110,19 @@ Deno.serve(async (req) => {
       options: { redirectTo },
     });
 
-    if (linkError || !linkData?.properties?.action_link) {
+    if (linkError || !linkData?.properties?.hashed_token) {
       await adminClient.auth.admin.deleteUser(newUserId);
       return Response.json({ error: linkError?.message ?? "Failed to generate invite link." }, { status: 400, headers: corsHeaders });
     }
 
-    const inviteLink = linkData.properties.action_link;
+    // Build a custom link that points DIRECTLY to our app with token_hash as a query param.
+    // This avoids Supabase's /verify endpoint being prefetched by Outlook Safe Links / Defender,
+    // which would consume the one-time token before the user actually opens the page.
+    const hashedToken = linkData.properties.hashed_token;
+    const redirectUrl = new URL(redirectTo);
+    redirectUrl.searchParams.set("token_hash", hashedToken);
+    redirectUrl.searchParams.set("type", "invite");
+    const inviteLink = redirectUrl.toString();
 
     const profileInsert = await adminClient.from("profiles").insert({
       user_id: newUserId,
