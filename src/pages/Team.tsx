@@ -38,18 +38,10 @@ const getPhotoSrc = (url: string) => {
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
   <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
-    {/* Blurred background fill */}
-    <img
-      src={src}
-      alt=""
-      aria-hidden="true"
-      className="absolute inset-0 h-full w-full object-cover scale-110 blur-xl opacity-60"
-    />
-    {/* Foreground full image, never cropped */}
     <img
       src={src}
       alt={alt}
-      className="absolute inset-0 block h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.01]"
+      className="absolute inset-0 block h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
     />
   </div>
 );
