@@ -43,7 +43,6 @@ const normalizedPhotoFiles = new Set([
   "mirela-kotarac.jpg",
   "nina-poloski-vokic.jpg",
   "petar-calic.jpg",
-  "romina-ivancic.png",
   "romina-ivancic-macesic.jpg",
   "szabolcs-annus.jpg",
   "tome-baric.jpg",
@@ -52,13 +51,17 @@ const normalizedPhotoFiles = new Set([
 
 const getPhotoSrc = (url: string) => {
   const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
-  const normalizedFile = fileName === "romina-ivancic.png" ? "romina-ivancic-macesic.jpg" : fileName;
+  const normalizedFile = fileName === "dunja-vorkapic.jpeg"
+    ? "dunja-vorkapic.jpg"
+    : fileName === "romina-ivancic.png"
+      ? "romina-ivancic-macesic.jpg"
+      : fileName;
 
   if (normalizedPhotoFiles.has(normalizedFile)) {
-    return `/team/normalized/${normalizedFile}?v=20260430c`;
+    return `/team/normalized/${normalizedFile}?v=20260430e`;
   }
 
-  return url.startsWith("/team/") ? `${url}?v=20260430c` : url;
+  return url.startsWith("/team/") ? `${url}?v=20260430e` : url;
 };
 
 const Team = () => {
@@ -184,7 +187,7 @@ const Team = () => {
                                 className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
                               />
                             ) : (
-                              <div className="h-full w-full flex items-center justify-center bg-accent">
+                              <div className="aspect-[3/4] w-full flex items-center justify-center bg-accent">
                                 <Users className="h-16 w-16 text-accent-foreground/30" />
                               </div>
                             )}
@@ -219,7 +222,7 @@ const Team = () => {
                     <img
                       src={getPhotoSrc(selected.photo_url)}
                       alt={selected.full_name}
-                      className="w-20 h-24 rounded-md object-cover object-top flex-shrink-0"
+                      className="w-20 max-h-24 rounded-md object-contain object-top bg-muted flex-shrink-0"
                     />
                   )}
                   <div>
