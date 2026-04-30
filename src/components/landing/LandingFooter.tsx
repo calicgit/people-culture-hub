@@ -13,26 +13,35 @@ const LandingFooter = () => {
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-3 text-center">
               {t("Kontakt", "Contact")}
             </h4>
-            <div className="grid w-full justify-items-center gap-3 md:flex md:items-center md:justify-center md:gap-8">
-              <div className="mx-auto grid w-fit grid-cols-[auto_auto] items-center justify-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
-                <div className="flex flex-col gap-0.5 text-left">
-                  <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">E-mail</p>
+            <div className="grid w-full justify-items-center gap-4 text-center md:flex md:items-center md:justify-center md:gap-8 md:text-left">
+              <div className="flex w-full flex-col items-center gap-1 md:w-fit md:flex-row md:gap-2">
+                <div className="flex items-center justify-center gap-2 md:contents">
+                  <Mail className="w-3.5 h-3.5 text-primary shrink-0" />
+                  <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold md:hidden">E-mail</p>
+                </div>
+                <div className="flex flex-col items-center gap-0.5 md:items-start">
+                  <p className="hidden text-primary-foreground/60 text-[11px] font-body leading-none font-semibold md:block">E-mail</p>
                   <a href="mailto:hub@peopleandculture.hr" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">hub@peopleandculture.hr</a>
                 </div>
               </div>
-              <div className="mx-auto grid w-fit grid-cols-[auto_auto] items-center justify-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-primary shrink-0" />
-                <div className="flex flex-col gap-0.5 text-left">
-                  <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Centrala", "Phone")}</p>
+              <div className="flex w-full flex-col items-center gap-1 md:w-fit md:flex-row md:gap-2">
+                <div className="flex items-center justify-center gap-2 md:contents">
+                  <Phone className="w-3.5 h-3.5 text-primary shrink-0" />
+                  <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold md:hidden">{t("Centrala", "Phone")}</p>
+                </div>
+                <div className="flex flex-col items-center gap-0.5 md:items-start">
+                  <p className="hidden text-primary-foreground/60 text-[11px] font-body leading-none font-semibold md:block">{t("Centrala", "Phone")}</p>
                   <a href="tel:+38514103734" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">+385 1 4103 734</a>
                 </div>
               </div>
-              <div className="mx-auto grid w-fit grid-cols-[auto_auto] items-center justify-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
-                <div className="flex flex-col gap-0.5 text-left">
-                  <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold">{t("Adresa", "Address")}</p>
-                  <a href="https://maps.google.com/?q=Remetinečka+cesta+102D,+10000+Zagreb" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none">Remetinečka cesta 102D, 10000 Zagreb</a>
+              <div className="flex w-full flex-col items-center gap-1 md:w-fit md:flex-row md:gap-2">
+                <div className="flex items-center justify-center gap-2 md:contents">
+                  <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                  <p className="text-primary-foreground/60 text-[11px] font-body leading-none font-semibold md:hidden">{t("Adresa", "Address")}</p>
+                </div>
+                <div className="flex flex-col items-center gap-0.5 md:items-start">
+                  <p className="hidden text-primary-foreground/60 text-[11px] font-body leading-none font-semibold md:block">{t("Adresa", "Address")}</p>
+                  <a href="https://maps.google.com/?q=Remetinečka+cesta+102D,+10000+Zagreb" target="_blank" rel="noopener noreferrer" className="text-primary-foreground/40 hover:text-primary transition-colors text-[11px] font-body leading-none text-center md:text-left">Remetinečka cesta 102D, 10000 Zagreb</a>
                 </div>
               </div>
             </div>
