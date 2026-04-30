@@ -32,7 +32,34 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
-const getPhotoSrc = (url: string) => (url.startsWith("/team/") ? `${url}?v=20260430b` : url);
+const normalizedPhotoFiles = new Set([
+  "dario-car.jpg",
+  "dario-perak.jpg",
+  "dunja-vorkapic.jpg",
+  "iva-taiber.jpg",
+  "maja-darija-skrljak.jpg",
+  "marija-felkel.jpg",
+  "marina-klacmer-calopa.jpg",
+  "mirela-kotarac.jpg",
+  "nina-poloski-vokic.jpg",
+  "petar-calic.jpg",
+  "romina-ivancic.png",
+  "romina-ivancic-macesic.jpg",
+  "szabolcs-annus.jpg",
+  "tome-baric.jpg",
+  "vjekoslav-golubovic.jpg",
+]);
+
+const getPhotoSrc = (url: string) => {
+  const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
+  const normalizedFile = fileName === "romina-ivancic.png" ? "romina-ivancic-macesic.jpg" : fileName;
+
+  if (normalizedPhotoFiles.has(normalizedFile)) {
+    return `/team/normalized/${normalizedFile}?v=20260430c`;
+  }
+
+  return url.startsWith("/team/") ? `${url}?v=20260430c` : url;
+};
 
 const Team = () => {
   const { t } = useLanguage();
