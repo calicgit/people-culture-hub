@@ -39,7 +39,7 @@ const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
     <img
       src={src}
       alt={alt}
-      className="block h-full w-full object-fill"
+      className="block h-full w-full object-contain object-top"
     />
   </div>
 );
