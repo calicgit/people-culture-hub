@@ -41,7 +41,7 @@ const getPortraitStyle = (name: string) => {
     return { objectPosition: "center 26%", transform: "translateY(-6%) scale(1.1)", transformOrigin: "top center" };
   }
   if (normalized.includes("petar")) {
-    return { objectPosition: "center 18%", transform: "translateY(-3%) scale(1.06)", transformOrigin: "top center" };
+    return { objectPosition: "center top", transform: "none", transformOrigin: "top center" };
   }
   return { objectPosition: "center 28%", transform: "translateY(-4%) scale(1.08)", transformOrigin: "top center" };
 };
