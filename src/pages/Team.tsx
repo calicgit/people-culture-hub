@@ -32,8 +32,36 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
   znanstveno_vijece: { hr: "Znanstveno vijeće", en: "Scientific Board" },
 };
 
+const normalizedPhotoFiles = new Set([
+  "dario-car.jpg",
+  "dario-perak.jpg",
+  "dunja-vorkapic.jpg",
+  "iva-taiber.jpg",
+  "maja-darija-skrljak.jpg",
+  "marija-felkel.jpg",
+  "marina-klacmer-calopa.jpg",
+  "mirela-kotarac.jpg",
+  "nina-poloski-vokic.jpg",
+  "petar-calic.jpg",
+  "romina-ivancic-macesic.jpg",
+  "szabolcs-annus.jpg",
+  "tome-baric.jpg",
+  "vjekoslav-golubovic.jpg",
+]);
+
 const getPhotoSrc = (url: string) => {
-  return url.startsWith("/team/") ? `${url}?v=20260430d` : url;
+  const fileName = decodeURIComponent(url.split("/").pop()?.split("?")[0] ?? "");
+  const normalizedFile = fileName === "dunja-vorkapic.jpeg"
+    ? "dunja-vorkapic.jpg"
+    : fileName === "romina-ivancic.png"
+      ? "romina-ivancic-macesic.jpg"
+      : fileName;
+
+  if (normalizedPhotoFiles.has(normalizedFile)) {
+    return `/team/normalized/${normalizedFile}?v=20260430e`;
+  }
+
+  return url.startsWith("/team/") ? `${url}?v=20260430e` : url;
 };
 
 const Team = () => {
@@ -151,12 +179,12 @@ const Team = () => {
                           }`}
                           aria-label={hasBio ? t(`Otvori biografiju: ${member.full_name}`, `Open bio: ${member.full_name}`) : member.full_name}
                         >
-                          <div className="relative bg-muted overflow-hidden">
+                          <div className="relative aspect-[3/4] bg-muted overflow-hidden">
                             {member.photo_url ? (
                               <img
                                 src={getPhotoSrc(member.photo_url)}
                                 alt={member.full_name}
-                                className="block w-full h-auto transition-transform duration-500 group-hover:scale-[1.01]"
+                                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
                               />
                             ) : (
                               <div className="aspect-[3/4] w-full flex items-center justify-center bg-accent">
