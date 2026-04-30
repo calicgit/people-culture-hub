@@ -211,9 +211,9 @@ const Team = () => {
                     <DialogTitle className="font-heading text-xl text-left">
                       {selected.full_name}
                     </DialogTitle>
-                    {selected.title && (
+                    {displayTitle(selected) && (
                       <DialogDescription className="text-primary font-medium text-left mt-1">
-                        {selected.title}
+                        {displayTitle(selected)}
                       </DialogDescription>
                     )}
                   </div>
