@@ -40,14 +40,8 @@ const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
   <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
     <img
       src={src}
-      alt=""
-      aria-hidden="true"
-      className="absolute inset-0 block h-full w-full scale-110 object-cover object-center blur-md opacity-40"
-    />
-    <img
-      src={src}
       alt={alt}
-      className="relative z-10 block h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
+      className="block h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.01]"
     />
   </div>
 );
