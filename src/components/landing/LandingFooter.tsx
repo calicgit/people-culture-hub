@@ -73,13 +73,13 @@ const LandingFooter = () => {
             </a>
           </div>
         </div>
-        <div className="border-t border-primary-foreground/10 pt-4 relative flex items-center justify-center">
+        <div className="border-t border-primary-foreground/10 pt-4 flex flex-col items-center gap-2 md:relative md:flex-row md:justify-center">
           <p className="text-primary-foreground/30 text-[10px] font-body text-center">
             © {new Date().getFullYear()} People & Culture HUB. {t("Sva prava pridržana.", "All rights reserved.")}
           </p>
           <Link
             to="/politika-privatnosti"
-            className="absolute right-0 text-primary-foreground/40 hover:text-primary transition-colors text-[10px] font-body"
+            className="text-primary-foreground/40 hover:text-primary transition-colors text-[10px] font-body md:absolute md:right-0"
           >
             {t("Politika privatnosti", "Privacy Policy")}
           </Link>
