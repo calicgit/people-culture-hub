@@ -49,7 +49,7 @@ const LandingFooter = () => {
 
           <div className="flex flex-col items-center">
             <h4 className="font-heading text-xs font-semibold text-primary-foreground uppercase tracking-wider mb-2 text-center">
-              {t("Pratite nas", "Follow us")}
+              {t("Pratite nas:", "Follow us:")}
             </h4>
             <a
               href="https://www.linkedin.com/company/108869392"
