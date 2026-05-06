@@ -34,7 +34,7 @@ const councilLabels: Record<string, { hr: string; en: string }> = {
 };
 
 const getPhotoSrc = (url: string) => {
-  return url.startsWith("/team/") ? `${url}?v=20260430-restored` : url;
+  return url.startsWith("/team/") ? `${url}?v=20260506-veseljka` : url;
 };
 
 const TeamPhoto = ({ src, alt }: { src: string; alt: string }) => (
