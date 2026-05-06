@@ -156,7 +156,7 @@ const MembershipSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="OTP banka"
-              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
+              className="inline-flex items-center justify-center border border-border transition-opacity hover:opacity-80"
             >
               <img
                 src="/members/otp-banka.png"
