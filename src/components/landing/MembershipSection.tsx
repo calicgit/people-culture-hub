@@ -137,6 +137,36 @@ const MembershipSection = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Tvrtke članice */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-20 max-w-6xl mx-auto"
+        >
+          <div className="text-center mb-8">
+            <span className="text-primary font-medium text-sm uppercase tracking-wider">
+              {t("Tvrtke članice", "Member Companies")}
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            <a
+              href="https://www.otpbanka.hr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="OTP banka"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
+            >
+              <img
+                src="/members/otp-banka.png"
+                alt="OTP banka"
+                className="h-12 md:h-16 w-auto object-contain"
+                loading="lazy"
+              />
+            </a>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
