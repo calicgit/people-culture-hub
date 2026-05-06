@@ -165,6 +165,20 @@ const MembershipSection = () => {
                 loading="lazy"
               />
             </a>
+            <a
+              href="https://deepproject.hr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="DeeP Project"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
+            >
+              <img
+                src="/members/deep-project.png"
+                alt="DeeP Project"
+                className="h-12 md:h-16 w-auto object-contain"
+                loading="lazy"
+              />
+            </a>
           </div>
         </motion.div>
       </div>
