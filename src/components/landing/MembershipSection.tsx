@@ -170,7 +170,7 @@ const MembershipSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="DeeP Project"
-              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
+              className="inline-flex items-center justify-center border border-border rounded-md px-6 py-4 transition-opacity hover:opacity-80"
             >
               <img
                 src="/members/deep-project.png"
