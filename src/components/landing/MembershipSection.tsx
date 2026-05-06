@@ -150,13 +150,13 @@ const MembershipSection = () => {
               {t("Tvrtke članice", "Member Companies")}
             </span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
             <a
               href="https://www.otpbanka.hr/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="OTP banka"
-              className="inline-flex items-center justify-center bg-white border border-border rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-all"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
             >
               <img
                 src="/members/otp-banka.png"
@@ -170,7 +170,7 @@ const MembershipSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="DeeP Project"
-              className="inline-flex items-center justify-center bg-white border border-border rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-all"
+              className="inline-flex items-center justify-center transition-opacity hover:opacity-80"
             >
               <img
                 src="/members/deep-project.png"
